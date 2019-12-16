@@ -32,7 +32,6 @@ export function balanceConfirmations(base: string, address: string, confirmation
     });
 }
 
-// TODO effectiveBalanceConfirmations
 export function scriptInfo(base: string, address: string, options?: IRequestOptions): Promise<IScriptInfo<TLong>> {
     return request({
         base,
@@ -40,26 +39,70 @@ export function scriptInfo(base: string, address: string, options?: IRequestOpti
     });
 }
 
-export function data(base: string, address: string, params: IDataQueryParams = Object.create(null), options?: IRequestOptions): Promise<TDataTransactionEntry<TLong>> {
+export function data(base: string, address: string, params: IDataQueryParams = Object.create(null), options?: IRequestOptions): Promise<Array<TDataTransactionEntry<TLong>>> {
     return request({
         base,
         url: `/addresses/data/${address}${query(params)}`
     });
 }
 
-export function validate(base: string, address: string, options?: IRequestOptions): Promise<{ address: string; valid: boolean }> {
+export function validate(base: string, address: string, options?: IRequestOptions): Promise<IValidateResponse> {
     return request({ base, url: `/addresses/validate/${address}` });
 }
 
-export function balance(base: string, address: string, options?: IRequestOptions): Promise<{ address: string; confirmations: number; balance: TLong }> {
+export function balance(base: string, address: string, options?: IRequestOptions): Promise<IBalanceConfirmations<TLong>> {
     return request({ base, url: `/addresses/balance/${address}` });
 }
 
-export function buildAddress(base: string, publicKey: string, options?: IRequestOptions): Promise<{ address: string }> {
-    return request({ base, url: `/addresses/publicKey/${publicKey}` });
+export function effectiveBalanceConfirmations(base: string, address: string, confirmations: number): Promise<IBalanceConfirmations<TLong>> {
+    return request({
+        base,
+        url: `/addresses/effectiveBalance/${address}/${confirmations}`
+    });
 }
 
-// TODO effectiveBalance
+export function effectiveBalance(base: string, address: string): Promise<IBalanceConfirmations<TLong>> {
+    return request({
+        base,
+        url: `/addresses/effectiveBalance/${address}`
+    });
+}
+
+export function seq(base: string, from: number, to: number): Promise<Array<string>> {
+    return request({
+        base,
+        url: `/addresses/seq/${from}/${to}`
+    })
+}
+
+export function seed(base: string, address: string): Promise<string> {
+    return request({
+        base,
+        url: `/addresses/seed/${address}`
+    })
+}
+
+export function publicKey(base: string, publicKey: string): Promise<IPublicKeyResponse> {
+    return request({
+        base,
+        url: `/addresses/publicKey/${publicKey}`
+    })
+}
+
+export function addresses(base: string): Promise<Array<string>> {
+    return request({
+        base,
+        url: '/addresses'
+    });
+}
+
+// @TODO: when correct API key is received
+//  /addresses/verifyText/{address}
+//  /addresses/signText/{address}
+//  /addresses/sign/{address}
+//  /addresses   POST
+//  /addresses/verify/{address}
+//  /addresses/{address}   DELETE
 
 export interface IBalanceConfirmations<LONG> {
     address: string;
@@ -82,9 +125,24 @@ export interface IDataQueryParams {
 
 export interface IBalanceDetails<LONG> {
     address: string;
+    /**
+     * Весь принадлежащий мне баланс, включая исходящий лизинг
+     * Available + LeaseOut
+     */
     regular: LONG;
+    /**
+     * Минимальный эффективный баланс за последнюю 1000 блоков
+     */
     generating: LONG;
+    /**
+     * Мой баланс без исходящего лизинга
+     * Баланс, который можно тратить
+     */
     available: LONG;
+    /**
+     * Баланс для генерации блоков (включая входящий лизинг и исключая исходящий)
+     * Available + LeaseIn - LeaseOut
+     */
     effective: LONG;
 }
 
@@ -94,4 +152,13 @@ export interface IScriptInfoMeta {
         version: string;
         callableFuncTypes: Record<string, Record<string, 'Int' | 'String' | 'Binary'>>
     }
+}
+
+export interface IValidateResponse {
+    address: string;
+    valid: boolean;
+}
+
+export interface IPublicKeyResponse {
+    address: string;
 }

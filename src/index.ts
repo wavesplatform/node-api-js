@@ -2,6 +2,10 @@ import * as addressesModule from './api-node/addresses';
 import * as blocksModule from './api-node/blocks';
 import * as transactionsModule from './api-node/transactions';
 import * as leasingModule from './api-node/leasing';
+import * as peersModule from './api-node/peers';
+import * as rewardsModule from './api-node/rewards';
+import * as utilsModule from './api-node/utils';
+import * as debugModule from './api-node/debug';
 import query from './tools/query';
 import resolve from './tools/resolve';
 import request from './tools/request';
@@ -33,6 +37,10 @@ export function create(base: string) {
     const blocks: TWrapRecord<typeof blocksModule> = wrapRecord(base, blocksModule);
     const transactions: TWrapRecord<typeof transactionsModule> = wrapRecord(base, transactionsModule);
     const leasing: TWrapRecord<typeof leasingModule> = wrapRecord(base, leasingModule);
+    const peers: TWrapRecord<typeof peersModule> = wrapRecord(base, peersModule);
+    const rewards: TWrapRecord<typeof rewardsModule> = wrapRecord(base, rewardsModule);
+    const utils: TWrapRecord<typeof utilsModule> = wrapRecord(base, utilsModule);
+    const debug: TWrapRecord<typeof debugModule> = wrapRecord(base, debugModule);
 
     const tools = {
         transactions: {
@@ -62,7 +70,11 @@ export function create(base: string) {
         blocks,
         transactions,
         leasing,
-        tools
+        tools,
+        peers,
+        rewards,
+        utils,
+        debug
     };
 }
 
