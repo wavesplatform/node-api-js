@@ -12,8 +12,10 @@ const checkObj = (object: ILeaseTransaction<TLong> & IWithApiMixin & IActive) =>
         senderPublicKey: expect.any(String),
         amount: expect.any(Number),
         sender: expect.any(String),
-        // @TODO: Подумать над реализацией, может либо string либо null
-        // feeAssetId: expect.anything(),
+        /**
+         * @TODO: Подумать над реализацией, может либо string либо null
+         * feeAssetId: expect.anything(),
+         */
         proofs: expect.any(Array),
         fee: expect.any(Number),
         recipient: expect.any(String),

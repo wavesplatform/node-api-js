@@ -26,7 +26,9 @@ it('details array', async () => {
 });
 
 it('details string', async () => {
-    // TODO @tsigel тут с перегрузками надо разобраться
+    /**
+     * TODO @tsigel тут с перегрузками надо разобраться
+     */
     const info: TAssetDetails<TLong> = await api.assets.details(STATE.ASSETS.BTC.id as any) as any;
     expect(typeof info.assetId).toBe('string');
     expect(typeof info.issueHeight).toBe('number');
