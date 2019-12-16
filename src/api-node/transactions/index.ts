@@ -1,4 +1,9 @@
-import { IWithProofs, TTransaction, TTransactionFromAPI, TTransactionMap } from '@waves/ts-types';
+import {
+    IWithProofs,
+    TTransaction,
+    TTransactionFromAPI,
+    TTransactionMap
+} from '@waves/ts-types';
 import { TRANSACTION_STATUSES, TTransactionStatuses } from '../../constants';
 import { TLong } from '../../interface';
 import { height } from '../blocks';
@@ -8,14 +13,23 @@ import stringify from '../../tools/stringify';
 
 
 /**
- * TODO
  * GET /transactions/unconfirmed/size
  * Number of unconfirmed transactions
  */
+export function unconfirmedSize(base: string): Promise<IUnconfirmedSize> {
+    return request({
+        base,
+        url: '/transactions/unconfirmed/size'
+    })
+}
+
+interface IUnconfirmedSize {
+    size: number;
+}
 
 
+// @TODO: when correct API key is received
 /**
- * TODO
  * POST /transactions/sign/{signerAddress}
  * Sign a transaction with a non-default private key
  */
@@ -44,11 +58,15 @@ export type TFeeInfo<LONG = TLong> = {
 }
 
 /**
- * TODO
  * GET /transactions/unconfirmed
  * Unconfirmed transactions
  */
-
+export function unconfirmed(base: string): Promise<Array<TTransactionFromAPI<TLong>>> {
+    return request({
+        base,
+        url: '/transactions/unconfirmed'
+    })
+}
 
 /**
  * Список транзакций по адресу
@@ -69,11 +87,14 @@ export function transactions(base: string, address: string, limit: number, after
  * Unconfirmed transaction info
  */
 export function unconfirmedInfo(base: string, id: string): Promise<TTransactionFromAPI<TLong>> {
-    return request({ base, url: `/transactions/unconfirmed/info/${id}` });
+    return request({
+        base,
+        url: `/transactions/unconfirmed/info/${id}`
+    });
 }
 
+// @TODO when correct API key is received
 /**
- * TODO
  * POST /transactions/sign
  * Sign a transaction
  */
