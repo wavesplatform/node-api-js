@@ -1,0 +1,2 @@
+// GET /activation/status
+// Status

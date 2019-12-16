@@ -1,0 +1,63 @@
+{
+  "name": "@waves/blockchain-api",
+  "version": "0.0.7",
+  "main": "dist/cjs/index.js",
+  "types": "dist/cjs/index.d.ts",
+  "scripts": {
+    "postversion": "npm publish",
+    "testCommand": "jest",
+    "prepare": "npm run build",
+    "prepublish": "npm test",
+    "build": "tsc -p ./tsconfig-es.json && tsc -p ./tsconfig-cjs.json && webpack",
+    "test": "node-state -n -m typescript -o ./test/_state.ts -r"
+  },
+  "dependencies": {
+    "@types/node-fetch": "^2.5.4",
+    "@waves/bignumber": "0.0.1",
+    "@waves/ts-types": "^0.3.1",
+    "node-fetch": "^2.6.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 60,
+        "functions": 60,
+        "lines": 60,
+        "statements": 60
+      }
+    },
+    "collectCoverage": true,
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/",
+      "/src/libs/"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": [
+      "**/test/*spec.+(ts)",
+      "**/test/**/*spec.+(ts)"
+    ]
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.23",
+    "@waves/node-state": "0.0.7",
+    "@waves/seed-provider": "0.0.2",
+    "@waves/waves-transactions": "^3.24.0",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.1.0",
+    "ts-loader": "^6.2.0",
+    "typescript": "^3.7.2",
+    "webpack": "^4.41.0",
+    "webpack-cli": "^3.3.9"
+  }
+}
