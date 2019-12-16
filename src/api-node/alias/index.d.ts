@@ -1,10 +1,6 @@
-/**
- * TODO
- * GET /alias/by-alias/{alias}
- * Address by alias
- */
-/**
- * TODO
- * GET /alias/by-address/{address}
- * Aliases by address
- */
+export declare function byAlias(base: string, alias: string): Promise<IByAlias>;
+export declare function byAddress(base: string, address: string): Promise<TByAddress>;
+export interface IByAlias {
+    address: string;
+}
+export declare type TByAddress = Array<string>;

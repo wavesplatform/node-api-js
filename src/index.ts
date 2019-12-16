@@ -2,10 +2,11 @@ import * as addressesModule from './api-node/addresses';
 import * as blocksModule from './api-node/blocks';
 import * as transactionsModule from './api-node/transactions';
 import * as leasingModule from './api-node/leasing';
-import * as peersModule from './api-node/peers';
-import * as rewardsModule from './api-node/rewards';
-import * as utilsModule from './api-node/utils';
-import * as debugModule from './api-node/debug';
+import * as aliasModule from './api-node/alias';
+import * as consensusModule from './api-node/consensus';
+import * as activationModule from './api-node/activation';
+import * as nodeModule from './api-node/node';
+import * as assetsModule from './api-node/assets';
 import query from './tools/query';
 import resolve from './tools/resolve';
 import request from './tools/request';
@@ -37,10 +38,11 @@ export function create(base: string) {
     const blocks: TWrapRecord<typeof blocksModule> = wrapRecord(base, blocksModule);
     const transactions: TWrapRecord<typeof transactionsModule> = wrapRecord(base, transactionsModule);
     const leasing: TWrapRecord<typeof leasingModule> = wrapRecord(base, leasingModule);
-    const peers: TWrapRecord<typeof peersModule> = wrapRecord(base, peersModule);
-    const rewards: TWrapRecord<typeof rewardsModule> = wrapRecord(base, rewardsModule);
-    const utils: TWrapRecord<typeof utilsModule> = wrapRecord(base, utilsModule);
-    const debug: TWrapRecord<typeof debugModule> = wrapRecord(base, debugModule);
+    const alias: TWrapRecord<typeof aliasModule> = wrapRecord(base, aliasModule);
+    const consensus: TWrapRecord<typeof consensusModule> = wrapRecord(base, consensusModule);
+    const activation: TWrapRecord<typeof activationModule> = wrapRecord(base, activationModule);
+    const node: TWrapRecord<typeof nodeModule> = wrapRecord(base, nodeModule);
+    const assets: TWrapRecord<typeof assetsModule> = wrapRecord(base, assetsModule);
 
     const tools = {
         transactions: {
@@ -71,10 +73,11 @@ export function create(base: string) {
         transactions,
         leasing,
         tools,
-        peers,
-        rewards,
-        utils,
-        debug
+        alias,
+        consensus,
+        activation,
+        node,
+        assets
     };
 }
 
