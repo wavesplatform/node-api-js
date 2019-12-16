@@ -1,8 +1,11 @@
 import { TLong } from '../../interface';
 import request from '../../tools/request';
 
-// GET /activation/status
-// Status
+/**
+ * GET /activation/status
+ * Status
+ * @param base 
+ */
 
 export function activationStatus(base: string): Promise<IActivationStatus<TLong>> {
     return request({ base, url: 'activation/status'});
