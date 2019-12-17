@@ -1,14 +1,21 @@
+import request from '../../tools/request';
 
+export function byAlias(base: string, alias: string): Promise<IByAlias> {
+	return request({
+		base,
+		url: `/alias/by-alias/${alias}`
+	});
+}
 
+export function byAddress(base: string, address: string): Promise<IByAddress> {
+	return request({
+		base,
+		url: `/alias/by-address/${address}`
+	});
+}
 
-        /**
-         * TODO
-         * GET /alias/by-alias/{alias}
-         * Address by alias
-         */
+export interface IByAlias {
+	address: string;
+}
 
-        /**
-         * TODO
-         * GET /alias/by-address/{address}
-         * Aliases by address
-         */
+export type IByAddress = Array<string>;

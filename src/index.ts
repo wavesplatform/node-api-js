@@ -6,6 +6,11 @@ import * as peersModule from './api-node/peers';
 import * as rewardsModule from './api-node/rewards';
 import * as utilsModule from './api-node/utils';
 import * as debugModule from './api-node/debug';
+import * as aliasModule from './api-node/alias';
+import * as consensusModule from './api-node/consensus';
+import * as activationModule from './api-node/activation';
+import * as nodeModule from './api-node/node';
+import * as assetsModule from './api-node/assets';
 import query from './tools/query';
 import resolve from './tools/resolve';
 import request from './tools/request';
@@ -41,6 +46,11 @@ export function create(base: string) {
     const rewards: TWrapRecord<typeof rewardsModule> = wrapRecord(base, rewardsModule);
     const utils: TWrapRecord<typeof utilsModule> = wrapRecord(base, utilsModule);
     const debug: TWrapRecord<typeof debugModule> = wrapRecord(base, debugModule);
+    const alias: TWrapRecord<typeof aliasModule> = wrapRecord(base, aliasModule);
+    const consensus: TWrapRecord<typeof consensusModule> = wrapRecord(base, consensusModule);
+    const activation: TWrapRecord<typeof activationModule> = wrapRecord(base, activationModule);
+    const node: TWrapRecord<typeof nodeModule> = wrapRecord(base, nodeModule);
+    const assets: TWrapRecord<typeof assetsModule> = wrapRecord(base, assetsModule);
 
     const tools = {
         transactions: {
@@ -74,7 +84,12 @@ export function create(base: string) {
         peers,
         rewards,
         utils,
-        debug
+        debug,
+        alias,
+        consensus,
+        activation,
+        node,
+        assets
     };
 }
 

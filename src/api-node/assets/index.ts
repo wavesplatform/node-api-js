@@ -15,11 +15,9 @@ export function details(base: string, assetId: string | Array<string>): Promise<
         .then(list => isOnce ? list[0] : list);
 }
 
-/**
- * TODO
- * GET /assets/{assetId}/distribution/{height}/limit/{limit}
- * Asset balance distribution at height
- */
+export function assetDistribution(base: string, assetId: string, height: number, limit: number): Promise<IAssetDistribution> {
+    return request({ base, url: `/assets/${assetId}/distribution/${height}/limit/${limit}`});
+}
 
 /**
  * TODO
@@ -27,21 +25,48 @@ export function details(base: string, assetId: string | Array<string>): Promise<
  * Asset balance distribution
  */
 
-/**
- * TODO
- * GET /assets/nft/{address}/limit/{limit}
- * NFTs
- */
+ export function AssetsAddressLimit(base: string, address:string, limit: number): Promise<Array<IAssetsAddressLimit>> {
+     return request({ base, url: `assets/nft/${address}/limit/${limit}`});
+ }
 
 export function assetsBalance(base: string, address: string): Promise<TAssetsBalance> {
     return request({ base, url: `/assets/balance/${address}` });
 }
 
-/**
- * TODO
- * GET /assets/balance/{address}/{assetId}
- * Asset's balance
- */
+export function balanceAddressAssetId(base: string, address: string, assetId: string): Promise<IBalanceAddressAssetId> {
+    return request({ base, url: `/assets/balance/${address}/${assetId}` });
+}
+
+export interface IAssetDistribution {
+    hasNext: boolean;
+    lastItem: string | null;
+    items: Record<string, number>;
+}
+
+export interface IBalanceAddressAssetId {
+    address: string;
+    assetId: string;
+    balance: number;
+}
+
+export interface IAssetsAddressLimit {
+    senderPublicKey: string;
+    quantity: number;
+    fee: number;
+    description: string;
+    type: number;
+    version: number;
+    reissuable: boolean;
+    script: string | null;
+    sender: string;
+    feeAssetId: string | null;
+    chainId: number;
+    proofs: Array<string>;
+    assetId: string;
+    decimals: number;
+    name: string;
+    id: string;
+}
 
 export type TAssetsBalance = {
     'address': string;
