@@ -1,6 +1,8 @@
 
 node_modules
+cjs
 dist
+es
 coverage
 .idea
 test/_state.ts

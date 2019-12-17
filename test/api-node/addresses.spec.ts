@@ -41,3 +41,14 @@ it('Script info meta', async () => {
     const info = await api.addresses.fetchScriptInfoMeta(STATE.ACCOUNTS.SIMPLE.address);
     expect(info.meta).toBe(undefined);
 });
+
+it('balance details', async () => {
+    const { address } = STATE.ACCOUNTS.SIMPLE;
+    const balanceDetails = await api.addresses.fetchBalanceDetails(address);
+
+    expect(balanceDetails.address).toBe(address);
+    expect(typeof balanceDetails.regular).toBe('number');
+    expect(typeof balanceDetails.generating).toBe('number');
+    expect(typeof balanceDetails.available).toBe('number');
+    expect(typeof balanceDetails.effective).toBe('number');
+});

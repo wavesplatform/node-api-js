@@ -41,8 +41,10 @@ it('details string', async () => {
     expect(typeof info.scripted).toBe('boolean');
 });
 
+// TODO: запрос возвращает ошибку
 it('Asset distribution', async () => {
-    const info = await api.assets.fetchAssetDistribution(STATE.ASSETS.BTC.id, 4000, 999);
+    const { height } = await api.blocks.fetchHeight(); 
+    const info = await api.assets.fetchAssetDistribution(STATE.ASSETS.BTC.id, 2, 500);
     expect(typeof info.hasNext).toBe('boolean');
     expect(typeof info.lastItem).toBe('string');
     expect(info.items).toBeInstanceOf(Object);
