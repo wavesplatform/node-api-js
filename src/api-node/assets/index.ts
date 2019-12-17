@@ -7,15 +7,15 @@ import { toArray } from '../../tools/utils';
  * GET /assets/details/{assetId}
  * Information about an asset
  */
-export function details(base: string, assetId: string): Promise<TAssetDetails>;
-export function details(base: string, assetId: Array<string>): Promise<Array<TAssetDetails>>;
-export function details<T extends string | Array<string>>(base: string, assetId: T): Promise<TAssetDetails | Array<TAssetDetails>> {
+export function fetchDetails(base: string, assetId: string): Promise<TAssetDetails>;
+export function fetchDetails(base: string, assetId: Array<string>): Promise<Array<TAssetDetails>>;
+export function fetchDetails<T extends string | Array<string>>(base: string, assetId: T): Promise<TAssetDetails | Array<TAssetDetails>> {
     const isOnce = !Array.isArray(assetId);
     return Promise.all(toArray(assetId).map(id => request<TAssetDetails>({ base, url: `/assets/details/${id}` })))
         .then(list => isOnce ? list[0] : list);
 }
 
-export function assetDistribution(base: string, assetId: string, height: number, limit: number): Promise<IAssetDistribution> {
+export function fetchAssetDistribution(base: string, assetId: string, height: number, limit: number): Promise<IAssetDistribution> {
     return request({ base, url: `/assets/${assetId}/distribution/${height}/limit/${limit}`});
 }
 
@@ -25,15 +25,15 @@ export function assetDistribution(base: string, assetId: string, height: number,
  * Asset balance distribution
  */
 
- export function AssetsAddressLimit(base: string, address:string, limit: number): Promise<Array<IAssetsAddressLimit>> {
+ export function fetchAssetsAddressLimit(base: string, address:string, limit: number): Promise<Array<IAssetsAddressLimit>> {
      return request({ base, url: `assets/nft/${address}/limit/${limit}`});
  }
 
-export function assetsBalance(base: string, address: string): Promise<TAssetsBalance> {
+export function fetchAssetsBalance(base: string, address: string): Promise<TAssetsBalance> {
     return request({ base, url: `/assets/balance/${address}` });
 }
 
-export function balanceAddressAssetId(base: string, address: string, assetId: string): Promise<IBalanceAddressAssetId> {
+export function fetchBalanceAddressAssetId(base: string, address: string, assetId: string): Promise<IBalanceAddressAssetId> {
     return request({ base, url: `/assets/balance/${address}/${assetId}` });
 }
 

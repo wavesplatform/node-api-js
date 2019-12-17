@@ -7,7 +7,7 @@ import request from '../../tools/request';
  * GET /leasing/active/{address}
  * Get all active leases for an address
  */
-export function active(base: string, address: string): Promise<Array<ILeaseTransaction<TLong> & IWithApiMixin & IActive>> {
+export function fetchActive(base: string, address: string): Promise<Array<ILeaseTransaction<TLong> & IWithApiMixin & IActive>> {
     return request({ base, url: `/leasing/active/${address}` });
 }
 

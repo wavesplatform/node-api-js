@@ -6,7 +6,7 @@ import request from '../../tools/request';
  * GET /blockchain/rewards
  * Current reward status
  */
-export function rewards(base: string, height?: number): Promise<TRewards<TLong>> {
+export function fetchRewards(base: string, height?: number): Promise<TRewards<TLong>> {
     return request({ base, url: height ? `/blockchain/rewards/${height}` : '/blockchain/rewards' });
 }
 

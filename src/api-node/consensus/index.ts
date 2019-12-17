@@ -7,7 +7,7 @@ import request from '../../tools/request';
  * @param base
  * @param address
  */
-export function generatingBalance(base: string, address: string): Promise<IGeneratingBalance<TLong>> {
+export function fetchGeneratingBalance(base: string, address: string): Promise<IGeneratingBalance<TLong>> {
     return request({ base, url: `/consensus/generatingbalance/${address}`});
 }
 /**
@@ -15,7 +15,7 @@ export function generatingBalance(base: string, address: string): Promise<IGener
  * Base target last
  * @param base
  */
-export function basetarget(base: string): Promise<IBasetarget> {
+export function fetchBasetarget(base: string): Promise<IBasetarget> {
     return request({ base, url: '/consensus/basetarget'});
 }
 
@@ -24,7 +24,7 @@ export function basetarget(base: string): Promise<IBasetarget> {
  * Consensus algo
  * @param base 
  */
-export function consensusAlgo(base: string): Promise<IConsensusAlgo> {
+export function fetchConsensusAlgo(base: string): Promise<IConsensusAlgo> {
     return request({ base, url: '/consensus/algo'});
 }
 
@@ -34,7 +34,7 @@ export function consensusAlgo(base: string): Promise<IConsensusAlgo> {
  * @param base 
  * @param blockId 
  */
-export function generationSignatureBlockId(base: string, blockId: string): Promise<IGeneraationSignatureBlockId> {
+export function fetchGenerationSignatureBlockId(base: string, blockId: string): Promise<IGeneraationSignatureBlockId> {
     return request({ base, url: `/consensus/generationsignature/${blockId}`});
 }
 
@@ -44,7 +44,7 @@ export function generationSignatureBlockId(base: string, blockId: string): Promi
  * @param base 
  * @param blockId 
  */
-export function basetargetBlockId(base: string, blockId: string): Promise<IBaseTargetBlockId> {
+export function fetchBasetargetBlockId(base: string, blockId: string): Promise<IBaseTargetBlockId> {
     return request({ base, url: `/consensus/basetarget/${blockId}`});
 }
 
@@ -53,7 +53,7 @@ export function basetargetBlockId(base: string, blockId: string): Promise<IBaseT
  * Generation signature last
  * @param base 
  */
-export function generationSignature(base: string): Promise<IGenerationSignature> {
+export function fetchGenerationSignature(base: string): Promise<IGenerationSignature> {
     return request({base, url: '/consensus/generationsignature'});
 }
 

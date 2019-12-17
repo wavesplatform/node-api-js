@@ -1,13 +1,13 @@
 import request from '../../tools/request';
 
-export function byAlias(base: string, alias: string): Promise<IByAlias> {
+export function fetchByAlias(base: string, alias: string): Promise<IByAlias> {
 	return request({
 		base,
 		url: `/alias/by-alias/${alias}`
 	});
 }
 
-export function byAddress(base: string, address: string): Promise<IByAddress> {
+export function fetchByAddress(base: string, address: string): Promise<IByAddress> {
 	return request({
 		base,
 		url: `/alias/by-address/${address}`

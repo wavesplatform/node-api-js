@@ -9,7 +9,7 @@ import { IWithId } from "@waves/ts-types/src/parts";
  * @param base
  * @param address
  */
-export function balanceHistory(base: string, address: string): Promise<Array<IBalanceHistory>> {
+export function fetchBalanceHistory(base: string, address: string): Promise<Array<IBalanceHistory>> {
     return request({
         base,
         url: `/debug/balances/history/${address}`
@@ -28,7 +28,7 @@ interface IBalanceHistory {
  * @param limit
  * @param after
  */
-export function stateChangesByAddress(base: string, address: string, limit: number, after?: string): Promise<Array<TTransactionWithProofs<TLong> & IWithId>> {
+export function fetchStateChangesByAddress(base: string, address: string, limit: number, after?: string): Promise<Array<TTransactionWithProofs<TLong> & IWithId>> {
     return request({
         base,
         url: `/debug/stateChanges/address/${address}/limit/${limit}${query({ after })}`

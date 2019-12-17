@@ -4,35 +4,35 @@ import request from '../../tools/request';
 import query from '../../tools/query';
 
 
-export function dataKey(base: string, address: string, key: string, options?: IRequestOptions): Promise<TDataTransactionEntry<TLong>> {
+export function fetchDataKey(base: string, address: string, key: string, options?: IRequestOptions): Promise<TDataTransactionEntry<TLong>> {
     return request({
         base,
         url: `/addresses/data/${address}/${encodeURIComponent(key)}`
     });
 }
 
-export function scriptInfoMeta(base: string, address: string, options?: IRequestOptions): Promise<IScriptInfoMeta> {
+export function fetchScriptInfoMeta(base: string, address: string, options?: IRequestOptions): Promise<IScriptInfoMeta> {
     return request({
         base,
         url: `/addresses/scriptInfo/${address}/meta`
     });
 }
 
-export function balanceDetails(base: string, address: string, options?: IRequestOptions): Promise<IBalanceDetails<TLong>> {
+export function fetchBalanceDetails(base: string, address: string, options?: IRequestOptions): Promise<IBalanceDetails<TLong>> {
     return request({
         base,
         url: `/addresses/balance/details/${address}`
     });
 }
 
-export function balanceConfirmations(base: string, address: string, confirmations: number, options?: IRequestOptions): Promise<IBalanceConfirmations<TLong>> {
+export function fetchBalanceConfirmations(base: string, address: string, confirmations: number, options?: IRequestOptions): Promise<IBalanceConfirmations<TLong>> {
     return request({
         base,
         url: `/addresses/balance/${address}/${confirmations}`
     });
 }
 
-export function scriptInfo(base: string, address: string, options?: IRequestOptions): Promise<IScriptInfo<TLong>> {
+export function fetchScriptInfo(base: string, address: string, options?: IRequestOptions): Promise<IScriptInfo<TLong>> {
     return request({
         base,
         url: `/addresses/scriptInfo/${address}`
@@ -46,50 +46,50 @@ export function data(base: string, address: string, params: IDataQueryParams = O
     });
 }
 
-export function validate(base: string, address: string, options?: IRequestOptions): Promise<IValidateResponse> {
+export function fetchValidate(base: string, address: string, options?: IRequestOptions): Promise<IValidateResponse> {
     return request({ base, url: `/addresses/validate/${address}` });
 }
 
-export function balance(base: string, address: string, options?: IRequestOptions): Promise<IBalanceConfirmations<TLong>> {
+export function fetchBalance(base: string, address: string, options?: IRequestOptions): Promise<IBalanceConfirmations<TLong>> {
     return request({ base, url: `/addresses/balance/${address}` });
 }
 
-export function effectiveBalanceConfirmations(base: string, address: string, confirmations: number): Promise<IBalanceConfirmations<TLong>> {
+export function fetchEffectiveBalanceConfirmations(base: string, address: string, confirmations: number): Promise<IBalanceConfirmations<TLong>> {
     return request({
         base,
         url: `/addresses/effectiveBalance/${address}/${confirmations}`
     });
 }
 
-export function effectiveBalance(base: string, address: string): Promise<IBalanceConfirmations<TLong>> {
+export function fetchEffectiveBalance(base: string, address: string): Promise<IBalanceConfirmations<TLong>> {
     return request({
         base,
         url: `/addresses/effectiveBalance/${address}`
     });
 }
 
-export function seq(base: string, from: number, to: number): Promise<Array<string>> {
+export function fetchSeq(base: string, from: number, to: number): Promise<Array<string>> {
     return request({
         base,
         url: `/addresses/seq/${from}/${to}`
     })
 }
 
-export function seed(base: string, address: string): Promise<string> {
+export function fetchSeed(base: string, address: string): Promise<string> {
     return request({
         base,
         url: `/addresses/seed/${address}`
     })
 }
 
-export function publicKey(base: string, publicKey: string): Promise<IPublicKeyResponse> {
+export function fetchPublicKey(base: string, publicKey: string): Promise<IPublicKeyResponse> {
     return request({
         base,
         url: `/addresses/publicKey/${publicKey}`
     })
 }
 
-export function addresses(base: string): Promise<Array<string>> {
+export function fetchAddresses(base: string): Promise<Array<string>> {
     return request({
         base,
         url: '/addresses'

@@ -1,6 +1,6 @@
 import { NODE_URL } from '../_state';
 import { create } from '../../src';
-import { headersAt, headersLast, IBlockHeader } from '../../src/api-node/blocks';
+import { fetchHeadersAt, fetchHeadersLast, IBlockHeader } from '../../src/api-node/blocks';
 
 
 const api = create(NODE_URL);
@@ -21,12 +21,12 @@ const checkBlock = (block: IBlockHeader) => {
     // TODO nxt-consensus
 };
 
-it('headersLast', async () => {
-    checkBlock(await api.blocks.headersLast());
-    checkBlock(await headersLast(NODE_URL));
+it('fetchHeadersLast', async () => {
+    checkBlock(await api.blocks.fetchHeadersLast());
+    checkBlock(await fetchHeadersLast(NODE_URL));
 });
 
-it('headersAt', async () => {
-    checkBlock(await api.blocks.headersAt(2));
-    checkBlock(await headersAt(NODE_URL, 2));
+it('fetchHeadersAt', async () => {
+    checkBlock(await api.blocks.fetchHeadersAt(2));
+    checkBlock(await fetchHeadersAt(NODE_URL, 2));
 });
