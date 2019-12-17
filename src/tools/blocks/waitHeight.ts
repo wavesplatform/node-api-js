@@ -1,4 +1,4 @@
-import { headersLast, height } from '../../api-node/blocks';
+import { fetchHeadersLast, fetchHeight } from '../../api-node/blocks';
 import { wait } from '../utils';
 import detectInterval from './detectInterval';
 
@@ -9,12 +9,12 @@ const storage: Record<string, number> = Object.create(null);
 export default function (base: string, current?: number): Promise<{ height: number }> {
     return Promise.all([
         getInterval(base),
-        current == undefined ? height(base).then(({ height }) => height + 1) : current
+        current == undefined ? fetchHeight(base).then(({ height }) => height + 1) : current
     ]).then(([interval, current]) => loop(interval, current));
 
 
     function loop(interval: number, current: number): Promise<{ height: number }> {
-        return headersLast(base).then(({ height, timestamp }) => {
+        return fetchHeadersLast(base).then(({ height, timestamp }) => {
             if (height >= current) {
                 return { height };
             }

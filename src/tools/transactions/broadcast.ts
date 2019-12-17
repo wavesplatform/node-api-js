@@ -1,6 +1,6 @@
 import { TTransactionFromAPI, TTransactionFromAPIMap, TTransactionWithProofs } from '@waves/ts-types';
 import { TLong } from '../../interface';
-import { broadcast } from '../../api-node/transactions';
+import { fetchBroadcast } from '../../api-node/transactions';
 import { head, toArray } from '../utils';
 import wait from './wait';
 
@@ -33,7 +33,7 @@ export default function (base: string, list: TTransactionWithProofs<TLong> | Arr
 }
 
 function simpleBroadcast(base: string, list: Array<TTransactionWithProofs<TLong>>): Promise<Array<TTransactionFromAPI<TLong>>> {
-    return Promise.all(list.map(tx => broadcast(base, tx)));
+    return Promise.all(list.map(tx => fetchBroadcast(base, tx)));
 }
 
 function chainBroadcast(base: string, list: Array<TTransactionWithProofs<TLong>>, options: IOptions): Promise<Array<TTransactionFromAPI<TLong>>> {
@@ -48,7 +48,7 @@ function chainBroadcast(base: string, list: Array<TTransactionWithProofs<TLong>>
             }
 
             const tx = toBroadcast.pop() as TTransactionWithProofs<TLong>;
-            broadcast(base, tx)
+            fetchBroadcast(base, tx)
                 .then(tx => wait(base, tx, options))
                 .then(tx => {
                     result.push(tx);

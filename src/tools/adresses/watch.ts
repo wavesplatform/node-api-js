@@ -1,4 +1,4 @@
-import { transactions } from '../../api-node/transactions';
+import { fetchTransactions } from '../../api-node/transactions';
 import { TTransactionFromAPI } from '@waves/ts-types';
 import { TLong } from '../../interface';
 import { indexBy, keys, prop } from '../utils';
@@ -47,7 +47,7 @@ export class Watch {
 
         const onError = () => this._addTimeout();
 
-        transactions(this._base, this.address, 1)
+        fetchTransactions(this._base, this.address, 1)
             .then(([tx]) => {
 
                 if (!tx) {
@@ -105,7 +105,7 @@ export class Watch {
                 return Promise.resolve(downloaded);
             }
 
-            return transactions(this._base, this.address, downloaded.length + 100).then(list => {
+            return fetchTransactions(this._base, this.address, downloaded.length + 100).then(list => {
                 if (downloaded.length === list.length) {
                     return downloaded;
                 }
@@ -170,7 +170,7 @@ export interface IEvents {
 }
 
 export default function (base: string, address: string, interval?: number) {
-    return transactions(base, address, 1)
+    return fetchTransactions(base, address, 1)
         .then(([tx]) => new Watch(base, address, tx, interval));
 }
 

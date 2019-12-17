@@ -6,7 +6,7 @@ import {
 } from '@waves/ts-types';
 import { TRANSACTION_STATUSES, TTransactionStatuses } from '../../constants';
 import { TLong } from '../../interface';
-import { height } from '../blocks';
+import { fetchHeight } from '../blocks';
 import request from '../../tools/request';
 import query from '../../tools/query';
 import stringify from '../../tools/stringify';
@@ -131,7 +131,7 @@ export function fetchStatus(base: string, list: Array<string>): Promise<ITransac
     );
 
     return Promise.all([
-        height(base),
+        fetchHeight(base),
         Promise.all(loadAllTxInfo)
     ]).then(([{ height }, statuses]) => ({
         height,
