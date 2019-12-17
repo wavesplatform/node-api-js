@@ -7,8 +7,8 @@
     "experimentalDecorators": true,
     "strict": true,
     "sourceMap": true,
-    "declaration": true,
     "moduleResolution": "node",
+    "skipDefaultLibCheck": true,
     "esModuleInterop": true,
     "lib": [
       "es5",

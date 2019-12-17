@@ -3,7 +3,8 @@
   "compilerOptions": {
     "module": "ES2015",
     "target": "ES6",
-    "outDir": "./dist/es"
+    "outDir": "./dist/es",
+    "declaration": true
   },
   "include": [
     "src"

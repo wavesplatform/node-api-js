@@ -9,7 +9,7 @@ import { toArray } from '../../tools/utils';
  */
 export function details(base: string, assetId: string): Promise<TAssetDetails>;
 export function details(base: string, assetId: Array<string>): Promise<Array<TAssetDetails>>;
-export function details(base: string, assetId: string | Array<string>): Promise<TAssetDetails | Array<TAssetDetails>> {
+export function details<T extends string | Array<string>>(base: string, assetId: T): Promise<TAssetDetails | Array<TAssetDetails>> {
     const isOnce = !Array.isArray(assetId);
     return Promise.all(toArray(assetId).map(id => request<TAssetDetails>({ base, url: `/assets/details/${id}` })))
         .then(list => isOnce ? list[0] : list);
