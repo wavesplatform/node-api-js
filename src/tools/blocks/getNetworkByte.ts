@@ -1,7 +1,7 @@
-import { headersLast } from '../../api-node/blocks';
+import { fetchHeadersLast } from '../../api-node/blocks';
 
 export default function (base: string): Promise<number> {
-    return headersLast(base).then(header => base58Decode(header.generator)[1]);
+    return fetchHeadersLast(base).then(header => base58Decode(header.generator)[1]);
 }
 
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';

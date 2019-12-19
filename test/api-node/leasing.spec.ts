@@ -27,7 +27,7 @@ const checkObj = (object: ILeaseTransaction<TLong> & IWithApiMixin & IActive) =>
     })
 }
 it('Active', async () => {
-    const info = await api.leasing.active(STATE.ACCOUNTS.SIMPLE.address);
+    const info = await api.leasing.fetchActive(STATE.ACCOUNTS.SIMPLE.address);
     expect(info).toBeInstanceOf(Array);
     info.forEach(checkObj);
 });

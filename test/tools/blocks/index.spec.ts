@@ -4,7 +4,7 @@ import getNetworkCode from '../../../src/tools/blocks/getNetworkCode';
 import getNetworkByte from '../../../src/tools/blocks/getNetworkByte';
 import detectInterval from '../../../src/tools/blocks/detectInterval';
 import waitHeight from '../../../src/tools/blocks/waitHeight';
-import { height } from '../../../src/api-node/blocks';
+import { fetchHeight } from '../../../src/api-node/blocks';
 
 
 const { tools } = create(NODE_URL);
@@ -40,6 +40,6 @@ test('Wait next block', async () => {
 }, 30000);
 
 test('Wait next block by number', async () => {
-    const current = await height(NODE_URL);
+    const current = await fetchHeight(NODE_URL);
     await waitHeight(NODE_URL, current.height + 2);
 }, 30000);

@@ -1,7 +1,7 @@
 import { TTransactionFromAPI } from '@waves/ts-types';
 import { TLong } from '../../interface';
 import { head, indexBy, prop, toArray, wait } from '../utils';
-import { status } from '../../api-node/transactions';
+import { fetchStatus } from '../../api-node/transactions';
 import { TRANSACTION_STATUSES } from '../../constants';
 
 
@@ -17,7 +17,7 @@ export default function <T extends TTransactionFromAPI<TLong>>(base: string, tx:
     const requestInterval = options && options.requestInterval || 250;
 
     const waitTx = (list: Array<T>): Promise<void> => {
-        return status(base, list.map(prop('id')))
+        return fetchStatus(base, list.map(prop('id')))
             .then(status => {
                 const hash = indexBy(prop('id'), status.statuses);
                 const hasError = list.some(tx => hash[tx.id].status === TRANSACTION_STATUSES.NOT_FOUND);

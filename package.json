@@ -1,8 +1,8 @@
 {
   "name": "@waves/node-api-js",
   "version": "0.0.0",
-  "main": "dist/cjs/index.js",
-  "types": "dist/cjs/index.d.ts",
+  "main": "cjs/index.js",
+  "types": "cjs/index.d.ts",
   "scripts": {
     "postversion": "npm publish",
     "testCommand": "jest",
@@ -18,7 +18,9 @@
     "node-fetch": "^2.6.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "cjs",
+    "es"
   ],
   "jest": {
     "coverageThreshold": {

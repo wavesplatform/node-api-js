@@ -16,7 +16,7 @@ const CheckFeatures = (object: IFeatures<TLong>) => {
 }
 
 it('Activation status', async () => {
-    const info = await api.activation.activationStatus();
+    const info = await api.activation.fetchActivationStatus();
     expect(typeof info.height).toBe('number');
     expect(typeof info.votingInterval).toBe('number');
     expect(typeof info.votingThreshold).toBe('number');

@@ -6,7 +6,7 @@ import {
 } from '@waves/ts-types';
 import { TRANSACTION_STATUSES, TTransactionStatuses } from '../../constants';
 import { TLong } from '../../interface';
-import { height } from '../blocks';
+import { fetchHeight } from '../blocks';
 import request from '../../tools/request';
 import query from '../../tools/query';
 import stringify from '../../tools/stringify';
@@ -16,7 +16,7 @@ import stringify from '../../tools/stringify';
  * GET /transactions/unconfirmed/size
  * Number of unconfirmed transactions
  */
-export function unconfirmedSize(base: string): Promise<IUnconfirmedSize> {
+export function fetchUnconfirmedSize(base: string): Promise<IUnconfirmedSize> {
     return request({
         base,
         url: '/transactions/unconfirmed/size'
@@ -38,7 +38,7 @@ interface IUnconfirmedSize {
  * POST /transactions/calculateFee
  * Calculate transaction fee
  */
-export function calculateFee<T extends keyof TTransactionMap<TLong>>(base: string, tx: Partial<TTransactionMap<TLong>[T]> & { type: T }): Promise<TFeeInfo> {
+export function fetchCalculateFee<T extends keyof TTransactionMap<TLong>>(base: string, tx: Partial<TTransactionMap<TLong>[T]> & { type: T }): Promise<TFeeInfo> {
     return request({
         base,
         url: '/transactions/calculateFee',
@@ -61,7 +61,7 @@ export type TFeeInfo<LONG = TLong> = {
  * GET /transactions/unconfirmed
  * Unconfirmed transactions
  */
-export function unconfirmed(base: string): Promise<Array<TTransactionFromAPI<TLong>>> {
+export function fetchUnconfirmed(base: string): Promise<Array<TTransactionFromAPI<TLong>>> {
     return request({
         base,
         url: '/transactions/unconfirmed'
@@ -75,7 +75,7 @@ export function unconfirmed(base: string): Promise<Array<TTransactionFromAPI<TLo
  * @param after      искать транзакции после ID указанного в after
  * @param retry      количество попыток на выполнение запроса
  */
-export function transactions(base: string, address: string, limit: number, after?: string, retry?: number): Promise<Array<TTransactionFromAPI<TLong>>> {
+export function fetchTransactions(base: string, address: string, limit: number, after?: string, retry?: number): Promise<Array<TTransactionFromAPI<TLong>>> {
     return request<Array<Array<TTransactionFromAPI<TLong>>>>({
         base,
         url: `/transactions/address/${address}/limit/${limit}${query({ after })}`
@@ -86,7 +86,7 @@ export function transactions(base: string, address: string, limit: number, after
  * GET /transactions/unconfirmed/info/{id}
  * Unconfirmed transaction info
  */
-export function unconfirmedInfo(base: string, id: string): Promise<TTransactionFromAPI<TLong>> {
+export function fetchUnconfirmedInfo(base: string, id: string): Promise<TTransactionFromAPI<TLong>> {
     return request({
         base,
         url: `/transactions/unconfirmed/info/${id}`
@@ -104,11 +104,11 @@ export function unconfirmedInfo(base: string, id: string): Promise<TTransactionF
  * GET /transactions/info/{id}
  * Transaction info
  */
-export function info(base: string, id: string): Promise<TTransactionFromAPI<TLong>> {
+export function fetchInfo(base: string, id: string): Promise<TTransactionFromAPI<TLong>> {
     return request({ base, url: `/transactions/info/${id}` });
 }
 
-export function status(base: string, list: Array<string>): Promise<ITransactionsStatus> {
+export function fetchStatus(base: string, list: Array<string>): Promise<ITransactionsStatus> {
     const DEFAULT_STATUS: ITransactionStatus = {
         id: '',
         confirmations: -1,
@@ -118,9 +118,9 @@ export function status(base: string, list: Array<string>): Promise<ITransactions
     };
 
     const loadAllTxInfo: Array<Promise<ITransactionStatus>> = list.map(id =>
-        unconfirmedInfo(base, id)
+        fetchUnconfirmedInfo(base, id)
             .then(() => ({ ...DEFAULT_STATUS, id, status: TRANSACTION_STATUSES.UNCONFIRMED, inUTX: true }))
-            .catch(() => info(base, id)
+            .catch(() => fetchInfo(base, id)
                 .then(tx => ({
                     ...DEFAULT_STATUS,
                     id,
@@ -131,7 +131,7 @@ export function status(base: string, list: Array<string>): Promise<ITransactions
     );
 
     return Promise.all([
-        height(base),
+        fetchHeight(base),
         Promise.all(loadAllTxInfo)
     ]).then(([{ height }, statuses]) => ({
         height,
@@ -155,7 +155,7 @@ export interface ITransactionStatus {
     height: number;
 }
 
-export function broadcast(base: string, tx: TTransaction<TLong> & IWithProofs): Promise<TTransactionFromAPI<TLong>> {
+export function fetchBroadcast(base: string, tx: TTransaction<TLong> & IWithProofs): Promise<TTransactionFromAPI<TLong>> {
     return request({
         base, url: '/transactions/broadcast',
         options: {

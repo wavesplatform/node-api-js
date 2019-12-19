@@ -20,7 +20,7 @@ const checkAsset = (object: TAssetDetails) => {
 }
 
 it('details array', async () => {
-    const info = await api.assets.details([STATE.ASSETS.BTC.id, STATE.ASSETS.ETH.id]);
+    const info = await api.assets.fetchDetails([STATE.ASSETS.BTC.id, STATE.ASSETS.ETH.id]);
     expect(info).toBeInstanceOf(Array);
     info.forEach(checkAsset);
 });
@@ -29,7 +29,7 @@ it('details string', async () => {
     /**
      * TODO @tsigel тут с перегрузками надо разобраться
      */
-    const info: TAssetDetails<TLong> = await api.assets.details(STATE.ASSETS.BTC.id as any) as any;
+    const info: TAssetDetails<TLong> = await api.assets.fetchDetails(STATE.ASSETS.BTC.id as any) as any;
     expect(typeof info.assetId).toBe('string');
     expect(typeof info.issueHeight).toBe('number');
     expect(typeof info.issueTimestamp).toBe('number');
@@ -41,8 +41,10 @@ it('details string', async () => {
     expect(typeof info.scripted).toBe('boolean');
 });
 
+// TODO: запрос возвращает ошибку
 it('Asset distribution', async () => {
-    const info = await api.assets.assetDistribution(STATE.ASSETS.BTC.id, 4000, 999);
+    const { height } = await api.blocks.fetchHeight(); 
+    const info = await api.assets.fetchAssetDistribution(STATE.ASSETS.BTC.id, 2, 500);
     expect(typeof info.hasNext).toBe('boolean');
     expect(typeof info.lastItem).toBe('string');
     expect(info.items).toBeInstanceOf(Object);
@@ -66,7 +68,7 @@ const checkAssets = (object: IAssetsAddressLimit) => {
 }
 
 it('Assets address limit', async () => {
-    const info = await api.assets.AssetsAddressLimit(STATE.ACCOUNTS.SIMPLE.address, 999);
+    const info = await api.assets.fetchAssetsAddressLimit(STATE.ACCOUNTS.SIMPLE.address, 999);
     expect(info).toBeInstanceOf(Array);
     info.forEach(checkAssets);
 });
@@ -81,14 +83,14 @@ const checkBalances = (object: TAssetBalance) => {
 }
 
 it('Asset balance', async () => {
-    const info = await api.assets.assetsBalance(STATE.ACCOUNTS.SIMPLE.address);
+    const info = await api.assets.fetchAssetsBalance(STATE.ACCOUNTS.SIMPLE.address);
     expect(info.address).toBe(STATE.ACCOUNTS.SIMPLE.address);
     expect(info.balances).toBeInstanceOf(Array);
     info.balances.forEach(checkBalances);
 });
 
 it('Balance address assetId', async () => {
-    const info = await api.assets.balanceAddressAssetId(STATE.ACCOUNTS.SIMPLE.address, STATE.ASSETS.BTC.id);
+    const info = await api.assets.fetchBalanceAddressAssetId(STATE.ACCOUNTS.SIMPLE.address, STATE.ASSETS.BTC.id);
     expect(info.address).toBe(STATE.ACCOUNTS.SIMPLE.address);
     expect(info.assetId).toBe(STATE.ASSETS.BTC.id);
     expect(typeof info.balance).toBe('number')

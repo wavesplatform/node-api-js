@@ -10,7 +10,7 @@ import { TTransactionFromAPI } from '@waves/ts-types';
  * @param from
  * @param to
  */
-export function headersSeq(base: string, from: number, to: number): Promise<Array<IBlockHeader>> {
+export function fetchHeadersSeq(base: string, from: number, to: number): Promise<Array<IBlockHeader>> {
     return request({
         base,
         url: `/blocks/headers/seq/${from}/${to}`
@@ -22,7 +22,7 @@ export function headersSeq(base: string, from: number, to: number): Promise<Arra
  * Last block header
  * @param base
  */
-export function headersLast(base: string, options?: IRequestOptions): Promise<IBlockHeader> {
+export function fetchHeadersLast(base: string, options?: IRequestOptions): Promise<IBlockHeader> {
     return request({
         base,
         url: '/blocks/headers/last'
@@ -35,7 +35,7 @@ export function headersLast(base: string, options?: IRequestOptions): Promise<IB
  * @param base
  * @param signature
  */
-export function heightBySignature(base: string, signature: string): Promise<{ height: number }> {
+export function fetchHeightBySignature(base: string, signature: string): Promise<{ height: number }> {
     return request({
         base,
         url: `/blocks/height/${signature}`
@@ -48,7 +48,7 @@ export function heightBySignature(base: string, signature: string): Promise<{ he
  * @param base
  * @param height
  */
-export function headersAt(base: string, height: number, options?: IRequestOptions): Promise<IBlockHeader> {
+export function fetchHeadersAt(base: string, height: number, options?: IRequestOptions): Promise<IBlockHeader> {
     return request({
         base,
         url: `/blocks/headers/at/${height}`
@@ -61,7 +61,7 @@ export function headersAt(base: string, height: number, options?: IRequestOption
  * @param base
  * @param height
  */
-export function blockAt(base: string, height: number): Promise<IBlock> {
+export function BlockAt(base: string, height: number): Promise<IBlock> {
     return request({
         base,
         url: `/blocks/at/${height}`
@@ -75,7 +75,7 @@ export function blockAt(base: string, height: number): Promise<IBlock> {
  * @param from
  * @param to
  */
-export function seq(base: string, from: number, to: number): Promise<Array<IBlock>> {
+export function fetchSeq(base: string, from: number, to: number): Promise<Array<IBlock>> {
     return request({
         base,
         url: `/blocks/seq/${from}/${to}`
@@ -88,7 +88,7 @@ export function seq(base: string, from: number, to: number): Promise<Array<IBloc
  * @param base
  * @param signature
  */
-export function blockBySignature(base: string, signature: string): Promise<IBlock> {
+export function fetchBlockBySignature(base: string, signature: string): Promise<IBlock> {
     return request({
         base,
         url: `/blocks/signature/${signature}`
@@ -100,7 +100,7 @@ export function blockBySignature(base: string, signature: string): Promise<IBloc
  * Get genesis block
  * @param base
  */
-export function first(base: string): Promise<IBlock> {
+export function fetchFirst(base: string): Promise<IBlock> {
     return request({
         base,
         url: `/blocks/first`
@@ -115,7 +115,7 @@ export function first(base: string): Promise<IBlock> {
  * @param from
  * @param to
  */
-export function blocksByAddress(base: string, address: string, from: number, to: number): Promise<Array<IBlock>>  {
+export function fetchBlocksByAddress(base: string, address: string, from: number, to: number): Promise<Array<IBlock>>  {
     return request({
         base,
         url: `/blocks/address/${address}/${from}/${to}`
@@ -127,7 +127,7 @@ export function blocksByAddress(base: string, address: string, from: number, to:
  * Last block
  * @param base
  */
-export function last(base: string): Promise<IBlock> {
+export function fetchLast(base: string): Promise<IBlock> {
     return request({
         base,
         url: '/blocks/last'
@@ -141,7 +141,7 @@ export function last(base: string): Promise<IBlock> {
  * @param signature
  * @param blockNum
  */
-export function delay(base: string, signature: string, blockNum: string): Promise<{ delay: number}> {
+export function fetchDelay(base: string, signature: string, blockNum: string): Promise<{ delay: number}> {
     return request({
         base,
         url: `/blocks/delay/${signature}/${blockNum}`
@@ -152,7 +152,7 @@ export function delay(base: string, signature: string, blockNum: string): Promis
  * GET /blocks/height
  * @param base
  */
-export function height(base: string): Promise<{ height: number }> {
+export function fetchHeight(base: string): Promise<{ height: number }> {
     return request({
         base,
         url: '/blocks/height'

@@ -7,7 +7,7 @@ import request from '../../tools/request';
  * @param base 
  */
 
-export function activationStatus(base: string): Promise<IActivationStatus<TLong>> {
+export function fetchActivationStatus(base: string): Promise<IActivationStatus<TLong>> {
     return request({ base, url: 'activation/status'});
 }
 

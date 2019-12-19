@@ -1,11 +1,11 @@
 import { TLong } from '../../interface';
 import { BigNumber } from '@waves/bignumber';
-import { assetsBalance, TAssetBalance } from '../../api-node/assets';
+import { fetchAssetsBalance, TAssetBalance } from '../../api-node/assets';
 import { filter, map, pipe, prop } from '../utils';
 
 
 export default function (base: string, address: string, wavesFee: TLong): Promise<Array<TAssetFeeInfo>> {
-    return assetsBalance(base, address).then(
+    return fetchAssetsBalance(base, address).then(
         pipe(
             prop('balances'),
             filter(canBeSponsor(wavesFee)),

@@ -4,7 +4,7 @@ import request from '../../tools/request';
  * GET /peers/all
  * Peer list
  */
-export function all(base: string): Promise<IAllResponse> {
+export function fetchAll(base: string): Promise<IAllResponse> {
     return request({
         base,
         url: '/peers/all'
@@ -16,7 +16,7 @@ export function all(base: string): Promise<IAllResponse> {
  * GET /peers/connected
  * Connected peers list
  */
-export function connected(base: string): Promise<IAllResponse> {
+export function fetchConnected(base: string): Promise<IAllResponse> {
     return request({
         base,
         url: '/peers/connected'
@@ -27,7 +27,7 @@ export function connected(base: string): Promise<IAllResponse> {
  * GET /peers/blacklisted
  * Blacklisted peers list
  */
-export function blackListed(base: string): Promise<Array<IBlackPeer>> {
+export function fetchBlackListed(base: string): Promise<Array<IBlackPeer>> {
     return request({
         base,
         url: '/peers/blacklisted'
@@ -38,7 +38,7 @@ export function blackListed(base: string): Promise<Array<IBlackPeer>> {
  * GET /peers/suspended
  * Suspended peers list
  */
-export function suspended(base: string): Promise<Array<ISuspendedPeer>> {
+export function fetchSuspended(base: string): Promise<Array<ISuspendedPeer>> {
     return request({
         base,
         url: '/peers/suspended'
