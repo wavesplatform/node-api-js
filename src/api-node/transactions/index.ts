@@ -155,7 +155,7 @@ export interface ITransactionStatus {
     height: number;
 }
 
-export function fetchBroadcast(base: string, tx: TTransaction<TLong> & IWithProofs): Promise<TTransactionFromAPI<TLong>> {
+export function broadcast(base: string, tx: TTransaction<TLong> & IWithProofs): Promise<TTransactionFromAPI<TLong>> {
     return request({
         base, url: '/transactions/broadcast',
         options: {

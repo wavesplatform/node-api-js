@@ -10,7 +10,7 @@ import { fetchCalculateFee } from '../../src/api-node/transactions';
 const API = create(NODE_URL);
 
 it('Broadcast and unconfirmed', async () => {
-    const tx = await API.transactions.fetchBroadcast(
+    const tx = await API.transactions.broadcast(
         transfer({
             recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
             amount: 1
@@ -22,7 +22,7 @@ it('Broadcast and unconfirmed', async () => {
 });
 
 test('Broadcast, wait and info', async () => {
-    const tx = await API.transactions.fetchBroadcast(
+    const tx = await API.transactions.broadcast(
         transfer({
             recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
             amount: 1
@@ -38,7 +38,7 @@ test('Broadcast, wait and info', async () => {
 
 describe('Status', () => {
     it('Unconfirmed', async () => {
-        const tx = await API.transactions.fetchBroadcast(
+        const tx = await API.transactions.broadcast(
             transfer({
                 recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
                 amount: 1
