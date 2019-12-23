@@ -32,7 +32,7 @@ export interface IRequestParams<T> {
     options?: RequestInit | undefined;
 }
 
-// RequestInit is a DOM interface. It needs to be explicitly defined here to be used in nodejs environment
+// RequestInit is a DOM interface. It needs to be explicitly defined here for usage in nodejs environment
 export interface RequestInit {
     /**
      * A BodyInit object or null to set request's body.
