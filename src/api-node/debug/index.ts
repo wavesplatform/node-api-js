@@ -2,7 +2,7 @@ import request from '../../tools/request';
 import { TLong } from '../../interface';
 import query from '../../tools/query';
 import { TTransactionWithProofs } from '@waves/ts-types';
-import { IWithId } from "@waves/ts-types/src/parts";
+import { TDataTransactionEntry, IWithId } from '@waves/ts-types';
 
 /**
  * Waves balance history
@@ -21,6 +21,17 @@ interface IBalanceHistory {
     balance: TLong;
 }
 
+interface IWithStateChanges {
+    stateChanges: {
+        data: TDataTransactionEntry<string | number>[],
+        transfers: {
+            address: string,
+            amount: number,
+            assetId: string | null
+        }[]
+    }
+}
+
 /**
  * Get list of transactions with state changes where specified address has been involved
  * @param base
@@ -28,10 +39,23 @@ interface IBalanceHistory {
  * @param limit
  * @param after
  */
-export function fetchStateChangesByAddress(base: string, address: string, limit: number, after?: string): Promise<Array<TTransactionWithProofs<TLong> & IWithId>> {
+export function fetchStateChangesByAddress(base: string, address: string, limit: number, after?: string): Promise<Array<TTransactionWithProofs<TLong> & IWithId & IWithStateChanges>> {
     return request({
         base,
         url: `/debug/stateChanges/address/${address}/limit/${limit}${query({ after })}`
+    })
+}
+
+
+/**
+ * Get invokeScript transaction state changes
+ * @param base
+ * @param txId
+ */
+export function fetchStateChangesByTxId(base: string, txId: string ): Promise<TTransactionWithProofs<TLong> & IWithId & IWithStateChanges> {
+    return request({
+        base,
+        url: `/debug/stateChanges/info/${txId}`
     })
 }
 
@@ -43,7 +67,6 @@ export function fetchStateChangesByAddress(base: string, address: string, limit:
 // GET /debug/minerInfo
 // GET /debug/historyInfo
 // GET /debug/historyInfo
-// GET /debug/stateChanges/info/{id}
 // GET /debug/info
 // POST /debug/validate
 // GET /debug/blocks/{howMany}
