@@ -12,7 +12,7 @@ const getAssetIdList = switchTransactionByType({
     [NAME_MAP.massTransfer]: tx => [tx.assetId],
     [NAME_MAP.setAssetScript]: tx => [tx.assetId],
     [NAME_MAP.sponsorship]: tx => [tx.assetId],
-    [NAME_MAP.invoke]: tx => (tx.payment || []).map(prop('assetId'))
+    [NAME_MAP.invoke]: tx => [...(tx.payment || []).map(prop('assetId')), tx.feeAssetId]
 });
 
 export default function (tx: TTransaction<TLong> | Array<TTransaction<TLong>>): Array<string> {
