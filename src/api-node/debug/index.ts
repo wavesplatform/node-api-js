@@ -1,7 +1,7 @@
 import request from '../../tools/request';
 import { TLong } from '../../interface';
 import query from '../../tools/query';
-import { TTransactionWithProofs } from '@waves/ts-types';
+import { TTransaction } from '@waves/ts-types';
 import { TDataTransactionEntry, IWithId } from '@waves/ts-types';
 
 /**
@@ -39,7 +39,7 @@ interface IWithStateChanges {
  * @param limit
  * @param after
  */
-export function fetchStateChangesByAddress(base: string, address: string, limit: number, after?: string): Promise<Array<TTransactionWithProofs<TLong> & IWithId & IWithStateChanges>> {
+export function fetchStateChangesByAddress(base: string, address: string, limit: number, after?: string): Promise<Array<TTransaction<TLong> & IWithId & IWithStateChanges>> {
     return request({
         base,
         url: `/debug/stateChanges/address/${address}/limit/${limit}${query({ after })}`
@@ -52,7 +52,7 @@ export function fetchStateChangesByAddress(base: string, address: string, limit:
  * @param base
  * @param txId
  */
-export function fetchStateChangesByTxId(base: string, txId: string ): Promise<TTransactionWithProofs<TLong> & IWithId & IWithStateChanges> {
+export function fetchStateChangesByTxId(base: string, txId: string ): Promise<TTransaction<TLong> & IWithId & IWithStateChanges> {
     return request({
         base,
         url: `/debug/stateChanges/info/${txId}`

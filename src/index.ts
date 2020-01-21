@@ -25,12 +25,12 @@ import getNetworkByte from './tools/blocks/getNetworkByte';
 import getNetworkCode from './tools/blocks/getNetworkCode';
 import createWatch from './tools/adresses/watch';
 import * as toolsUtilsModule from './tools/utils';
-import { TTransactionFromAPIMap, TTransactionWithProofs } from '@waves/ts-types';
+import { TTransactionFromAPIMap, TTransaction } from '@waves/ts-types';
 import { TLong } from './interface';
 
 
-declare function broadcastWrapped<T extends Array<TTransactionWithProofs<TLong>>>(list: T, options?: Partial<IOptions>): Promise<TMapTuple<T, TTransactionFromAPIMap<TLong>, 'type'>>;
-declare function broadcastWrapped<T extends TTransactionWithProofs<TLong>>(tx: T, options?: Partial<IOptions>): Promise<TMap<TTransactionFromAPIMap<TLong>, T['type']>>
+declare function broadcastWrapped<T extends Array<TTransaction<TLong>>>(list: T, options?: Partial<IOptions>): Promise<TMapTuple<T, TTransactionFromAPIMap<TLong>, 'type'>>;
+declare function broadcastWrapped<T extends TTransaction<TLong>>(tx: T, options?: Partial<IOptions>): Promise<TMap<TTransactionFromAPIMap<TLong>, T['type']>>
 
 type TWrapRecord<T extends Record<string, (base: string, ...args: Array<any>) => any>> = {
     [Key in keyof T]: TWrapApi<T[Key]>;

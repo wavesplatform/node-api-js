@@ -1,4 +1,4 @@
-import { TTransactionFromAPI, TTransactionFromAPIMap, TTransactionWithProofs } from '@waves/ts-types';
+import { TTransactionFromAPI, TTransactionFromAPIMap, TTransaction } from '@waves/ts-types';
 import { TLong } from '../../interface';
 import { broadcast } from '../../api-node/transactions';
 import { head, toArray } from '../utils';
@@ -18,9 +18,9 @@ export type TMapTuple<T extends Array<Record<string | number, any>>, TO_MAP exte
 }
 
 
-export default function <T extends Array<TTransactionWithProofs<TLong>>>(base: string, list: T): Promise<TMapTuple<T, TTransactionFromAPIMap<TLong>, 'type'>>;
-export default function <T extends TTransactionWithProofs<TLong>>(base: string, tx: T, options?: Partial<IOptions>): Promise<TMap<TTransactionFromAPIMap<TLong>, T['type']>>;
-export default function (base: string, list: TTransactionWithProofs<TLong> | Array<TTransactionWithProofs<TLong>>, options?: Partial<IOptions>): Promise<TTransactionFromAPI<TLong> | Array<TTransactionFromAPI<TLong>>> {
+export default function <T extends Array<TTransaction<TLong>>>(base: string, list: T): Promise<TMapTuple<T, TTransactionFromAPIMap<TLong>, 'type'>>;
+export default function <T extends TTransaction<TLong>>(base: string, tx: T, options?: Partial<IOptions>): Promise<TMap<TTransactionFromAPIMap<TLong>, T['type']>>;
+export default function (base: string, list: TTransaction<TLong> | Array<TTransaction<TLong>>, options?: Partial<IOptions>): Promise<TTransactionFromAPI<TLong> | Array<TTransactionFromAPI<TLong>>> {
     const opt = { ...DEFAULT_BROADCAST_OPTIONS, ...(options || {}) };
     const isOnce = !Array.isArray(list);
     const confirmations = opt.confirmations > 0 ? 1 : 0;
@@ -32,11 +32,11 @@ export default function (base: string, list: TTransactionWithProofs<TLong> | Arr
         .then(list => isOnce ? head(list) as TTransactionFromAPI<TLong> : list);
 }
 
-function simpleBroadcast(base: string, list: Array<TTransactionWithProofs<TLong>>): Promise<Array<TTransactionFromAPI<TLong>>> {
+function simpleBroadcast(base: string, list: Array<TTransaction<TLong>>): Promise<Array<TTransactionFromAPI<TLong>>> {
     return Promise.all(list.map(tx => broadcast(base, tx)));
 }
 
-function chainBroadcast(base: string, list: Array<TTransactionWithProofs<TLong>>, options: IOptions): Promise<Array<TTransactionFromAPI<TLong>>> {
+function chainBroadcast(base: string, list: Array<TTransaction<TLong>>, options: IOptions): Promise<Array<TTransactionFromAPI<TLong>>> {
     return new Promise<Array<TTransactionFromAPI<TLong>>>((resolve, reject) => {
         const toBroadcast = list.slice().reverse();
         const result: Array<TTransactionFromAPI<TLong>> = [];
@@ -47,7 +47,7 @@ function chainBroadcast(base: string, list: Array<TTransactionWithProofs<TLong>>
                 return null;
             }
 
-            const tx = toBroadcast.pop() as TTransactionWithProofs<TLong>;
+            const tx = toBroadcast.pop() as TTransaction<TLong>;
             broadcast(base, tx)
                 .then(tx => wait(base, tx, options))
                 .then(tx => {

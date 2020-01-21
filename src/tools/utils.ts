@@ -66,7 +66,7 @@ export interface ISwitchTransactionResult<R extends TChoices> {
 }
 
 export function switchTransactionByType<R extends TChoices>(choices: R): ISwitchTransactionResult<R> {
-    return tx => choices[tx.type] && typeof choices[tx.type] === 'function' ? choices[tx.type]!(tx as any) : undefined;
+    return tx => choices[tx.type] && typeof choices[tx.type] === 'function' ? (choices as any)[tx.type]!(tx as any) : undefined;
 }
 
 export const pipe: IPipe = (...args: Array<(data: any) => any>): (data: any) => any => {
