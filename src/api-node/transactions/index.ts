@@ -1,5 +1,6 @@
 import {
-    IWithProofs,
+    IWithApiMixin,
+    IWithProofs, TSignedTransaction,
     TTransaction,
     TTransactionFromAPI,
     TTransactionMap
@@ -155,8 +156,8 @@ export interface ITransactionStatus {
     height: number;
 }
 
-export function broadcast(base: string, tx: TTransaction<TLong> & IWithProofs): Promise<TTransactionFromAPI<TLong>> {
-    return request({
+export function broadcast<T extends TSignedTransaction<TTransaction<TLong>>>(base: string, tx: T): Promise<T & IWithApiMixin> {
+    return request<T & IWithApiMixin>({
         base, url: '/transactions/broadcast',
         options: {
             method: 'POST',

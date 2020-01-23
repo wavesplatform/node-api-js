@@ -8,7 +8,12 @@ const getAssetIdList = switchTransactionByType({
     [NAME_MAP.transfer]: tx => [tx.assetId, tx.feeAssetId],
     [NAME_MAP.burn]: tx => [tx.assetId],
     [NAME_MAP.reissue]: tx => [tx.assetId],
-    [NAME_MAP.exchange]: tx => [tx.order1.assetPair.amountAsset, tx.order1.assetPair.priceAsset, tx.order1.matcherFeeAssetId, tx.order2.matcherFeeAssetId],
+    [NAME_MAP.exchange]: tx => {
+        const assetIdList = [tx.order1.assetPair.amountAsset, tx.order1.assetPair.priceAsset];
+        'matcherFeeAssetId' in tx.order1 && assetIdList.push(tx.order1.matcherFeeAssetId);
+        'matcherFeeAssetId' in tx.order2 && assetIdList.push(tx.order2.matcherFeeAssetId);
+        return assetIdList;
+    },
     [NAME_MAP.massTransfer]: tx => [tx.assetId],
     [NAME_MAP.setAssetScript]: tx => [tx.assetId],
     [NAME_MAP.sponsorship]: tx => [tx.assetId],

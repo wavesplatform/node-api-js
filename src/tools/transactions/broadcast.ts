@@ -1,4 +1,11 @@
-import { TTransactionFromAPI, TTransactionFromAPIMap, TTransaction } from '@waves/ts-types';
+import {
+    IWithApiMixin,
+    TSignedTransaction,
+    TTransaction,
+    TTransactionFromAPI,
+    TTransactionFromAPIMap,
+    TTransactionMap
+} from '@waves/ts-types';
 import { TLong } from '../../interface';
 import { broadcast } from '../../api-node/transactions';
 import { head, toArray } from '../utils';
@@ -21,19 +28,25 @@ export type TMapTuple<T extends Array<Record<string | number, any>>, TO_MAP exte
 export default function <T extends Array<TTransaction<TLong>>>(base: string, list: T): Promise<TMapTuple<T, TTransactionFromAPIMap<TLong>, 'type'>>;
 export default function <T extends TTransaction<TLong>>(base: string, tx: T, options?: Partial<IOptions>): Promise<TMap<TTransactionFromAPIMap<TLong>, T['type']>>;
 export default function (base: string, list: TTransaction<TLong> | Array<TTransaction<TLong>>, options?: Partial<IOptions>): Promise<TTransactionFromAPI<TLong> | Array<TTransactionFromAPI<TLong>>> {
-    const opt = { ...DEFAULT_BROADCAST_OPTIONS, ...(options || {}) };
+    const opt = {...DEFAULT_BROADCAST_OPTIONS, ...(options || {})};
     const isOnce = !Array.isArray(list);
     const confirmations = opt.confirmations > 0 ? 1 : 0;
 
     return (opt.chain
-        ? chainBroadcast(base, toArray(list), { ...opt, confirmations })
+        ? chainBroadcast(base, toArray(list), {...opt, confirmations})
         : simpleBroadcast(base, toArray(list)))
         .then(list => opt.confirmations <= 0 ? list : wait(base, list, opt))
         .then(list => isOnce ? head(list) as TTransactionFromAPI<TLong> : list);
 }
 
-function simpleBroadcast(base: string, list: Array<TTransaction<TLong>>): Promise<Array<TTransactionFromAPI<TLong>>> {
-    return Promise.all(list.map(tx => broadcast(base, tx)));
+
+
+type TWithApiMixinList<T> = T extends Array<TTransaction<TLong>>
+    ? { [Key in keyof T]: T[Key] & IWithApiMixin }
+    : never;
+
+function simpleBroadcast<T extends Array<TSignedTransaction<TTransaction<TLong>>>>(base: string, list: T): Promise<TWithApiMixinList<T>> {
+    return Promise.all(list.map(tx => broadcast(base, tx))) as Promise<TWithApiMixinList<T>>;
 }
 
 function chainBroadcast(base: string, list: Array<TTransaction<TLong>>, options: IOptions): Promise<Array<TTransactionFromAPI<TLong>>> {
