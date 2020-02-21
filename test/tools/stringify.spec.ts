@@ -43,12 +43,12 @@ it("Check stringify with data entry object", () => {
   expect(
     stringify([
       { type: "string", value: "123" },
-      { type: "number", value: "123" }
+      { type: "integer", value: "123" }
     ])
   ).toBe(
     JSON.stringify([
       { type: "string", value: "123" },
-      { type: "number", value: 123 }
+      { type: "integer", value: 123 }
     ])
   );
 });
