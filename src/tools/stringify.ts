@@ -16,7 +16,7 @@ export default function <T extends Record<string, any>>(data: T): string {
     return JSON.stringify(data, function (key, value) {
         if (FIELDS.includes(key as TFieldsToReplace)) {
             return `!${value}!`;
-        } else if (key === 'value' && this['type'] === 'number') {
+        } else if (key === 'value' && this['type'] === 'integer') {
             return `!${value}!`;
         } else {
             return value;
