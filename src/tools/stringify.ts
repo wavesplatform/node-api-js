@@ -10,10 +10,16 @@ type TFieldsToReplace = TGetLongKeys<TDataTransactionEntry<'LONG'>> | TGetLongKe
     }[keyof TTransactionMap<'LONG'>[Type]]
 }[keyof TTransactionMap<'LONG'>] extends infer A ? A extends undefined ? never : A : never;
 
-const FIELDS: Array<TFieldsToReplace> = ['value', 'amount', 'matcherFee', 'price', 'fee', 'minSponsoredAssetFee', 'quantity', 'sellMatcherFee', 'buyMatcherFee'];
-
-const reg = new RegExp(`(?!\\\\)"(${FIELDS.join('|')})":\\s*"(-?\\d+)"`, 'g');
+const FIELDS: Array<TFieldsToReplace> = ['amount', 'matcherFee', 'price', 'fee', 'minSponsoredAssetFee', 'quantity', 'sellMatcherFee', 'buyMatcherFee'];
 
 export default function <T extends Record<string, any>>(data: T): string {
-    return JSON.stringify(data).replace(reg, '"$1":$2');
+    return JSON.stringify(data, function (key, value) {
+        if (FIELDS.includes(key as TFieldsToReplace)) {
+            return `!${value}!`;
+        } else if (key === 'value' && this['type'] === 'number') {
+            return `!${value}!`;
+        } else {
+            return value;
+        }
+    }, 0).replace(/"\!(\d+)\!"/g, '$1');
 }
