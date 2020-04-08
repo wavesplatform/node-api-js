@@ -104,7 +104,7 @@ export function fetchUnconfirmedInfo(base: string, id: string): Promise<TTransac
  * GET /transactions/info/{id}
  * Transaction info
  */
-export function fetchInfo(base: string, id: string): Promise<TTransactionFromAPI<TLong> & {applicationStatus: 'succeed' | 'scriptExecutionFailed'}> {
+export function fetchInfo(base: string, id: string): Promise<TTransactionFromAPI<TLong> & {applicationStatus?: 'succeed' | 'scriptExecutionFailed'}> {
     return request({ base, url: `/transactions/info/${id}` });
 }
 
