@@ -4,12 +4,10 @@
   "main": "cjs/index.js",
   "types": "cjs/index.d.ts",
   "scripts": {
-    "postversion": "npm publish",
     "testCommand": "jest",
     "prepare": "npm run build",
-    "prepublish": "npm test",
     "build": "tsc -p ./tsconfig-es.json && tsc -p ./tsconfig-cjs.json && webpack",
-    "test": "node-state -n -m typescript -o ./test/_state.ts -r"
+    "test": "node-state -e -n -m typescript -o ./test/_state.ts -r"
   },
   "dependencies": {
     "@types/node-fetch": "^2.5.4",
@@ -54,7 +52,6 @@
   "devDependencies": {
     "@types/jest": "^24.0.23",
     "@waves/node-state": "0.0.7",
-    "@waves/seed-provider": "0.0.2",
     "@waves/waves-transactions": "^3.24.0",
     "jest": "^24.9.0",
     "ts-jest": "^24.1.0",

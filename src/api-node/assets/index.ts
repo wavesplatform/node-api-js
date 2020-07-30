@@ -50,22 +50,19 @@ export interface IBalanceAddressAssetId {
 }
 
 export interface IAssetsAddressLimit {
-    senderPublicKey: string;
-    quantity: number;
-    fee: number;
-    description: string;
-    type: number;
-    version: number;
-    reissuable: boolean;
-    script: string | null;
-    sender: string;
-    feeAssetId: string | null;
-    chainId: number;
-    proofs: Array<string>;
     assetId: string;
-    decimals: number;
+    issueHeight: number;
+    issueTimestamp: number;
+    issuer: string;
+    issuerPublicKey: string;
     name: string;
-    id: string;
+    description: string;
+    decimals: number;
+    reissuable: boolean;
+    quantity: number;
+    scripted: boolean;
+    minSponsoredAssetFee: number | null;
+    originTransactionId: string
 }
 
 export type TAssetsBalance = {
@@ -73,14 +70,14 @@ export type TAssetsBalance = {
     'balances': Array<TAssetBalance>
 }
 
-export type TAssetBalance = {
+export type TAssetBalance<LONG = TLong> = {
     'assetId': string;
     'balance': number;
     'reissuable': true;
-    'minSponsoredAssetFee': null | number;
-    'sponsorBalance': null | number;
-    'quantity': number;
-    'issueTransaction': TTransactionFromAPIMap<TLong>[TRANSACTION_NAME_MAP['issue']]
+    'minSponsoredAssetFee': LONG | null;
+    'sponsorBalance': number | null;
+    'quantity': LONG;
+    'issueTransaction': TTransactionFromAPIMap<TLong>[TRANSACTION_NAME_MAP['issue']] | null
 }
 
 export type TAssetDetails<LONG = TLong> = {
@@ -88,6 +85,7 @@ export type TAssetDetails<LONG = TLong> = {
     issueHeight: number;
     issueTimestamp: number;
     issuer: string;
+    issuerPublicKey: string;
     name: string;
     description: string;
     decimals: number;
@@ -95,4 +93,5 @@ export type TAssetDetails<LONG = TLong> = {
     quantity: LONG;
     scripted: boolean;
     minSponsoredAssetFee: LONG | null;
+    originTransactionId: string;
 }

@@ -17,8 +17,8 @@ const checkNotSmart = (info: IScriptInfo, address: string) => {
     expect(info.address).toBe(address);
     expect(typeof info.complexity).toBe('number');
     expect(info.extraFee).toBe(0);
-    expect(typeof info.script).toBe('undefined');
-    expect(typeof info.scriptText).toBe('undefined');
+    expect(info.script).toBe(null);
+    expect(info.scriptText).toBe(null);
 };
 
 it('Script info smart', async () => {
