@@ -1,3 +1,5 @@
+import { IScriptInfoMeta, TCallableFuncArguments, TCallableFuncArgumentsArray, TCallableFuncArgumentsRecord } from './api-node/addresses'
+
 export type TParse<T> = (json: string) => T;
 export type TLong = string | number;
 
@@ -39,3 +41,14 @@ export type TRANSACTION_NAME_MAP = {
     setAssetScript: 15;
     invoke: 16;
 };
+ 
+//TODO move to ts-types
+export interface IWithApplicationStatus {
+    applicationStatus?: 'succeed' | 'script_execution_failed';
+}
+
+export const isCallableFuncArrayArguments = (scriptInfoMeta: IScriptInfoMeta<TCallableFuncArguments>): scriptInfoMeta is IScriptInfoMeta<TCallableFuncArgumentsArray> => 
+    !!scriptInfoMeta.isArrayArguments
+
+export const isCallableFuncRecordArguments = (scriptInfoMeta: IScriptInfoMeta<TCallableFuncArguments>): scriptInfoMeta is IScriptInfoMeta<TCallableFuncArgumentsRecord> => 
+    !scriptInfoMeta.isArrayArguments

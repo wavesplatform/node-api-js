@@ -24,9 +24,12 @@ const checkAsset = (object: TAssetDetails) => {
 }
 
 it('details array', async () => {
-    const info = await api.assets.fetchDetails([STATE.ASSETS.BTC.id, STATE.ASSETS.ETH.id]);
+    const info = await api.assets.fetchAssetsDetails([STATE.ASSETS.BTC.id, STATE.ASSETS.ETH.id]);
     expect(info).toBeInstanceOf(Array);
-    info.forEach(checkAsset);
+    
+    info
+        .filter((asset: TAssetDetails) => !!asset.assetId)
+        .forEach(checkAsset);
 });
 
 it('details string', async () => {

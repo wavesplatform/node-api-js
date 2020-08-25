@@ -202,6 +202,8 @@ interface IScriptDecompile {
 export interface ICompileCode {
     script: string;
     complexity: number;
+    callableComplexities: Record<string, number>;
+    verifierComplexity: number;
     extraFee: number;
 }
 

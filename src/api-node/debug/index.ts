@@ -27,8 +27,35 @@ interface IWithStateChanges {
         transfers: {
             address: string,
             amount: number,
-            assetId: string | null
-        }[]
+            asset: string | null
+        }[],
+        issues: {
+           assetId: string,
+           name: string,
+           description: string,
+           quantity: number,
+           decimals: number,
+           isReissuable: boolean,
+           compiledScript: null | string,
+           nonce: number
+        }[],
+        reissues: {
+           assetId: string,
+           isReissuable: boolean,
+           quantity: number
+        }[],
+        burns: {
+           assetId: string,
+           quantity: number
+        }[],
+        sponsorFees: {
+            assetId: string,
+            minSponsoredAssetFee: number
+        }[],
+        error?: {
+            code: number,
+            text: string
+        }
     }
 }
 
@@ -62,7 +89,7 @@ export function fetchStateChangesByTxId(base: string, txId: string ): Promise<TT
 // @TODO need API key:
 // GET /debug/stateWaves/{height}
 // POST /debug/rollback
-// DELETE /debug/rollback-to/{signature}
+// DELETE /debug/rollback-to/{id}
 // GET /debug/portfolios/{address}
 // GET /debug/minerInfo
 // GET /debug/historyInfo

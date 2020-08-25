@@ -5,7 +5,7 @@ import {
     TTransactionMap
 } from '@waves/ts-types';
 import { TRANSACTION_STATUSES, TTransactionStatuses } from '../../constants';
-import { TLong } from '../../interface';
+import { TLong, IWithApplicationStatus } from '../../interface';
 import { fetchHeight } from '../blocks';
 import request from '../../tools/request';
 import query from '../../tools/query';
@@ -104,7 +104,7 @@ export function fetchUnconfirmedInfo(base: string, id: string): Promise<TTransac
  * GET /transactions/info/{id}
  * Transaction info
  */
-export function fetchInfo(base: string, id: string): Promise<TTransactionFromAPI<TLong> & {applicationStatus?: 'succeed' | 'scriptExecutionFailed'}> {
+export function fetchInfo(base: string, id: string): Promise<TTransactionFromAPI<TLong> & IWithApplicationStatus> {
     return request({ base, url: `/transactions/info/${id}` });
 }
 

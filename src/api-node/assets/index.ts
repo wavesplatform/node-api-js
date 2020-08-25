@@ -14,6 +14,19 @@ export function fetchDetails<T extends string | Array<string>>(base: string, ass
     return Promise.all(toArray(assetId).map(id => request<TAssetDetails>({ base, url: `/assets/details/${id}` })))
         .then(list => isOnce ? list[0] : list);
 }
+/**
+ * GET /assets/details
+ * Provides detailed information about the given assets
+ */
+export function fetchAssetsDetails(base: string, assetIds: Array<string>): Promise<Array<TAssetDetails | TErrorResponse>> {
+    const params = assetIds
+        .map(assetId => `id=${assetId}`)
+        .join('&')
+
+    const query = assetIds.length ? `?${params}` : ''
+
+    return request<Array<TAssetDetails | TErrorResponse>>({ base, url: `/assets/details${query}` })
+}
 
 export function fetchAssetDistribution(base: string, assetId: string, height: number, limit: number): Promise<IAssetDistribution> {
     return request({ base, url: `/assets/${assetId}/distribution/${height}/limit/${limit}`});
@@ -94,4 +107,9 @@ export type TAssetDetails<LONG = TLong> = {
     scripted: boolean;
     minSponsoredAssetFee: LONG | null;
     originTransactionId: string;
+}
+
+export type TErrorResponse = {
+    error: number;
+    message: string;
 }

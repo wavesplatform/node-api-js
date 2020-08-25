@@ -48,15 +48,6 @@ export function fetchBasetargetBlockId(base: string, blockId: string): Promise<I
     return request({ base, url: `/consensus/basetarget/${blockId}`});
 }
 
-/**
- * GET /consensus/generationsignature
- * Generation signature last
- * @param base 
- */
-export function fetchGenerationSignature(base: string): Promise<IGenerationSignature> {
-    return request({base, url: '/consensus/generationsignature'});
-}
-
 export interface IGeneratingBalance<LONG> {
     address: string;
     balance: LONG;
