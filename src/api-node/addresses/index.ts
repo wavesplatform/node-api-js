@@ -11,7 +11,7 @@ export function fetchDataKey(base: string, address: string, key: string, options
     });
 }
 
-export function fetchScriptInfoMeta(base: string, address: string, options?: IRequestOptions): Promise<IScriptInfoMeta> {
+export function fetchScriptInfoMeta(base: string, address: string, options?: IRequestOptions): Promise<IScriptInfoMetaResponse> {
     return request({
         base,
         url: `/addresses/scriptInfo/${address}/meta`
@@ -113,6 +113,8 @@ export interface IBalanceConfirmations<LONG> {
 export interface IScriptInfo<LONG = TLong> {
     address: string;
     complexity: number;
+    callableComplexities: Record<string, number>;
+    verifierComplexity: number;
     extraFee: LONG;
     script?: string;
     scriptText?: string;
@@ -146,12 +148,20 @@ export interface IBalanceDetails<LONG> {
     effective: LONG;
 }
 
-export interface IScriptInfoMeta {
-    address: string;
-    meta: {
-        version: string;
-        callableFuncTypes: Record<string, Record<string, 'Int' | 'String' | 'Binary'>>
-    }
+export type ICallableFuncArgumentType = 'Int' | 'String' | 'ByteVector' | 'Boolean'
+export type TCallableFuncArgumentsArray = { name: string, type: ICallableFuncArgumentType }[]
+export type TCallableFuncArgumentsRecord = Record<string, ICallableFuncArgumentType>
+export type TCallableFuncArguments = TCallableFuncArgumentsArray | TCallableFuncArgumentsRecord 
+
+export interface IScriptInfoMeta<TArguments extends TCallableFuncArguments> {
+    version: string
+    isArrayArguments?: boolean
+    callableFuncTypes: Record<string, TArguments>
+}
+
+export interface IScriptInfoMetaResponse {
+    address: string
+    meta: IScriptInfoMeta<TCallableFuncArguments>
 }
 
 export interface IValidateResponse {

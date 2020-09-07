@@ -30,15 +30,15 @@ export function fetchHeadersLast(base: string, options?: IRequestOptions): Promi
 }
 
 /**
- * GET /blocks/height/{signature}
- * Height of a block by its signature
+ * GET /blocks/height/{id}
+ * Height of a block by its id
  * @param base
- * @param signature
+ * @param id
  */
-export function fetchHeightBySignature(base: string, signature: string): Promise<{ height: number }> {
+export function fetchHeightById(base: string, id: string): Promise<{ height: number }> {
     return request({
         base,
-        url: `/blocks/height/${signature}`
+        url: `/blocks/height/${id}`
     })
 }
 
@@ -135,16 +135,16 @@ export function fetchLast(base: string): Promise<IBlock> {
 }
 
 /**
- * GET /blocks/delay/{signature}/{blockNum}
- * Average delay in milliseconds between last blockNum blocks starting from block with signature
+ * GET /blocks/delay/{id}/{blockNum}
+ * Average delay in milliseconds between last blockNum blocks starting from block with id
  * @param base
- * @param signature
+ * @param id
  * @param blockNum
  */
-export function fetchDelay(base: string, signature: string, blockNum: string): Promise<{ delay: number}> {
+export function fetchDelay(base: string, id: string, blockNum: string): Promise<{ delay: number}> {
     return request({
         base,
-        url: `/blocks/delay/${signature}/${blockNum}`
+        url: `/blocks/delay/${id}/${blockNum}`
     })
 }
 
