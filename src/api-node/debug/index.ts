@@ -9,10 +9,11 @@ import { TDataTransactionEntry, IWithId } from '@waves/ts-types';
  * @param base
  * @param address
  */
-export function fetchBalanceHistory(base: string, address: string): Promise<Array<IBalanceHistory>> {
+export function fetchBalanceHistory(base: string, address: string, options: RequestInit = Object.create(null)): Promise<Array<IBalanceHistory>> {
     return request({
         base,
-        url: `/debug/balances/history/${address}`
+        url: `/debug/balances/history/${address}`,
+        options
     })
 }
 
@@ -66,10 +67,17 @@ interface IWithStateChanges {
  * @param limit
  * @param after
  */
-export function fetchStateChangesByAddress(base: string, address: string, limit: number, after?: string): Promise<Array<TTransactionWithProofs<TLong> & IWithId & IWithStateChanges>> {
+export function fetchStateChangesByAddress(
+    base: string,
+    address: string,
+    limit: number,
+    after?: string,
+    options: RequestInit = Object.create(null)
+): Promise<Array<TTransactionWithProofs<TLong> & IWithId & IWithStateChanges>> {
     return request({
         base,
-        url: `/debug/stateChanges/address/${address}/limit/${limit}${query({ after })}`
+        url: `/debug/stateChanges/address/${address}/limit/${limit}${query({ after })}`,
+        options
     })
 }
 
@@ -79,10 +87,11 @@ export function fetchStateChangesByAddress(base: string, address: string, limit:
  * @param base
  * @param txId
  */
-export function fetchStateChangesByTxId(base: string, txId: string ): Promise<TTransactionWithProofs<TLong> & IWithId & IWithStateChanges> {
+export function fetchStateChangesByTxId(base: string, txId: string, options: RequestInit = Object.create(null)): Promise<TTransactionWithProofs<TLong> & IWithId & IWithStateChanges> {
     return request({
         base,
-        url: `/debug/stateChanges/info/${txId}`
+        url: `/debug/stateChanges/info/${txId}`,
+        options
     })
 }
 

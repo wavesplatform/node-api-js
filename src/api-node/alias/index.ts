@@ -1,16 +1,18 @@
 import request from '../../tools/request';
 
-export function fetchByAlias(base: string, alias: string): Promise<IByAlias> {
+export function fetchByAlias(base: string, alias: string, options: RequestInit = Object.create(null)): Promise<IByAlias> {
 	return request({
 		base,
-		url: `/alias/by-alias/${alias}`
+		url: `/alias/by-alias/${alias}`,
+		options
 	});
 }
 
-export function fetchByAddress(base: string, address: string): Promise<IByAddress> {
+export function fetchByAddress(base: string, address: string, options: RequestInit = Object.create(null)): Promise<IByAddress> {
 	return request({
 		base,
-		url: `/alias/by-address/${address}`
+		url: `/alias/by-address/${address}`,
+		options
 	});
 }
 

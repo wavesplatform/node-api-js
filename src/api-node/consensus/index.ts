@@ -34,8 +34,8 @@ export function fetchConsensusAlgo(base: string): Promise<IConsensusAlgo> {
  * @param base 
  * @param blockId 
  */
-export function fetchGenerationSignatureBlockId(base: string, blockId: string): Promise<IGeneraationSignatureBlockId> {
-    return request({ base, url: `/consensus/generationsignature/${blockId}`});
+export function fetchGenerationSignatureBlockId(base: string, blockId: string, options: RequestInit = Object.create(null)): Promise<IGeneraationSignatureBlockId> {
+    return request({ base, url: `/consensus/generationsignature/${blockId}`, options });
 }
 
 /**
@@ -44,8 +44,8 @@ export function fetchGenerationSignatureBlockId(base: string, blockId: string): 
  * @param base 
  * @param blockId 
  */
-export function fetchBasetargetBlockId(base: string, blockId: string): Promise<IBaseTargetBlockId> {
-    return request({ base, url: `/consensus/basetarget/${blockId}`});
+export function fetchBasetargetBlockId(base: string, blockId: string, options: RequestInit = Object.create(null)): Promise<IBaseTargetBlockId> {
+    return request({ base, url: `/consensus/basetarget/${blockId}`, options });
 }
 
 export interface IGeneratingBalance<LONG> {

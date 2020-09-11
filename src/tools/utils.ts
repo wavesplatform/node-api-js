@@ -1,6 +1,19 @@
 import { TTransaction, TTransactionMap } from '@waves/ts-types';
 import { TLong } from '../interface';
 
+export function isObject(obj: any) {
+  if (typeof obj === "object" && obj !== null) {
+    if (typeof Object.getPrototypeOf === "function") {
+      const prototype = Object.getPrototypeOf(obj);
+      return prototype === Object.prototype || prototype === null;
+    }
+
+    return Object.prototype.toString.call(obj) === "[object Object]";
+  }
+
+  return false;
+}
+
 export function toArray<T>(data: T | Array<T>): Array<T> {
     return Array.isArray(data) ? data : [data];
 }
@@ -33,7 +46,23 @@ export const assign = <T extends Record<string | number, any>, R extends Record<
         target[key] = value;
         return target;
     }, target) as any;
-};
+}
+
+export const deepAssign = <T extends Record<string | number, any>[]>(...objects: T): TUnionToIntersection<T[number]> =>
+    objects.reduce((target, merge) => {
+        keys(merge).forEach((key) => {
+            if (Array.isArray(target[key]) && Array.isArray(merge[key])) {
+                target[key] = Array.from(new Set(target[key].concat(merge[key])));
+            } else if (isObject(target[key]) && isObject(merge[key])) {
+                target[key] = deepAssign(target[key], merge[key]);
+            } else {
+                target[key] = merge[key];
+            }
+        });
+
+        return target;
+    }, objects[0] || {}) as any;
+
 
 export function map<T, U>(process: (data: T, index: number) => U): (list: Array<T>) => Array<U> {
     return list => list.map(process);
@@ -81,3 +110,8 @@ export interface IPipe {
     <A, B, C, D, R>(a: (data: A) => B, b: (data: B) => C, c: (data: C) => D, d: (data: D) => R): (a: A) => R;
 }
 
+export type TUnionToIntersection<U> = 
+    (U extends any ? (k: U) => void : never) extends (k: infer I) => void
+        ? I
+        : never;
+        

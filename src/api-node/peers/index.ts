@@ -4,10 +4,11 @@ import request from '../../tools/request';
  * GET /peers/all
  * Peer list
  */
-export function fetchAll(base: string): Promise<IAllResponse> {
+export function fetchAll(base: string, options: RequestInit = Object.create(null)): Promise<IAllResponse> {
     return request({
         base,
-        url: '/peers/all'
+        url: '/peers/all',
+        options
     })
 }
 
@@ -16,10 +17,11 @@ export function fetchAll(base: string): Promise<IAllResponse> {
  * GET /peers/connected
  * Connected peers list
  */
-export function fetchConnected(base: string): Promise<IAllResponse> {
+export function fetchConnected(base: string, options: RequestInit = Object.create(null)): Promise<IAllResponse> {
     return request({
         base,
-        url: '/peers/connected'
+        url: '/peers/connected',
+        options
     })
 }
 
@@ -27,10 +29,11 @@ export function fetchConnected(base: string): Promise<IAllResponse> {
  * GET /peers/blacklisted
  * Blacklisted peers list
  */
-export function fetchBlackListed(base: string): Promise<Array<IBlackPeer>> {
+export function fetchBlackListed(base: string, options: RequestInit = Object.create(null)): Promise<Array<IBlackPeer>> {
     return request({
         base,
-        url: '/peers/blacklisted'
+        url: '/peers/blacklisted',
+        options
     })
 }
 
@@ -38,10 +41,11 @@ export function fetchBlackListed(base: string): Promise<Array<IBlackPeer>> {
  * GET /peers/suspended
  * Suspended peers list
  */
-export function fetchSuspended(base: string): Promise<Array<ISuspendedPeer>> {
+export function fetchSuspended(base: string, options: RequestInit = Object.create(null)): Promise<Array<ISuspendedPeer>> {
     return request({
         base,
-        url: '/peers/suspended'
+        url: '/peers/suspended',
+        options
     })
 }
 

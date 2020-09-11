@@ -7,29 +7,35 @@ import { toArray } from '../../tools/utils';
  * GET /assets/details/{assetId}
  * Information about an asset
  */
-export function fetchDetails(base: string, assetId: string): Promise<TAssetDetails>;
-export function fetchDetails(base: string, assetId: Array<string>): Promise<Array<TAssetDetails>>;
-export function fetchDetails<T extends string | Array<string>>(base: string, assetId: T): Promise<TAssetDetails | Array<TAssetDetails>> {
+export function fetchDetails(base: string, assetId: string, options?: RequestInit): Promise<TAssetDetails>;
+export function fetchDetails(base: string, assetId: Array<string>, options?: RequestInit): Promise<Array<TAssetDetails>>;
+export function fetchDetails<T extends string | Array<string>>(base: string, assetId: T, options: RequestInit = Object.create(null)): Promise<TAssetDetails | Array<TAssetDetails>> {
     const isOnce = !Array.isArray(assetId);
-    return Promise.all(toArray(assetId).map(id => request<TAssetDetails>({ base, url: `/assets/details/${id}` })))
+    return Promise.all(toArray(assetId).map(id => request<TAssetDetails>({ base, url: `/assets/details/${id}`, options })))
         .then(list => isOnce ? list[0] : list);
 }
 /**
  * GET /assets/details
  * Provides detailed information about the given assets
  */
-export function fetchAssetsDetails(base: string, assetIds: Array<string>): Promise<Array<TAssetDetails | TErrorResponse>> {
+export function fetchAssetsDetails(base: string, assetIds: Array<string>, options: RequestInit = Object.create(null)): Promise<Array<TAssetDetails | TErrorResponse>> {
     const params = assetIds
         .map(assetId => `id=${assetId}`)
         .join('&')
 
     const query = assetIds.length ? `?${params}` : ''
 
-    return request<Array<TAssetDetails | TErrorResponse>>({ base, url: `/assets/details${query}` })
+    return request<Array<TAssetDetails | TErrorResponse>>({ base, url: `/assets/details${query}`, options })
 }
 
-export function fetchAssetDistribution(base: string, assetId: string, height: number, limit: number): Promise<IAssetDistribution> {
-    return request({ base, url: `/assets/${assetId}/distribution/${height}/limit/${limit}`});
+export function fetchAssetDistribution(
+    base: string,
+    assetId: string,
+    height: number,
+    limit: number,
+    options: RequestInit = Object.create(null)
+): Promise<IAssetDistribution> {
+    return request({ base, url: `/assets/${assetId}/distribution/${height}/limit/${limit}`, options});
 }
 
 /**
@@ -38,16 +44,16 @@ export function fetchAssetDistribution(base: string, assetId: string, height: nu
  * Asset balance distribution
  */
 
- export function fetchAssetsAddressLimit(base: string, address:string, limit: number): Promise<Array<IAssetsAddressLimit>> {
-     return request({ base, url: `assets/nft/${address}/limit/${limit}`});
+ export function fetchAssetsAddressLimit(base: string, address:string, limit: number, options: RequestInit = Object.create(null)): Promise<Array<IAssetsAddressLimit>> {
+     return request({ base, url: `assets/nft/${address}/limit/${limit}`, options });
  }
 
-export function fetchAssetsBalance(base: string, address: string): Promise<TAssetsBalance> {
-    return request({ base, url: `/assets/balance/${address}` });
+export function fetchAssetsBalance(base: string, address: string, options: RequestInit = Object.create(null)): Promise<TAssetsBalance> {
+    return request({ base, url: `/assets/balance/${address}`, options });
 }
 
-export function fetchBalanceAddressAssetId(base: string, address: string, assetId: string): Promise<IBalanceAddressAssetId> {
-    return request({ base, url: `/assets/balance/${address}/${assetId}` });
+export function fetchBalanceAddressAssetId(base: string, address: string, assetId: string, options: RequestInit = Object.create(null)): Promise<IBalanceAddressAssetId> {
+    return request({ base, url: `/assets/balance/${address}/${assetId}`, options });
 }
 
 export interface IAssetDistribution {
