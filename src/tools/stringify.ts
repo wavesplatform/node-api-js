@@ -21,5 +21,5 @@ export default function <T extends Record<string, any>>(data: T): string {
         } else {
             return value;
         }
-    }, 0).replace(/"\!(\d+)\!"/g, '$1');
+    }, 0).replace(/"\!(-?\d+)\!"/g, '$1');
 }
