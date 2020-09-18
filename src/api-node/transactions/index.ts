@@ -49,7 +49,7 @@ export function fetchCalculateFee<T extends keyof TTransactionMap<TLong>>(
         base,
         url: '/transactions/calculateFee',
         options: deepAssign(
-            options,
+            {...options},
             {
                 method: 'POST',
                 body: stringify(tx),
@@ -179,7 +179,7 @@ export function broadcast(base: string, tx: TTransaction<TLong> & IWithProofs, o
     return request({
         base, url: '/transactions/broadcast',
         options: deepAssign(
-            options,
+            {...options},
             {
                 method: 'POST',
                 body: stringify(tx),
