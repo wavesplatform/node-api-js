@@ -1,5 +1,5 @@
 import { TLong, TRANSACTION_NAME_MAP } from '../../interface';
-import { TTransactionFromAPIMap } from '@waves/ts-types';
+import { TRANSACTION_TYPE, TTransactionFromAPIMap } from '@waves/ts-types';
 import request from '../../tools/request';
 import { toArray } from '../../tools/utils';
 
@@ -48,8 +48,54 @@ export function fetchAssetDistribution(
      return request({ base, url: `assets/nft/${address}/limit/${limit}`, options });
  }
 
-export function fetchAssetsBalance(base: string, address: string, options: RequestInit = Object.create(null)): Promise<TAssetsBalance> {
-    return request({ base, url: `/assets/balance/${address}`, options });
+export async function fetchAssetsBalance(base: string, address: string, options: RequestInit = Object.create(null)): Promise<TAssetsBalance> {
+    const balancesResponse = await request<TAssetsBalance>({ base, url: `/assets/balance/${address}`, options });
+
+    const assetsWithoutIssueTransaction = balancesResponse.balances.reduce<Record<string, number>>(
+        (acc, balance, index) => {
+            if (!balance.issueTransaction) {
+                acc[balance.assetId] = index;
+            }
+
+            return acc;
+        }, {}
+    );
+
+    const assetsDetailsResponse = await fetchAssetsDetails(base, Object.keys(assetsWithoutIssueTransaction), options);
+
+    assetsDetailsResponse.forEach((assetDetails) => {
+        if ('error' in assetDetails) {
+            return;
+        }
+
+        const assetIndex = assetsWithoutIssueTransaction[assetDetails.assetId];
+        const assetBalance = balancesResponse.balances[assetIndex];
+
+        if (!assetBalance) {
+            return;
+        }
+
+        assetBalance.issueTransaction = {
+            id: assetDetails.originTransactionId,
+            name: assetDetails.name,
+            decimals: assetDetails.decimals,
+            description: assetDetails.description,
+            quantity: assetDetails.quantity,
+            reissuable: assetDetails.reissuable,
+            sender: assetDetails.issuer,
+            senderPublicKey: assetDetails.issuerPublicKey,
+            timestamp: assetDetails.issueTimestamp,
+            height: assetDetails.issueHeight,
+            script: assetDetails.scripted ? '-' : null,
+            proofs: [],
+            fee: 1 * 10**8,
+            version: 1,
+            type: TRANSACTION_TYPE.ISSUE,
+            chainId: 0
+        };
+    });
+
+    return balancesResponse;
 }
 
 export function fetchBalanceAddressAssetId(base: string, address: string, assetId: string, options: RequestInit = Object.create(null)): Promise<IBalanceAddressAssetId> {
