@@ -1,19 +1,20 @@
 import request from '../../tools/request';
 import { TLong } from '../../interface';
 import query from '../../tools/query';
-import { TTransaction } from '@waves/ts-types';
-import { TDataTransactionEntry, IWithId } from '@waves/ts-types';
+import { DataTransactionEntry, Transaction, WithId } from '@waves/ts-types';
+import { IWithId } from '@waves/ts-types/dist';
 
 /**
  * Waves balance history
  * @param base
  * @param address
  */
-export function fetchBalanceHistory(base: string, address: string): Promise<Array<IBalanceHistory>> {
+export function fetchBalanceHistory(base: string, address: string, options: RequestInit = Object.create(null)): Promise<Array<IBalanceHistory>> {
     return request({
         base,
-        url: `/debug/balances/history/${address}`
-    })
+        url: `/debug/balances/history/${address}`,
+        options
+    });
 }
 
 interface IBalanceHistory {
@@ -23,12 +24,39 @@ interface IBalanceHistory {
 
 interface IWithStateChanges {
     stateChanges: {
-        data: TDataTransactionEntry<string | number>[],
+        data: DataTransactionEntry[],
         transfers: {
             address: string,
             amount: number,
-            assetId: string | null
-        }[]
+            asset: string | null
+        }[],
+        issues: {
+            assetId: string,
+            name: string,
+            description: string,
+            quantity: number,
+            decimals: number,
+            isReissuable: boolean,
+            compiledScript: null | string,
+            nonce: number
+        }[],
+        reissues: {
+            assetId: string,
+            isReissuable: boolean,
+            quantity: number
+        }[],
+        burns: {
+            assetId: string,
+            quantity: number
+        }[],
+        sponsorFees: {
+            assetId: string,
+            minSponsoredAssetFee: number
+        }[],
+        error?: {
+            code: number,
+            text: string
+        }
     }
 }
 
@@ -39,11 +67,18 @@ interface IWithStateChanges {
  * @param limit
  * @param after
  */
-export function fetchStateChangesByAddress(base: string, address: string, limit: number, after?: string): Promise<Array<TTransaction<TLong> & IWithId & IWithStateChanges>> {
+export function fetchStateChangesByAddress(
+    base: string,
+    address: string,
+    limit: number,
+    after?: string,
+    options: RequestInit = Object.create(null)
+): Promise<Array<Transaction<TLong> & WithId & IWithStateChanges>> {
     return request({
         base,
-        url: `/debug/stateChanges/address/${address}/limit/${limit}${query({ after })}`
-    })
+        url: `/debug/stateChanges/address/${address}/limit/${limit}${query({ after })}`,
+        options
+    });
 }
 
 
@@ -52,17 +87,18 @@ export function fetchStateChangesByAddress(base: string, address: string, limit:
  * @param base
  * @param txId
  */
-export function fetchStateChangesByTxId(base: string, txId: string ): Promise<TTransaction<TLong> & IWithId & IWithStateChanges> {
+export function fetchStateChangesByTxId(base: string, txId: string, options: RequestInit = Object.create(null)): Promise<Transaction<TLong> & IWithId & IWithStateChanges> {
     return request({
         base,
-        url: `/debug/stateChanges/info/${txId}`
-    })
+        url: `/debug/stateChanges/info/${txId}`,
+        options
+    });
 }
 
 // @TODO need API key:
 // GET /debug/stateWaves/{height}
 // POST /debug/rollback
-// DELETE /debug/rollback-to/{signature}
+// DELETE /debug/rollback-to/{id}
 // GET /debug/portfolios/{address}
 // GET /debug/minerInfo
 // GET /debug/historyInfo

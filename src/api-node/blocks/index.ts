@@ -1,7 +1,6 @@
-import { IRequestOptions, TLong } from '../../interface';
+import { TLong } from '../../interface';
 import request from '../../tools/request';
-import { TTransactionFromAPI } from '@waves/ts-types';
-
+import { Transaction, WithApiMixin } from '@waves/ts-types';
 
 /**
  * GET /blocks/headers/seq/{from}/{to}
@@ -10,10 +9,11 @@ import { TTransactionFromAPI } from '@waves/ts-types';
  * @param from
  * @param to
  */
-export function fetchHeadersSeq(base: string, from: number, to: number): Promise<Array<IBlockHeader>> {
+export function fetchHeadersSeq(base: string, from: number, to: number, options: RequestInit = Object.create(null)): Promise<Array<IBlockHeader>> {
     return request({
         base,
-        url: `/blocks/headers/seq/${from}/${to}`
+        url: `/blocks/headers/seq/${from}/${to}`,
+        options
     })
 }
 
@@ -22,23 +22,25 @@ export function fetchHeadersSeq(base: string, from: number, to: number): Promise
  * Last block header
  * @param base
  */
-export function fetchHeadersLast(base: string, options?: IRequestOptions): Promise<IBlockHeader> {
+export function fetchHeadersLast(base: string, options: RequestInit = Object.create(null)): Promise<IBlockHeader> {
     return request({
         base,
-        url: '/blocks/headers/last'
+        url: '/blocks/headers/last',
+        options
     });
 }
 
 /**
- * GET /blocks/height/{signature}
- * Height of a block by its signature
+ * GET /blocks/height/{id}
+ * Height of a block by its id
  * @param base
- * @param signature
+ * @param id
  */
-export function fetchHeightBySignature(base: string, signature: string): Promise<{ height: number }> {
+export function fetchHeightById(base: string, id: string, options: RequestInit = Object.create(null)): Promise<{ height: number }> {
     return request({
         base,
-        url: `/blocks/height/${signature}`
+        url: `/blocks/height/${id}`,
+        options
     })
 }
 
@@ -48,10 +50,11 @@ export function fetchHeightBySignature(base: string, signature: string): Promise
  * @param base
  * @param height
  */
-export function fetchHeadersAt(base: string, height: number, options?: IRequestOptions): Promise<IBlockHeader> {
+export function fetchHeadersAt(base: string, height: number, options: RequestInit = Object.create(null)): Promise<IBlockHeader> {
     return request({
         base,
-        url: `/blocks/headers/at/${height}`
+        url: `/blocks/headers/at/${height}`,
+        options
     });
 }
 
@@ -61,10 +64,11 @@ export function fetchHeadersAt(base: string, height: number, options?: IRequestO
  * @param base
  * @param height
  */
-export function BlockAt(base: string, height: number): Promise<IBlock> {
+export function BlockAt(base: string, height: number, options: RequestInit = Object.create(null)): Promise<IBlock> {
     return request({
         base,
-        url: `/blocks/at/${height}`
+        url: `/blocks/at/${height}`,
+        options
     });
 }
 
@@ -75,10 +79,11 @@ export function BlockAt(base: string, height: number): Promise<IBlock> {
  * @param from
  * @param to
  */
-export function fetchSeq(base: string, from: number, to: number): Promise<Array<IBlock>> {
+export function fetchSeq(base: string, from: number, to: number, options: RequestInit = Object.create(null)): Promise<Array<IBlock>> {
     return request({
         base,
-        url: `/blocks/seq/${from}/${to}`
+        url: `/blocks/seq/${from}/${to}`,
+        options
     })
 }
 
@@ -88,10 +93,11 @@ export function fetchSeq(base: string, from: number, to: number): Promise<Array<
  * @param base
  * @param signature
  */
-export function fetchBlockBySignature(base: string, signature: string): Promise<IBlock> {
+export function fetchBlockBySignature(base: string, signature: string, options: RequestInit = Object.create(null)): Promise<IBlock> {
     return request({
         base,
-        url: `/blocks/signature/${signature}`
+        url: `/blocks/signature/${signature}`,
+        options
     })
 }
 
@@ -100,10 +106,11 @@ export function fetchBlockBySignature(base: string, signature: string): Promise<
  * Get genesis block
  * @param base
  */
-export function fetchFirst(base: string): Promise<IBlock> {
+export function fetchFirst(base: string, options: RequestInit = Object.create(null)): Promise<IBlock> {
     return request({
         base,
-        url: `/blocks/first`
+        url: `/blocks/first`,
+        options
     })
 }
 
@@ -115,10 +122,11 @@ export function fetchFirst(base: string): Promise<IBlock> {
  * @param from
  * @param to
  */
-export function fetchBlocksByAddress(base: string, address: string, from: number, to: number): Promise<Array<IBlock>>  {
+export function fetchBlocksByAddress(base: string, address: string, from: number, to: number, options: RequestInit = Object.create(null)): Promise<Array<IBlock>>  {
     return request({
         base,
-        url: `/blocks/address/${address}/${from}/${to}`
+        url: `/blocks/address/${address}/${from}/${to}`,
+        options
     })
 }
 
@@ -127,24 +135,26 @@ export function fetchBlocksByAddress(base: string, address: string, from: number
  * Last block
  * @param base
  */
-export function fetchLast(base: string): Promise<IBlock> {
+export function fetchLast(base: string, options: RequestInit = Object.create(null)): Promise<IBlock> {
     return request({
         base,
-        url: '/blocks/last'
+        url: '/blocks/last',
+        options
     })
 }
 
 /**
- * GET /blocks/delay/{signature}/{blockNum}
- * Average delay in milliseconds between last blockNum blocks starting from block with signature
+ * GET /blocks/delay/{id}/{blockNum}
+ * Average delay in milliseconds between last blockNum blocks starting from block with id
  * @param base
- * @param signature
+ * @param id
  * @param blockNum
  */
-export function fetchDelay(base: string, signature: string, blockNum: string): Promise<{ delay: number}> {
+export function fetchDelay(base: string, id: string, blockNum: string, options: RequestInit = Object.create(null)): Promise<{ delay: number}> {
     return request({
         base,
-        url: `/blocks/delay/${signature}/${blockNum}`
+        url: `/blocks/delay/${id}/${blockNum}`,
+        options
     })
 }
 
@@ -152,10 +162,11 @@ export function fetchDelay(base: string, signature: string, blockNum: string): P
  * GET /blocks/height
  * @param base
  */
-export function fetchHeight(base: string): Promise<{ height: number }> {
+export function fetchHeight(base: string, options: RequestInit = Object.create(null)): Promise<{ height: number }> {
     return request({
         base,
-        url: '/blocks/height'
+        url: '/blocks/height',
+        options
     });
 }
 
@@ -181,5 +192,5 @@ export interface IBlockHeader {
 
 export interface IBlock extends IBlockHeader {
     fee: TLong;
-    transactions: Array<TTransactionFromAPI<TLong>>;
+    transactions: Array<Transaction<TLong> & WithApiMixin>;
 }

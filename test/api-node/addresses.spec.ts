@@ -8,6 +8,8 @@ const api: ReturnType<typeof create> = create(NODE_URL);
 const checkSmartAccount = (info: IScriptInfo, address: string) => {
     expect(info.address).toBe(address);
     expect(typeof info.complexity).toBe('number');
+    expect(typeof info.verifierComplexity).toBe('number');
+    expect(typeof info.callableComplexities).toBe('object');
     expect(info.extraFee).toBe(0.004 * Math.pow(10, 8));
     expect(typeof info.script).toBe('string');
     expect(typeof info.scriptText).toBe('string');
@@ -17,8 +19,8 @@ const checkNotSmart = (info: IScriptInfo, address: string) => {
     expect(info.address).toBe(address);
     expect(typeof info.complexity).toBe('number');
     expect(info.extraFee).toBe(0);
-    expect(typeof info.script).toBe('undefined');
-    expect(typeof info.scriptText).toBe('undefined');
+    expect(info.script).toBe(null);
+    expect(info.scriptText).toBe(null);
 };
 
 it('Script info smart', async () => {

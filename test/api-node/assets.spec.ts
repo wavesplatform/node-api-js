@@ -11,18 +11,25 @@ const checkAsset = (object: TAssetDetails) => {
         issueHeight: expect.any(Number),
         issueTimestamp: expect.any(Number),
         issuer: expect.any(String),
+        issuerPublicKey: expect.any(String),
         name: expect.any(String),
         description: expect.any(String),
         decimals: expect.any(Number),
         reissuable: expect.any(Boolean),
-        scripted: expect.any(Boolean)
+        quantity: expect.any(String),
+        scripted: expect.any(Boolean),
+        minSponsoredAssetFee: expect.any(Object),
+        originTransactionId: expect.any(String)
     })
 }
 
 it('details array', async () => {
-    const info = await api.assets.fetchDetails([STATE.ASSETS.BTC.id, STATE.ASSETS.ETH.id]);
+    const info = await api.assets.fetchAssetsDetails([STATE.ASSETS.BTC.id, STATE.ASSETS.ETH.id]);
     expect(info).toBeInstanceOf(Array);
-    info.forEach(checkAsset);
+    
+    info
+        .filter((asset: TAssetDetails) => !!asset.assetId)
+        .forEach(checkAsset);
 });
 
 it('details string', async () => {
@@ -34,11 +41,15 @@ it('details string', async () => {
     expect(typeof info.issueHeight).toBe('number');
     expect(typeof info.issueTimestamp).toBe('number');
     expect(typeof info.issuer).toBe('string');
+    expect(typeof info.issuerPublicKey).toBe('string');
     expect(typeof info.name).toBe('string');
     expect(typeof info.description).toBe('string');
     expect(typeof info.decimals).toBe('number');
     expect(typeof info.reissuable).toBe('boolean');
+    expect(typeof info.quantity).toBe('string');
     expect(typeof info.scripted).toBe('boolean');
+    expect(info.minSponsoredAssetFee).toBe(null); 
+    expect(typeof info.originTransactionId).toBe('string'); 
 });
 
 // TODO: запрос возвращает ошибку
@@ -52,18 +63,19 @@ it('Asset distribution', async () => {
 
 const checkAssets = (object: IAssetsAddressLimit) => {
     expect(object).toMatchObject({
-        senderPublicKey: expect.any(String),
-        quantity: expect.any(Number),
-        fee: expect.any(Number),
-        description: expect.any(String),
-        version: expect.any(Number),
-        reissuable: expect.any(Boolean),
-        sender: expect.any(String),
-        chainId: expect.any(Number),
         assetId: expect.any(String),
-        decimals: expect.any(Number),
+        issueHeight: expect.any(Number),
+        issueTimestamp: expect.any(Number),
+        issuer: expect.any(String),
+        issuerPublicKey: expect.any(String),
         name: expect.any(String),
-        id: expect.any(String)
+        description: expect.any(String),
+        decimals: expect.any(Number),
+        reissuable: expect.any(Boolean),
+        quantity: expect.any(Number),
+        scripted: expect.any(Boolean),
+        minSponsoredAssetFee: expect.any(Number),
+        originTransactionId: expect.any(String)
     })
 }
 

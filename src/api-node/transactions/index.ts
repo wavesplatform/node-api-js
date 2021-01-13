@@ -1,26 +1,22 @@
-import {
-    IWithApiMixin,
-    IWithProofs, TSignedTransaction,
-    TTransaction,
-    TTransactionFromAPI,
-    TTransactionMap
-} from '@waves/ts-types';
 import { TRANSACTION_STATUSES, TTransactionStatuses } from '../../constants';
-import { TLong } from '../../interface';
+import { IWithApplicationStatus, TLong } from '../../interface';
 import { fetchHeight } from '../blocks';
-import request from '../../tools/request';
+import request, { RequestInit } from '../../tools/request';
 import query from '../../tools/query';
+import { deepAssign } from '../../tools/utils';
 import stringify from '../../tools/stringify';
+import { SignedTransaction, Transaction, TransactionMap, WithApiMixin } from '@waves/ts-types';
 
 
 /**
  * GET /transactions/unconfirmed/size
  * Number of unconfirmed transactions
  */
-export function fetchUnconfirmedSize(base: string): Promise<IUnconfirmedSize> {
+export function fetchUnconfirmedSize(base: string, options: RequestInit = Object.create(null)): Promise<IUnconfirmedSize> {
     return request({
         base,
-        url: '/transactions/unconfirmed/size'
+        url: '/transactions/unconfirmed/size',
+        options
     })
 }
 
@@ -39,17 +35,24 @@ interface IUnconfirmedSize {
  * POST /transactions/calculateFee
  * Calculate transaction fee
  */
-export function fetchCalculateFee<T extends keyof TTransactionMap<TLong>>(base: string, tx: Partial<TTransactionMap<TLong>[T]> & { type: T }): Promise<TFeeInfo> {
+export function fetchCalculateFee<T extends keyof TransactionMap<TLong>>(
+    base: string,
+    tx: Partial<TransactionMap<TLong>[T]> & { type: T },
+    options: RequestInit = Object.create(null)
+): Promise<TFeeInfo> {
     return request({
         base,
         url: '/transactions/calculateFee',
-        options: {
-            method: 'POST',
-            body: stringify(tx),
-            headers: {
-                'Content-Type': 'application/json'
+        options: deepAssign(
+            {...options},
+            {
+                method: 'POST',
+                body: stringify(tx),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             }
-        }
+        )
     });
 }
 
@@ -62,10 +65,11 @@ export type TFeeInfo<LONG = TLong> = {
  * GET /transactions/unconfirmed
  * Unconfirmed transactions
  */
-export function fetchUnconfirmed(base: string): Promise<Array<TTransactionFromAPI<TLong>>> {
+export function fetchUnconfirmed(base: string, options: RequestInit = Object.create(null)): Promise<Array<Transaction<TLong> & WithApiMixin>> {
     return request({
         base,
-        url: '/transactions/unconfirmed'
+        url: '/transactions/unconfirmed',
+        options
     })
 }
 
@@ -76,10 +80,18 @@ export function fetchUnconfirmed(base: string): Promise<Array<TTransactionFromAP
  * @param after      искать транзакции после ID указанного в after
  * @param retry      количество попыток на выполнение запроса
  */
-export function fetchTransactions(base: string, address: string, limit: number, after?: string, retry?: number): Promise<Array<TTransactionFromAPI<TLong>>> {
-    return request<Array<Array<TTransactionFromAPI<TLong>>>>({
+export function fetchTransactions(
+    base: string,
+    address: string,
+    limit: number,
+    after?: string,
+    retry?: number,
+    options: RequestInit = Object.create(null)
+): Promise<Array<Transaction<TLong> & WithApiMixin>> {
+    return request<Array<Array<Transaction<TLong> & WithApiMixin>>>({
         base,
-        url: `/transactions/address/${address}/limit/${limit}${query({ after })}`
+        url: `/transactions/address/${address}/limit/${limit}${query({ after })}`,
+        options
     }).then(([list]) => list);
 }
 
@@ -87,10 +99,11 @@ export function fetchTransactions(base: string, address: string, limit: number, 
  * GET /transactions/unconfirmed/info/{id}
  * Unconfirmed transaction info
  */
-export function fetchUnconfirmedInfo(base: string, id: string): Promise<TTransactionFromAPI<TLong>> {
+export function fetchUnconfirmedInfo(base: string, id: string, options: RequestInit = Object.create(null)): Promise<Transaction<TLong> & WithApiMixin> {
     return request({
         base,
-        url: `/transactions/unconfirmed/info/${id}`
+        url: `/transactions/unconfirmed/info/${id}`,
+        options
     });
 }
 
@@ -105,8 +118,8 @@ export function fetchUnconfirmedInfo(base: string, id: string): Promise<TTransac
  * GET /transactions/info/{id}
  * Transaction info
  */
-export function fetchInfo(base: string, id: string): Promise<TTransactionFromAPI<TLong>> {
-    return request({ base, url: `/transactions/info/${id}` });
+export function fetchInfo(base: string, id: string, options: RequestInit = Object.create(null)): Promise<Transaction<TLong> & WithApiMixin & IWithApplicationStatus> {
+    return request({ base, url: `/transactions/info/${id}`, options });
 }
 
 export function fetchStatus(base: string, list: Array<string>): Promise<ITransactionsStatus> {
@@ -126,7 +139,8 @@ export function fetchStatus(base: string, list: Array<string>): Promise<ITransac
                     ...DEFAULT_STATUS,
                     id,
                     status: TRANSACTION_STATUSES.IN_BLOCKCHAIN,
-                    height: tx.height as number
+                    height: tx.height as number,
+                    applicationStatus: tx.applicationStatus
                 })))
             .catch(() => ({ ...DEFAULT_STATUS, id }))
     );
@@ -156,15 +170,17 @@ export interface ITransactionStatus {
     height: number;
 }
 
-export function broadcast<T extends TSignedTransaction<TTransaction<TLong>>>(base: string, tx: T): Promise<T & IWithApiMixin> {
-    return request<T & IWithApiMixin>({
+export function broadcast<T extends SignedTransaction<Transaction<TLong>>>(base: string, tx: T): Promise<T & WithApiMixin> {
+    return request<T & WithApiMixin>({
         base, url: '/transactions/broadcast',
-        options: {
-            method: 'POST',
-            body: stringify(tx),
-            headers: {
-                'Content-Type': 'application/json'
+        options: deepAssign(
+            {
+                method: 'POST',
+                body: stringify(tx),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             }
-        }
+        )
     });
 }

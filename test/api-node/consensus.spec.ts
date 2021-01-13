@@ -31,8 +31,3 @@ it('Basetarget BlockId', async () => {
     const { baseTarget } = await api.consensus.fetchBasetargetBlockId(signature);
     expect(typeof baseTarget).toBe('number');
 });
-
-it('Generation signature', async () => {
-    const { generationSignature } = await api.consensus.fetchGenerationSignature();
-    expect(typeof generationSignature).toBe('string');
-});

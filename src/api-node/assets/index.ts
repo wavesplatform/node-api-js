@@ -1,5 +1,12 @@
 import { TLong, TRANSACTION_NAME_MAP } from '../../interface';
-import { TTransactionFromAPIMap } from '@waves/ts-types';
+import {
+    AssetDecimals,
+    IssueTransaction,
+    SignedTransaction,
+    TRANSACTION_TYPE,
+    TransactionMap,
+    WithApiMixin
+} from '@waves/ts-types';
 import request from '../../tools/request';
 import { toArray } from '../../tools/utils';
 
@@ -7,16 +14,40 @@ import { toArray } from '../../tools/utils';
  * GET /assets/details/{assetId}
  * Information about an asset
  */
-export function fetchDetails(base: string, assetId: string): Promise<TAssetDetails>;
-export function fetchDetails(base: string, assetId: Array<string>): Promise<Array<TAssetDetails>>;
-export function fetchDetails<T extends string | Array<string>>(base: string, assetId: T): Promise<TAssetDetails | Array<TAssetDetails>> {
+export function fetchDetails(base: string, assetId: string, options?: RequestInit): Promise<TAssetDetails>;
+export function fetchDetails(base: string, assetId: Array<string>, options?: RequestInit): Promise<Array<TAssetDetails>>;
+export function fetchDetails<T extends string | Array<string>>(base: string, assetId: T, options: RequestInit = Object.create(null)): Promise<TAssetDetails | Array<TAssetDetails>> {
     const isOnce = !Array.isArray(assetId);
-    return Promise.all(toArray(assetId).map(id => request<TAssetDetails>({ base, url: `/assets/details/${id}` })))
+    return Promise.all(toArray(assetId).map(id => request<TAssetDetails>({
+        base,
+        url: `/assets/details/${id}`,
+        options
+    })))
         .then(list => isOnce ? list[0] : list);
 }
 
-export function fetchAssetDistribution(base: string, assetId: string, height: number, limit: number): Promise<IAssetDistribution> {
-    return request({ base, url: `/assets/${assetId}/distribution/${height}/limit/${limit}`});
+/**
+ * GET /assets/details
+ * Provides detailed information about the given assets
+ */
+export function fetchAssetsDetails(base: string, assetIds: Array<string>, options: RequestInit = Object.create(null)): Promise<Array<TAssetDetails | TErrorResponse>> {
+    const params = assetIds
+        .map(assetId => `id=${assetId}`)
+        .join('&');
+
+    const query = assetIds.length ? `?${params}` : '';
+
+    return request<Array<TAssetDetails | TErrorResponse>>({ base, url: `/assets/details${query}`, options });
+}
+
+export function fetchAssetDistribution(
+    base: string,
+    assetId: string,
+    height: number,
+    limit: number,
+    options: RequestInit = Object.create(null)
+): Promise<IAssetDistribution> {
+    return request({ base, url: `/assets/${assetId}/distribution/${height}/limit/${limit}`, options });
 }
 
 /**
@@ -25,16 +56,63 @@ export function fetchAssetDistribution(base: string, assetId: string, height: nu
  * Asset balance distribution
  */
 
- export function fetchAssetsAddressLimit(base: string, address:string, limit: number): Promise<Array<IAssetsAddressLimit>> {
-     return request({ base, url: `assets/nft/${address}/limit/${limit}`});
- }
-
-export function fetchAssetsBalance(base: string, address: string): Promise<TAssetsBalance> {
-    return request({ base, url: `/assets/balance/${address}` });
+export function fetchAssetsAddressLimit(base: string, address: string, limit: number, options: RequestInit = Object.create(null)): Promise<Array<IAssetsAddressLimit>> {
+    return request({ base, url: `assets/nft/${address}/limit/${limit}`, options });
 }
 
-export function fetchBalanceAddressAssetId(base: string, address: string, assetId: string): Promise<IBalanceAddressAssetId> {
-    return request({ base, url: `/assets/balance/${address}/${assetId}` });
+export async function fetchAssetsBalance(base: string, address: string, options: RequestInit = Object.create(null)): Promise<TAssetsBalance> {
+    const balancesResponse = await request<TAssetsBalance>({ base, url: `/assets/balance/${address}`, options });
+
+    const assetsWithoutIssueTransaction = balancesResponse.balances.reduce<Record<string, number>>(
+        (acc, balance, index) => {
+            if (!balance.issueTransaction) {
+                acc[balance.assetId] = index;
+            }
+
+            return acc;
+        }, {}
+    );
+
+    const assetsDetailsResponse = await fetchAssetsDetails(base, Object.keys(assetsWithoutIssueTransaction), options);
+
+    assetsDetailsResponse.forEach((assetDetails) => {
+        if ('error' in assetDetails) {
+            return;
+        }
+
+        const assetIndex = assetsWithoutIssueTransaction[assetDetails.assetId];
+        const assetBalance = balancesResponse.balances[assetIndex];
+
+        if (!assetBalance) {
+            return;
+        }
+
+        assetBalance.issueTransaction = {
+            id: assetDetails.originTransactionId,
+            name: assetDetails.name,
+            decimals: assetDetails.decimals,
+            description: assetDetails.description,
+            quantity: assetDetails.quantity,
+            reissuable: assetDetails.reissuable,
+            sender: assetDetails.issuer,
+            senderPublicKey: assetDetails.issuerPublicKey,
+            timestamp: assetDetails.issueTimestamp,
+            height: assetDetails.issueHeight,
+            script: assetDetails.scripted ? '-' : null,
+            proofs: [],
+            fee: 10 ** 8,
+            feeAssetId: null,
+            version: 3,
+            type: TRANSACTION_TYPE.ISSUE,
+            chainId: 0
+        };
+    });
+
+    return balancesResponse;
+}
+
+export function fetchBalanceAddressAssetId(base: string, address: string, assetId: string, options: RequestInit = Object.create(null)): Promise<IBalanceAddressAssetId> {
+    return request({ base, url: `/assets/balance/${address}/${assetId}`, options });
 }
 
 export interface IAssetDistribution {
@@ -50,22 +128,19 @@ export interface IBalanceAddressAssetId {
 }
 
 export interface IAssetsAddressLimit {
-    senderPublicKey: string;
-    quantity: number;
-    fee: number;
-    description: string;
-    type: number;
-    version: number;
-    reissuable: boolean;
-    script: string | null;
-    sender: string;
-    feeAssetId: string | null;
-    chainId: number;
-    proofs: Array<string>;
     assetId: string;
-    decimals: number;
+    issueHeight: number;
+    issueTimestamp: number;
+    issuer: string;
+    issuerPublicKey: string;
     name: string;
-    id: string;
+    description: string;
+    decimals: number;
+    reissuable: boolean;
+    quantity: number;
+    scripted: boolean;
+    minSponsoredAssetFee: number | null;
+    originTransactionId: string
 }
 
 export type TAssetsBalance = {
@@ -73,14 +148,14 @@ export type TAssetsBalance = {
     'balances': Array<TAssetBalance>
 }
 
-export type TAssetBalance = {
+export type TAssetBalance<LONG = TLong> = {
     'assetId': string;
     'balance': number;
     'reissuable': true;
-    'minSponsoredAssetFee': null | number;
-    'sponsorBalance': null | number;
-    'quantity': number;
-    'issueTransaction': TTransactionFromAPIMap<TLong>[TRANSACTION_NAME_MAP['issue']]
+    'minSponsoredAssetFee': LONG | null;
+    'sponsorBalance': number | null;
+    'quantity': LONG;
+    'issueTransaction': SignedTransaction<IssueTransaction & WithApiMixin> | null
 }
 
 export type TAssetDetails<LONG = TLong> = {
@@ -88,11 +163,18 @@ export type TAssetDetails<LONG = TLong> = {
     issueHeight: number;
     issueTimestamp: number;
     issuer: string;
+    issuerPublicKey: string;
     name: string;
     description: string;
-    decimals: number;
+    decimals: AssetDecimals;
     reissuable: boolean;
     quantity: LONG;
     scripted: boolean;
     minSponsoredAssetFee: LONG | null;
+    originTransactionId: string;
+}
+
+export type TErrorResponse = {
+    error: number;
+    message: string;
 }

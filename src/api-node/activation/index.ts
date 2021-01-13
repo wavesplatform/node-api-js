@@ -7,8 +7,12 @@ import request from '../../tools/request';
  * @param base 
  */
 
-export function fetchActivationStatus(base: string): Promise<IActivationStatus<TLong>> {
-    return request({ base, url: 'activation/status'});
+export function fetchActivationStatus(base: string, options: RequestInit = Object.create(null)): Promise<IActivationStatus<TLong>> {
+    return request({ 
+        base,
+        url: 'activation/status',
+        options
+    });
 }
 
 export interface IActivationStatus<LONG> {

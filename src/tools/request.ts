@@ -22,8 +22,10 @@ function tryParse(message: string) {
 }
 
 function updateHeaders(options: RequestInit = Object.create(null)) {
-    options.credentials = 'include';
-    return options;
+    return {
+        credentials: 'include',
+        ...options
+    };
 }
 
 export interface IRequestParams<T> {
