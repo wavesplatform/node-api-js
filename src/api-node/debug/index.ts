@@ -1,8 +1,7 @@
 import request from '../../tools/request';
 import { TLong } from '../../interface';
 import query from '../../tools/query';
-import { TTransactionWithProofs } from '@waves/ts-types';
-import { TDataTransactionEntry, IWithId } from '@waves/ts-types';
+import { DataTransactionEntry, Transaction, WithId } from '@waves/ts-types';
 
 /**
  * Waves balance history
@@ -14,7 +13,7 @@ export function fetchBalanceHistory(base: string, address: string, options: Requ
         base,
         url: `/debug/balances/history/${address}`,
         options
-    })
+    });
 }
 
 interface IBalanceHistory {
@@ -24,30 +23,30 @@ interface IBalanceHistory {
 
 interface IWithStateChanges {
     stateChanges: {
-        data: TDataTransactionEntry<string | number>[],
+        data: DataTransactionEntry[],
         transfers: {
             address: string,
             amount: number,
             asset: string | null
         }[],
         issues: {
-           assetId: string,
-           name: string,
-           description: string,
-           quantity: number,
-           decimals: number,
-           isReissuable: boolean,
-           compiledScript: null | string,
-           nonce: number
+            assetId: string,
+            name: string,
+            description: string,
+            quantity: number,
+            decimals: number,
+            isReissuable: boolean,
+            compiledScript: null | string,
+            nonce: number
         }[],
         reissues: {
-           assetId: string,
-           isReissuable: boolean,
-           quantity: number
+            assetId: string,
+            isReissuable: boolean,
+            quantity: number
         }[],
         burns: {
-           assetId: string,
-           quantity: number
+            assetId: string,
+            quantity: number
         }[],
         sponsorFees: {
             assetId: string,
@@ -73,12 +72,12 @@ export function fetchStateChangesByAddress(
     limit: number,
     after?: string,
     options: RequestInit = Object.create(null)
-): Promise<Array<TTransactionWithProofs<TLong> & IWithId & IWithStateChanges>> {
+): Promise<Array<Transaction<TLong> & WithId & IWithStateChanges>> {
     return request({
         base,
         url: `/debug/stateChanges/address/${address}/limit/${limit}${query({ after })}`,
         options
-    })
+    });
 }
 
 
@@ -87,12 +86,12 @@ export function fetchStateChangesByAddress(
  * @param base
  * @param txId
  */
-export function fetchStateChangesByTxId(base: string, txId: string, options: RequestInit = Object.create(null)): Promise<TTransactionWithProofs<TLong> & IWithId & IWithStateChanges> {
+export function fetchStateChangesByTxId(base: string, txId: string, options: RequestInit = Object.create(null)): Promise<Transaction<TLong> & WithId & IWithStateChanges> {
     return request({
         base,
         url: `/debug/stateChanges/info/${txId}`,
         options
-    })
+    });
 }
 
 // @TODO need API key:

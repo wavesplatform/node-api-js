@@ -1,10 +1,10 @@
 import { TLong } from '../../interface';
-import { TDataTransactionEntry } from '@waves/ts-types';
 import request from '../../tools/request';
 import query from '../../tools/query';
+import { DataTransactionEntry } from '@waves/ts-types';
 
 
-export function fetchDataKey(base: string, address: string, key: string, options: RequestInit = Object.create(null)): Promise<TDataTransactionEntry<TLong>> {
+export function fetchDataKey(base: string, address: string, key: string, options: RequestInit = Object.create(null)): Promise<DataTransactionEntry<TLong>> {
     return request({
         base,
         url: `/addresses/data/${address}/${encodeURIComponent(key)}`,
@@ -44,7 +44,7 @@ export function fetchScriptInfo(base: string, address: string, options: RequestI
     });
 }
 
-export function data(base: string, address: string, params: IDataQueryParams = Object.create(null), options: RequestInit = Object.create(null)): Promise<Array<TDataTransactionEntry<TLong>>> {
+export function data(base: string, address: string, params: IDataQueryParams = Object.create(null), options: RequestInit = Object.create(null)): Promise<Array<DataTransactionEntry<TLong>>> {
     return request({
         base,
         url: `/addresses/data/${address}${query(params)}`,

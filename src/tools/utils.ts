@@ -1,4 +1,4 @@
-import { TTransaction, TTransactionMap } from '@waves/ts-types';
+import { TransactionMap, Transaction } from '@waves/ts-types';
 import { TLong } from '../interface';
 
 export function isObject(obj: any) {
@@ -88,14 +88,14 @@ export const uniq = (list: Array<string>): Array<string> => {
     }, Object.create(null)));
 };
 
-type TChoices = { [Key in keyof TTransactionMap<TLong>]?: (data: TTransactionMap<TLong>[Key]) => any };
+type TChoices = { [Key in keyof TransactionMap<TLong>]?: (data: TransactionMap<TLong>[Key]) => any };
 
 export interface ISwitchTransactionResult<R extends TChoices> {
-    <T extends TTransaction<TLong>>(tx: T): R[T['type']] extends (data: TTransactionMap<TLong>[T['type']]) => infer A ? A : undefined;
+    <T extends Transaction<TLong>>(tx: T): R[T['type']] extends (data: TransactionMap<TLong>[T['type']]) => infer A ? A : undefined;
 }
 
 export function switchTransactionByType<R extends TChoices>(choices: R): ISwitchTransactionResult<R> {
-    return tx => choices[tx.type] && typeof choices[tx.type] === 'function' ? choices[tx.type]!(tx as any) : undefined;
+    return tx => choices[tx.type] && typeof choices[tx.type] === 'function' ? (choices as any)[tx.type]!(tx as any) : undefined;
 }
 
 export const pipe: IPipe = (...args: Array<(data: any) => any>): (data: any) => any => {

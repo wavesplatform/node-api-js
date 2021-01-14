@@ -1,14 +1,14 @@
-import { TTransactionFromAPI } from '@waves/ts-types';
 import { TLong } from '../../interface';
 import { head, indexBy, prop, toArray, wait } from '../utils';
 import { fetchStatus } from '../../api-node/transactions';
 import { TRANSACTION_STATUSES } from '../../constants';
+import { Transaction, WithApiMixin } from '@waves/ts-types';
 
 
-export default function <T extends TTransactionFromAPI<TLong>>(base: string, tx: T, options?: IWaitOptions): Promise<T>;
-export default function <T extends TTransactionFromAPI<TLong>>(base: string, list: Array<T>, options?: IWaitOptions): Promise<Array<T>>;
-export default function <T extends TTransactionFromAPI<TLong>>(base: string, tx: T | Array<T>, options?: IWaitOptions): Promise<T | Array<T>>;
-export default function <T extends TTransactionFromAPI<TLong>>(base: string, tx: T | Array<T>, options?: IWaitOptions): Promise<T | Array<T>> {
+export default function <T extends Transaction<TLong> & WithApiMixin>(base: string, tx: T, options?: IWaitOptions): Promise<T>;
+export default function <T extends Transaction<TLong> & WithApiMixin>(base: string, list: Array<T>, options?: IWaitOptions): Promise<Array<T>>;
+export default function <T extends Transaction<TLong> & WithApiMixin>(base: string, tx: T | Array<T>, options?: IWaitOptions): Promise<T | Array<T>>;
+export default function <T extends Transaction<TLong> & WithApiMixin>(base: string, tx: T | Array<T>, options?: IWaitOptions): Promise<T | Array<T>> {
     const isOnce = !Array.isArray(tx);
     const start = Date.now();
     const confirmed: Array<T> = [];

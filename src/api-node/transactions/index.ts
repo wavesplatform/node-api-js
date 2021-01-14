@@ -1,16 +1,11 @@
-import {
-    IWithProofs,
-    TTransaction,
-    TTransactionFromAPI,
-    TTransactionMap
-} from '@waves/ts-types';
 import { TRANSACTION_STATUSES, TTransactionStatuses } from '../../constants';
-import { TLong, IWithApplicationStatus } from '../../interface';
+import { IWithApplicationStatus, TLong } from '../../interface';
 import { fetchHeight } from '../blocks';
 import request, { RequestInit } from '../../tools/request';
 import query from '../../tools/query';
 import { deepAssign } from '../../tools/utils';
 import stringify from '../../tools/stringify';
+import { SignedTransaction, Transaction, TransactionMap, WithApiMixin } from '@waves/ts-types';
 
 
 /**
@@ -40,9 +35,9 @@ interface IUnconfirmedSize {
  * POST /transactions/calculateFee
  * Calculate transaction fee
  */
-export function fetchCalculateFee<T extends keyof TTransactionMap<TLong>>(
+export function fetchCalculateFee<T extends keyof TransactionMap<TLong>>(
     base: string,
-    tx: Partial<TTransactionMap<TLong>[T]> & { type: T },
+    tx: Partial<TransactionMap<TLong>[T]> & { type: T },
     options: RequestInit = Object.create(null)
 ): Promise<TFeeInfo> {
     return request({
@@ -70,7 +65,7 @@ export type TFeeInfo<LONG = TLong> = {
  * GET /transactions/unconfirmed
  * Unconfirmed transactions
  */
-export function fetchUnconfirmed(base: string, options: RequestInit = Object.create(null)): Promise<Array<TTransactionFromAPI<TLong>>> {
+export function fetchUnconfirmed(base: string, options: RequestInit = Object.create(null)): Promise<Array<Transaction<TLong> & WithApiMixin>> {
     return request({
         base,
         url: '/transactions/unconfirmed',
@@ -92,8 +87,8 @@ export function fetchTransactions(
     after?: string,
     retry?: number,
     options: RequestInit = Object.create(null)
-): Promise<Array<TTransactionFromAPI<TLong>>> {
-    return request<Array<Array<TTransactionFromAPI<TLong>>>>({
+): Promise<Array<Transaction<TLong> & WithApiMixin>> {
+    return request<Array<Array<Transaction<TLong> & WithApiMixin>>>({
         base,
         url: `/transactions/address/${address}/limit/${limit}${query({ after })}`,
         options
@@ -104,7 +99,7 @@ export function fetchTransactions(
  * GET /transactions/unconfirmed/info/{id}
  * Unconfirmed transaction info
  */
-export function fetchUnconfirmedInfo(base: string, id: string, options: RequestInit = Object.create(null)): Promise<TTransactionFromAPI<TLong>> {
+export function fetchUnconfirmedInfo(base: string, id: string, options: RequestInit = Object.create(null)): Promise<Transaction<TLong> & WithApiMixin> {
     return request({
         base,
         url: `/transactions/unconfirmed/info/${id}`,
@@ -123,7 +118,7 @@ export function fetchUnconfirmedInfo(base: string, id: string, options: RequestI
  * GET /transactions/info/{id}
  * Transaction info
  */
-export function fetchInfo(base: string, id: string, options: RequestInit = Object.create(null)): Promise<TTransactionFromAPI<TLong> & IWithApplicationStatus> {
+export function fetchInfo(base: string, id: string, options: RequestInit = Object.create(null)): Promise<Transaction<TLong> & WithApiMixin & IWithApplicationStatus> {
     return request({ base, url: `/transactions/info/${id}`, options });
 }
 
@@ -175,11 +170,10 @@ export interface ITransactionStatus {
     height: number;
 }
 
-export function broadcast(base: string, tx: TTransaction<TLong> & IWithProofs, options: RequestInit = Object.create(null)): Promise<TTransactionFromAPI<TLong>> {
-    return request({
+export function broadcast<T extends SignedTransaction<Transaction<TLong>>>(base: string, tx: T): Promise<T & WithApiMixin> {
+    return request<T & WithApiMixin>({
         base, url: '/transactions/broadcast',
         options: deepAssign(
-            {...options},
             {
                 method: 'POST',
                 body: stringify(tx),

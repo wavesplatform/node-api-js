@@ -1,5 +1,12 @@
 import { TLong, TRANSACTION_NAME_MAP } from '../../interface';
-import { TRANSACTION_TYPE, TTransactionFromAPIMap } from '@waves/ts-types';
+import {
+    AssetDecimals,
+    IssueTransaction,
+    SignedTransaction,
+    TRANSACTION_TYPE,
+    TransactionMap,
+    WithApiMixin
+} from '@waves/ts-types';
 import request from '../../tools/request';
 import { toArray } from '../../tools/utils';
 
@@ -11,9 +18,14 @@ export function fetchDetails(base: string, assetId: string, options?: RequestIni
 export function fetchDetails(base: string, assetId: Array<string>, options?: RequestInit): Promise<Array<TAssetDetails>>;
 export function fetchDetails<T extends string | Array<string>>(base: string, assetId: T, options: RequestInit = Object.create(null)): Promise<TAssetDetails | Array<TAssetDetails>> {
     const isOnce = !Array.isArray(assetId);
-    return Promise.all(toArray(assetId).map(id => request<TAssetDetails>({ base, url: `/assets/details/${id}`, options })))
+    return Promise.all(toArray(assetId).map(id => request<TAssetDetails>({
+        base,
+        url: `/assets/details/${id}`,
+        options
+    })))
         .then(list => isOnce ? list[0] : list);
 }
+
 /**
  * GET /assets/details
  * Provides detailed information about the given assets
@@ -21,11 +33,11 @@ export function fetchDetails<T extends string | Array<string>>(base: string, ass
 export function fetchAssetsDetails(base: string, assetIds: Array<string>, options: RequestInit = Object.create(null)): Promise<Array<TAssetDetails | TErrorResponse>> {
     const params = assetIds
         .map(assetId => `id=${assetId}`)
-        .join('&')
+        .join('&');
 
-    const query = assetIds.length ? `?${params}` : ''
+    const query = assetIds.length ? `?${params}` : '';
 
-    return request<Array<TAssetDetails | TErrorResponse>>({ base, url: `/assets/details${query}`, options })
+    return request<Array<TAssetDetails | TErrorResponse>>({ base, url: `/assets/details${query}`, options });
 }
 
 export function fetchAssetDistribution(
@@ -35,7 +47,7 @@ export function fetchAssetDistribution(
     limit: number,
     options: RequestInit = Object.create(null)
 ): Promise<IAssetDistribution> {
-    return request({ base, url: `/assets/${assetId}/distribution/${height}/limit/${limit}`, options});
+    return request({ base, url: `/assets/${assetId}/distribution/${height}/limit/${limit}`, options });
 }
 
 /**
@@ -44,9 +56,9 @@ export function fetchAssetDistribution(
  * Asset balance distribution
  */
 
- export function fetchAssetsAddressLimit(base: string, address:string, limit: number, options: RequestInit = Object.create(null)): Promise<Array<IAssetsAddressLimit>> {
-     return request({ base, url: `assets/nft/${address}/limit/${limit}`, options });
- }
+export function fetchAssetsAddressLimit(base: string, address: string, limit: number, options: RequestInit = Object.create(null)): Promise<Array<IAssetsAddressLimit>> {
+    return request({ base, url: `assets/nft/${address}/limit/${limit}`, options });
+}
 
 export async function fetchAssetsBalance(base: string, address: string, options: RequestInit = Object.create(null)): Promise<TAssetsBalance> {
     const balancesResponse = await request<TAssetsBalance>({ base, url: `/assets/balance/${address}`, options });
@@ -88,8 +100,9 @@ export async function fetchAssetsBalance(base: string, address: string, options:
             height: assetDetails.issueHeight,
             script: assetDetails.scripted ? '-' : null,
             proofs: [],
-            fee: 1 * 10**8,
-            version: 1,
+            fee: 10 ** 8,
+            feeAssetId: null,
+            version: 3,
             type: TRANSACTION_TYPE.ISSUE,
             chainId: 0
         };
@@ -142,7 +155,7 @@ export type TAssetBalance<LONG = TLong> = {
     'minSponsoredAssetFee': LONG | null;
     'sponsorBalance': number | null;
     'quantity': LONG;
-    'issueTransaction': TTransactionFromAPIMap<TLong>[TRANSACTION_NAME_MAP['issue']] | null
+    'issueTransaction': SignedTransaction<IssueTransaction & WithApiMixin>;
 }
 
 export type TAssetDetails<LONG = TLong> = {
@@ -153,7 +166,7 @@ export type TAssetDetails<LONG = TLong> = {
     issuerPublicKey: string;
     name: string;
     description: string;
-    decimals: number;
+    decimals: AssetDecimals;
     reissuable: boolean;
     quantity: LONG;
     scripted: boolean;
