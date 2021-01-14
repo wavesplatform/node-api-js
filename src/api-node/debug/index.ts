@@ -2,7 +2,6 @@ import request from '../../tools/request';
 import { TLong } from '../../interface';
 import query from '../../tools/query';
 import { DataTransactionEntry, Transaction, WithId } from '@waves/ts-types';
-import { IWithId } from '@waves/ts-types/dist';
 
 /**
  * Waves balance history
@@ -87,7 +86,7 @@ export function fetchStateChangesByAddress(
  * @param base
  * @param txId
  */
-export function fetchStateChangesByTxId(base: string, txId: string, options: RequestInit = Object.create(null)): Promise<Transaction<TLong> & IWithId & IWithStateChanges> {
+export function fetchStateChangesByTxId(base: string, txId: string, options: RequestInit = Object.create(null)): Promise<Transaction<TLong> & WithId & IWithStateChanges> {
     return request({
         base,
         url: `/debug/stateChanges/info/${txId}`,

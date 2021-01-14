@@ -155,7 +155,7 @@ export type TAssetBalance<LONG = TLong> = {
     'minSponsoredAssetFee': LONG | null;
     'sponsorBalance': number | null;
     'quantity': LONG;
-    'issueTransaction': SignedTransaction<IssueTransaction & WithApiMixin> | null
+    'issueTransaction': SignedTransaction<IssueTransaction & WithApiMixin>;
 }
 
 export type TAssetDetails<LONG = TLong> = {

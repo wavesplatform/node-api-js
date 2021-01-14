@@ -1,14 +1,14 @@
-import { IExchangeTransactionOrder, TDataTransactionEntry, TTransactionMap } from '@waves/ts-types';
+import { DataTransactionEntry, ExchangeTransactionOrder, TransactionMap } from '@waves/ts-types';
 
 type TGetLongKeys<T> = {
     [Key in keyof T]: T[Key] extends 'LONG' ? Key : T[Key] extends Record<'string', any> ? TGetLongKeys<T[Key]> : never;
 }[keyof T];
 
-type TFieldsToReplace = TGetLongKeys<TDataTransactionEntry<'LONG'>> | TGetLongKeys<IExchangeTransactionOrder<'LONG'>> | {
-    [Type in keyof TTransactionMap<'LONG'>]: {
-        [Key in keyof TTransactionMap<'LONG'>[Type]]: TGetLongKeys<TTransactionMap<'LONG'>[Type]>;
-    }[keyof TTransactionMap<'LONG'>[Type]]
-}[keyof TTransactionMap<'LONG'>] extends infer A ? A extends undefined ? never : A : never;
+type TFieldsToReplace = TGetLongKeys<DataTransactionEntry<'LONG'>> | TGetLongKeys<ExchangeTransactionOrder<'LONG'>> | {
+    [Type in keyof TransactionMap<'LONG'>]: {
+        [Key in keyof TransactionMap<'LONG'>[Type]]: TGetLongKeys<TransactionMap<'LONG'>[Type]>;
+    }[keyof TransactionMap<'LONG'>[Type]]
+}[keyof TransactionMap<'LONG'>] extends infer A ? A extends undefined ? never : A : never;
 
 const FIELDS: Array<TFieldsToReplace> = ['amount', 'matcherFee', 'price', 'fee', 'minSponsoredAssetFee', 'quantity', 'sellMatcherFee', 'buyMatcherFee'];
 
