@@ -5,7 +5,7 @@ import request, {RequestInit} from '../../tools/request';
 import query from '../../tools/query';
 import {deepAssign} from '../../tools/utils';
 import stringify from '../../tools/stringify';
-import {SignedTransaction, Transaction, TransactionMap} from '@waves/ts-types';
+import {SignedTransaction, Transaction, TransactionMap, WithApiMixin} from '@waves/ts-types';
 import {Long} from "@waves/ts-types/src/index";
 import {
     AliasTransaction,
@@ -128,14 +128,7 @@ export function fetchUnconfirmedInfo(base: string, id: string, options: RequestI
  * GET /transactions/info/{id}
  * Transaction info
  */
-export type WithApiMixin = WithId & {
-    sender: string;
-    height: number;
-};
 
-export interface WithId {
-    id: string;
-}
 
 type TWithState = IWithStateChanges & TWithStateUpdate
 type TWithStateUpdate = { updateStateChanges: Omit<TStateChanges, 'invokes'> & { payments: { payment: TPayment, dApp: string }[] } }
