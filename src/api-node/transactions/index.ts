@@ -5,7 +5,7 @@ import request, {RequestInit} from '../../tools/request';
 import query from '../../tools/query';
 import {deepAssign} from '../../tools/utils';
 import stringify from '../../tools/stringify';
-import {SignedTransaction, Transaction, TransactionMap, WithApiMixin} from '@waves/ts-types';
+import {SignedTransaction, Transaction, TRANSACTION_TYPE, TransactionMap, WithApiMixin} from '@waves/ts-types';
 import {Long} from "@waves/ts-types/src/index";
 import {
     AliasTransaction,
@@ -166,6 +166,7 @@ function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp:
         leases: stateChanges.leases,
         leaseCancels: stateChanges.leaseCancels,
     }
+
     const recursiveFunction = (stateChanges: TStateChanges, sender: string) => {
         if (stateChanges.invokes.length) {
             stateChanges.invokes.forEach((x) => {
@@ -190,7 +191,7 @@ function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp:
                         }
                     )
                     //issues
-                    stateUpdate.issues.concat(x.stateChanges.issues)
+                    stateUpdate.issues.push(...x.stateChanges.issues)
                     //обработать reissues
                     x.stateChanges.reissues.forEach(y => {
                             const index = stateUpdate.reissues.findIndex(z => z.assetId === y.assetId)
@@ -210,14 +211,16 @@ function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp:
                         }
                     )
                     //lease and leaseCancels
-                    stateUpdate.leases.concat(stateChanges.leases)
-                    stateUpdate.leaseCancels.concat(stateChanges.leaseCancels)
+                    stateUpdate.leases.push(...stateChanges.leases)
+                    stateUpdate.leaseCancels.push(...stateChanges.leaseCancels)
 
                     recursiveFunction(x.stateChanges, x.dApp)
                 }
             )
         }
     }
+
+    recursiveFunction(stateChanges, sender)
     return stateUpdate
 }
 
@@ -228,13 +231,12 @@ export function fetchInfo(base: string, id: string, options: RequestInit = Objec
         url: `/transactions/info/${id}`,
         options
     }).then(transaction => {
-        if (transaction.type === 16) {
+        if (transaction.type === TRANSACTION_TYPE.INVOKE_SCRIPT) {
             const payments = transaction.payment ? transaction.payment.map(p => ({
                 asset: p.assetId,
-                amount: Number(p.amount) //можно ли так сделать в этом случае ?
+                amount: Number(p.amount)
             })) : []
-            const stateUpdate = makeStateUpdate(transaction.stateChanges, payments, transaction.dApp, transaction.sender)
-            return {...transaction, stateUpdate}
+            return Object.defineProperty(transaction, 'stateUpdate', makeStateUpdate(transaction.stateChanges, payments, transaction.dApp, transaction.sender))
         } else return transaction
     })
 }
