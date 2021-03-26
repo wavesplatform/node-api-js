@@ -178,7 +178,7 @@ function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp:
             stateChanges.invokes.forEach((x) => {
                     //payments
                     x.payments.forEach(y => {
-                        const index = payments.findIndex(z => (z.payment.asset === y.asset) && (z.dApp === x.dApp) && ())
+                        const index = payments.findIndex(z => (z.payment.asset === y.asset) && (z.dApp === x.dApp) && (sender === x.dApp))
                         index != null ? payments[index].payment.amount += y.amount : payments.push({
                             payment: y,
                             sender: sender,
@@ -240,7 +240,7 @@ export function fetchInfo(base: string, id: string, options: RequestInit = Objec
                 asset: p.assetId,
                 amount: Number(p.amount) //можно ли так сделать в этом случае ?
             })) : []
-            const stateUpdate = makeStateUpdate(transaction.stateChanges, payments, transaction.dApp)
+            const stateUpdate = makeStateUpdate(transaction.stateChanges, payments, transaction.dApp, transaction.sender)
             return {...transaction, stateUpdate}
         } else return transaction
     })
