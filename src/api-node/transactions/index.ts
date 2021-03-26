@@ -173,7 +173,7 @@ function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp:
                     //payments
                     x.payments.forEach(y => {
                         const index = payments.findIndex(z => (z.payment.asset === y.asset) && (z.dApp === x.dApp) && (sender === x.dApp))
-                        index != null ? payments[index].payment.amount += y.amount : payments.push({
+                        index !== -1 ? payments[index].payment.amount += y.amount : payments.push({
                             payment: y,
                             sender: sender,
                             dApp: x.dApp
@@ -182,12 +182,12 @@ function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp:
                     //data
                     x.stateChanges.data.forEach(y => {
                         const index = stateUpdate.data.findIndex(z => z.key === y.key)
-                        index != null ? stateUpdate.data[index] = y : stateUpdate.data.push(y)
+                        index !== -1 ? stateUpdate.data[index] = y : stateUpdate.data.push(y)
                     })
                     //burns
                     x.stateChanges.burns.forEach(y => {
                             const index = stateUpdate.burns.findIndex(z => z.assetId === y.assetId)
-                            index != null ? stateUpdate.burns[index].quantity += y.quantity : stateUpdate.burns.push(y)
+                            index !== -1 ? stateUpdate.burns[index].quantity += y.quantity : stateUpdate.burns.push(y)
                         }
                     )
                     //issues
@@ -195,19 +195,19 @@ function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp:
                     //обработать reissues
                     x.stateChanges.reissues.forEach(y => {
                             const index = stateUpdate.reissues.findIndex(z => z.assetId === y.assetId)
-                            index != null ? stateUpdate.reissues[index].quantity += y.quantity : stateUpdate.reissues.push(y)
+                            index !== -1 ? stateUpdate.reissues[index].quantity += y.quantity : stateUpdate.reissues.push(y)
                         }
                     )
                     //transfers
                     x.stateChanges.transfers.forEach(y => {
                             const index = stateUpdate.transfers.findIndex(z => (z.asset === y.asset) && (z.address === y.address))
-                            index != null ? stateUpdate.transfers[index].amount += y.amount : stateUpdate.transfers.push(y)
+                            index !== -1 ? stateUpdate.transfers[index].amount += y.amount : stateUpdate.transfers.push(y)
                         }
                     )
                     //sponsorFees
                     x.stateChanges.sponsorFees.forEach(y => {
                             const index = stateUpdate.sponsorFees.findIndex(z => z.assetId === y.assetId)
-                            index != null ? stateUpdate.sponsorFees[index] = y : stateUpdate.sponsorFees.push(y)
+                            index !== -1 ? stateUpdate.sponsorFees[index] = y : stateUpdate.sponsorFees.push(y)
                         }
                     )
                     //lease and leaseCancels
@@ -236,7 +236,7 @@ export function fetchInfo(base: string, id: string, options: RequestInit = Objec
                 asset: p.assetId,
                 amount: Number(p.amount)
             })) : []
-            return Object.defineProperty(transaction, 'stateUpdate', makeStateUpdate(transaction.stateChanges, payments, transaction.dApp, transaction.sender))
+            return Object.defineProperty(transaction, 'stateUpdate', {get: () => makeStateUpdate(transaction.stateChanges, payments, transaction.dApp, transaction.sender)})
         } else return transaction
     })
 }
