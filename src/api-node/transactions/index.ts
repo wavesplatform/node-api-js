@@ -159,8 +159,8 @@ type TTransaction<LONG = Long> =
     | (InvokeScriptTransaction<LONG> & TWithState)
     | UpdateAssetInfoTransaction<LONG>;
 
-function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp: string) {
-    const payments = payment.map(payment => ({payment, dApp}))
+function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp: string, sender: string) {
+    const payments = payment.map(payment => ({payment, dApp, sender}))
 
     const stateUpdate = {
         payments,
@@ -173,14 +173,15 @@ function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp:
         leases: stateChanges.leases,
         leaseCancels: stateChanges.leaseCancels,
     }
-    const recursiveFunction = (stateChanges: TStateChanges) => {
+    const recursiveFunction = (stateChanges: TStateChanges, sender: string) => {
         if (stateChanges.invokes.length) {
             stateChanges.invokes.forEach((x) => {
                     //payments
                     x.payments.forEach(y => {
-                        const index = payments.findIndex(z => (z.payment.asset === y.asset) && (z.dApp === x.dApp))
+                        const index = payments.findIndex(z => (z.payment.asset === y.asset) && (z.dApp === x.dApp) && ())
                         index != null ? payments[index].payment.amount += y.amount : payments.push({
                             payment: y,
+                            sender: sender,
                             dApp: x.dApp
                         })
                     })
@@ -216,9 +217,10 @@ function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp:
                         }
                     )
                     //lease and leaseCancels
-                    // x.stateChanges.leases
+                    stateUpdate.leases.concat(stateChanges.leases)
+                    stateUpdate.leaseCancels.concat(stateChanges.leaseCancels)
 
-                    recursiveFunction(x.stateChanges)
+                    recursiveFunction(x.stateChanges, x.dApp)
                 }
             )
         }
