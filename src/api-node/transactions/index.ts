@@ -129,9 +129,9 @@ export function fetchUnconfirmedInfo(base: string, id: string, options: RequestI
  * Transaction info
  */
 
-
+type TStateUpdate = Omit<TStateChanges, 'invokes'> & { payments: { payment: TPayment, dApp: string, sender: string }[] }
+type TWithStateUpdate = { stateUpdate: TStateUpdate }
 type TWithState = IWithStateChanges & TWithStateUpdate
-type TWithStateUpdate = { updateStateChanges: Omit<TStateChanges, 'invokes'> & { payments: { payment: TPayment, dApp: string }[] } }
 
 type TTransaction<LONG = Long> =
     | GenesisTransaction<LONG>
@@ -152,7 +152,7 @@ type TTransaction<LONG = Long> =
     | (InvokeScriptTransaction<LONG> & TWithState)
     | UpdateAssetInfoTransaction<LONG>;
 
-function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp: string, sender: string) {
+function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp: string, sender: string): TStateUpdate {
     const payments = payment.map(payment => ({payment, dApp, sender}))
 
     const stateUpdate = {
