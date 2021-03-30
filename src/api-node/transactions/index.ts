@@ -5,7 +5,14 @@ import request, {RequestInit} from '../../tools/request';
 import query from '../../tools/query';
 import {deepAssign} from '../../tools/utils';
 import stringify from '../../tools/stringify';
-import {SignedTransaction, Transaction, TRANSACTION_TYPE, TransactionMap, WithApiMixin} from '@waves/ts-types';
+import {
+    DataTransactionEntry,
+    SignedTransaction,
+    Transaction,
+    TRANSACTION_TYPE,
+    TransactionMap,
+    WithApiMixin
+} from '@waves/ts-types';
 import {Long} from "@waves/ts-types/src/index";
 import {
     AliasTransaction,
@@ -129,7 +136,10 @@ export function fetchUnconfirmedInfo(base: string, id: string, options: RequestI
  * Transaction info
  */
 
-type TStateUpdate = Omit<TStateChanges, 'invokes'> & { payments: { payment: TPayment, dApp: string, sender: string }[] }
+type TStateUpdate =
+    Omit<TStateChanges, 'invokes'>
+    & { payments: { payment: TPayment, dApp: string, sender: string }[] }
+    & (DataTransactionEntry[] & { address: string })
 type TWithStateUpdate = { stateUpdate: TStateUpdate }
 type TWithState = IWithStateChanges & TWithStateUpdate
 
@@ -152,12 +162,13 @@ type TTransaction<LONG = Long> =
     | (InvokeScriptTransaction<LONG> & TWithState)
     | UpdateAssetInfoTransaction<LONG>;
 
-function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp: string, sender: string): TStateUpdate {
+function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp: string, sender: string) {
     const payments = payment.map(payment => ({payment, dApp, sender}))
+    const data = stateChanges.data.map(data => ({...data, address: dApp}))
 
     const stateUpdate = {
         payments,
-        data: stateChanges.data,
+        data,
         burns: stateChanges.burns,
         issues: stateChanges.issues,
         reissues: stateChanges.reissues,
@@ -182,7 +193,10 @@ function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp:
                     //data
                     x.stateChanges.data.forEach(y => {
                         const index = stateUpdate.data.findIndex(z => z.key === y.key)
-                        index !== -1 ? stateUpdate.data[index] = y : stateUpdate.data.push(y)
+                        index !== -1 ? stateUpdate.data[index] = {...y, address: x.dApp} : stateUpdate.data.push({
+                            ...y,
+                            address: x.dApp
+                        })
                     })
                     //burns
                     x.stateChanges.burns.forEach(y => {
@@ -211,8 +225,8 @@ function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp:
                         }
                     )
                     //lease and leaseCancels
-                    stateUpdate.leases.push(...stateChanges.leases)
-                    stateUpdate.leaseCancels.push(...stateChanges.leaseCancels)
+                    stateUpdate.leases.push(...x.stateChanges.leases)
+                    stateUpdate.leaseCancels.push(...x.stateChanges.leaseCancels)
 
                     recursiveFunction(x.stateChanges, x.dApp)
                 }

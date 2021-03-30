@@ -128,7 +128,7 @@ const NODES = {
 
 describe('Fetch Info', () => {
     it('StateUpdate', async () => {
-        const invokeId = '7ARy5JmeZmf6Ly4X9WRgTJ6D8Nj1UDW8icQ5WJUwqM9k'
+        const invokeId = '4n4MZrxCzbFPvnbZn2dPWwCzq5kn697BKKnGCoLRMLzk'
         const resultInvoke = await fetchInfo(NODES.CUSTOM.NODE_URL, invokeId)
         // @ts-ignore
         console.log(resultInvoke.stateUpdate)
