@@ -136,10 +136,73 @@ export function fetchUnconfirmedInfo(base: string, id: string, options: RequestI
  * Transaction info
  */
 
-type TStateUpdate =
-    Omit<TStateChanges, 'invokes'>
-    & { payments: { payment: TPayment, dApp: string, sender: string }[] }
-    & (DataTransactionEntry[] & { address: string })
+
+type TStateUpdate = {
+    data: (DataTransactionEntry & { address: string })[],
+    transfers: {
+        address: string,
+        sender: string,
+        amount: number,
+        asset: string | null
+    }[],
+    issues: {
+        address: string,
+        assetId: string,
+        name: string,
+        description: string,
+        quantity: number,
+        decimals: number,
+        isReissuable: boolean,
+        compiledScript: null | string,
+        nonce: number
+    }[],
+    reissues: {
+        address: string,
+        assetId: string,
+        isReissuable: boolean,
+        quantity: number
+    }[],
+    burns: {
+        address: string,
+        assetId: string,
+        quantity: number
+    }[],
+    sponsorFees: {
+        address: string,
+        assetId: string,
+        minSponsoredAssetFee: number
+    }[],
+    leases: {
+        sender: string,
+        leaseId: string,
+        recipient: string,
+        amount: number
+    }[],
+    leaseCancels: { leaseId: string, address: string }[],
+}
+
+type shit = {
+    leases: { leaseId: string; amount: number; sender: string; recipient: string }[];
+    data: { address: string; key: string }[];
+    transfers: { amount: number; address: string; sender: string; asset: string | null }[];
+    payments: { dApp: string; sender: string; payment: TPayment }[];
+    leaseCancels: { leaseId: string; address: string }[];
+    issues: {
+        isReissuable: boolean;
+        quantity: number;
+        address: string;
+        assetId: string;
+        decimals: number;
+        name: string;
+        description: string;
+        compiledScript: string | null;
+        nonce: number
+    }[];
+    sponsorFees: { address: string; assetId: string; minSponsoredAssetFee: number }[];
+    reissues: { isReissuable: boolean; quantity: number; address: string; assetId: string }[];
+    burns: { quantity: number; address: string; assetId: string }[]
+}
+
 type TWithStateUpdate = { stateUpdate: TStateUpdate }
 type TWithState = IWithStateChanges & TWithStateUpdate
 
@@ -162,20 +225,29 @@ type TTransaction<LONG = Long> =
     | (InvokeScriptTransaction<LONG> & TWithState)
     | UpdateAssetInfoTransaction<LONG>;
 
-function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp: string, sender: string) {
+
+function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp: string, sender: string): TStateUpdate {
     const payments = payment.map(payment => ({payment, dApp, sender}))
-    const data = stateChanges.data.map(data => ({...data, address: dApp}))
+    const addField = (array: any[], fieldName: string) => array.map(item => ({...item, [fieldName]: dApp}))
+    const transfers = addField(stateChanges.transfers, 'sender')
+    const leases = addField(stateChanges.leases, 'sender')
+    const issues = addField(stateChanges.issues, 'address')
+    const data = addField(stateChanges.data, 'address')
+    const reissues = addField(stateChanges.reissues, 'address')
+    const burns = addField(stateChanges.burns, 'address')
+    const sponsorFees = addField(stateChanges.sponsorFees, 'address')
+    const leaseCancels = addField(stateChanges.leaseCancels, 'address')
 
     const stateUpdate = {
         payments,
         data,
-        burns: stateChanges.burns,
-        issues: stateChanges.issues,
-        reissues: stateChanges.reissues,
-        transfers: stateChanges.transfers,
-        sponsorFees: stateChanges.sponsorFees,
-        leases: stateChanges.leases,
-        leaseCancels: stateChanges.leaseCancels,
+        transfers,
+        reissues,
+        issues,
+        burns,
+        sponsorFees,
+        leases,
+        leaseCancels,
     }
 
     const recursiveFunction = (stateChanges: TStateChanges, sender: string) => {
@@ -201,32 +273,44 @@ function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp:
                     //burns
                     x.stateChanges.burns.forEach(y => {
                             const index = stateUpdate.burns.findIndex(z => z.assetId === y.assetId)
-                            index !== -1 ? stateUpdate.burns[index].quantity += y.quantity : stateUpdate.burns.push(y)
+                            index !== -1 ? stateUpdate.burns[index].quantity += y.quantity : stateUpdate.burns.push({
+                                ...y,
+                                address: x.dApp
+                            })
                         }
                     )
                     //issues
-                    stateUpdate.issues.push(...x.stateChanges.issues)
-                    //обработать reissues
+                    x.stateChanges.issues.forEach(y => stateUpdate.issues.push({...y, address: x.dApp}))
+                    //reissues
                     x.stateChanges.reissues.forEach(y => {
                             const index = stateUpdate.reissues.findIndex(z => z.assetId === y.assetId)
-                            index !== -1 ? stateUpdate.reissues[index].quantity += y.quantity : stateUpdate.reissues.push(y)
+                            index !== -1 ? stateUpdate.reissues[index].quantity += y.quantity : stateUpdate.reissues.push({
+                                ...y,
+                                address: x.dApp
+                            })
                         }
                     )
                     //transfers
                     x.stateChanges.transfers.forEach(y => {
-                            const index = stateUpdate.transfers.findIndex(z => (z.asset === y.asset) && (z.address === y.address))
-                            index !== -1 ? stateUpdate.transfers[index].amount += y.amount : stateUpdate.transfers.push(y)
+                            const index = stateUpdate.transfers.findIndex(z => (z.asset === y.asset) && (z.address === y.address) && (x.dApp === z.sender))
+                            index !== -1 ? stateUpdate.transfers[index].amount += y.amount : stateUpdate.transfers.push({
+                                ...y,
+                                sender: x.dApp
+                            })
                         }
                     )
                     //sponsorFees
                     x.stateChanges.sponsorFees.forEach(y => {
-                            const index = stateUpdate.sponsorFees.findIndex(z => z.assetId === y.assetId)
-                            index !== -1 ? stateUpdate.sponsorFees[index] = y : stateUpdate.sponsorFees.push(y)
+                            const index = stateUpdate.sponsorFees.findIndex(z => (z.assetId === y.assetId) && (z.address === x.dApp))
+                            index !== -1 ? stateUpdate.sponsorFees[index] = {
+                                ...y,
+                                address: x.dApp
+                            } : stateUpdate.sponsorFees.push({...y, address: x.dApp})
                         }
                     )
                     //lease and leaseCancels
-                    stateUpdate.leases.push(...x.stateChanges.leases)
-                    stateUpdate.leaseCancels.push(...x.stateChanges.leaseCancels)
+                    x.stateChanges.leases.forEach(y => stateUpdate.leases.push({...y, sender: x.dApp}))
+                    x.stateChanges.leaseCancels.forEach(y => stateUpdate.leaseCancels.push({...y, address: x.dApp}))
 
                     recursiveFunction(x.stateChanges, x.dApp)
                 }
@@ -245,7 +329,7 @@ export function fetchInfo(base: string, id: string, options: RequestInit = Objec
         url: `/transactions/info/${id}`,
         options
     }).then(transaction => {
-        if (transaction.type === TRANSACTION_TYPE.INVOKE_SCRIPT) {
+        if (transaction.type === TRANSACTION_TYPE.INVOKE_SCRIPT && transaction.stateChanges.invokes && transaction.stateChanges.invokes.length) {
             const payments = transaction.payment ? transaction.payment.map(p => ({
                 asset: p.assetId,
                 amount: Number(p.amount)
