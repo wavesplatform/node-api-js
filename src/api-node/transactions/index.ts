@@ -181,28 +181,6 @@ type TStateUpdate = {
     leaseCancels: { leaseId: string, address: string }[],
 }
 
-type shit = {
-    leases: { leaseId: string; amount: number; sender: string; recipient: string }[];
-    data: { address: string; key: string }[];
-    transfers: { amount: number; address: string; sender: string; asset: string | null }[];
-    payments: { dApp: string; sender: string; payment: TPayment }[];
-    leaseCancels: { leaseId: string; address: string }[];
-    issues: {
-        isReissuable: boolean;
-        quantity: number;
-        address: string;
-        assetId: string;
-        decimals: number;
-        name: string;
-        description: string;
-        compiledScript: string | null;
-        nonce: number
-    }[];
-    sponsorFees: { address: string; assetId: string; minSponsoredAssetFee: number }[];
-    reissues: { isReissuable: boolean; quantity: number; address: string; assetId: string }[];
-    burns: { quantity: number; address: string; assetId: string }[]
-}
-
 type TWithStateUpdate = { stateUpdate: TStateUpdate }
 type TWithState = IWithStateChanges & TWithStateUpdate
 
