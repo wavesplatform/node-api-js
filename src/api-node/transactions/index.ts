@@ -23,6 +23,7 @@ import {
     TransferTransaction, UpdateAssetInfoTransaction
 } from "@waves/ts-types/transactions/index";
 import {IWithStateChanges, TPayment, TStateChanges} from "../debug";
+import {BigNumber} from "@waves/bignumber";
 
 
 /**
@@ -234,11 +235,13 @@ function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp:
                     //payments
                     x.payments.forEach(y => {
                         const index = payments.findIndex(z => (z.payment.asset === y.asset) && (z.dApp === x.dApp) && (sender === x.dApp))
-                        index !== -1 ? payments[index].payment.amount += y.amount : payments.push({
-                            payment: y,
-                            sender: sender,
-                            dApp: x.dApp
-                        })
+                        index !== -1
+                            ? payments[index].payment.amount = (new BigNumber(payments[index].payment.amount)).add(y.amount).toNumber()
+                            : payments.push({
+                                payment: y,
+                                sender: sender,
+                                dApp: x.dApp
+                            })
                     })
                     //data
                     x.stateChanges.data.forEach(y => {
@@ -271,19 +274,20 @@ function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[], dApp:
                     //transfers
                     x.stateChanges.transfers.forEach(y => {
                             const index = stateUpdate.transfers.findIndex(z => (z.asset === y.asset) && (z.address === y.address) && (x.dApp === z.sender))
-                            index !== -1 ? stateUpdate.transfers[index].amount += y.amount : stateUpdate.transfers.push({
-                                ...y,
-                                sender: x.dApp
-                            })
+                            index !== -1
+                                ? stateUpdate.transfers[index].amount = (new BigNumber(stateUpdate.transfers[index].amount)).add(y.amount).toNumber()
+                                : stateUpdate.transfers.push({
+                                    ...y,
+                                    sender: x.dApp
+                                })
                         }
                     )
                     //sponsorFees
                     x.stateChanges.sponsorFees.forEach(y => {
                             const index = stateUpdate.sponsorFees.findIndex(z => (z.assetId === y.assetId) && (z.address === x.dApp))
-                            index !== -1 ? stateUpdate.sponsorFees[index] = {
-                                ...y,
-                                address: x.dApp
-                            } : stateUpdate.sponsorFees.push({...y, address: x.dApp})
+                            index !== -1
+                                ? stateUpdate.sponsorFees[index] = {...y, address: x.dApp}
+                                : stateUpdate.sponsorFees.push({...y, address: x.dApp})
                         }
                     )
                     //lease and leaseCancels
