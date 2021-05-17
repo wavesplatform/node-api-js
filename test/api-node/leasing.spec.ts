@@ -35,4 +35,5 @@ it('Leasing info', async () => {
     const ids = ['AbkVZ6EzuUESkQZUHSFtUHdoRQh4khTD66eGc73CmTeg', 'GGSK8RGLRM2j1Hx9FhQjBaFptmbZgGzX93NKToGE1Bjn']
     const info = await api.leasing.fetchLeasingInfo(ids)
     console.log(info)
+    expect(info).toBeInstanceOf(Array);
 })
