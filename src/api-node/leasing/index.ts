@@ -21,7 +21,7 @@ export interface IActive {
  */
 export function fetchLeasingInfo(base: string, ids: string[], options: RequestInit = Object.create(null)): Promise<Array<ILeaseInfo>> {
     const searchParams = new URLSearchParams(ids.reduce((acc, id) => [...acc, ["id", id]], [] as string[][]))
-    return request({ base, url: `/leasing/active/`, options: {...options, body: searchParams} });
+    return request({ base, url: `/leasing/active/`, options: {...options, body: searchParams, method: 'POST'} });
 }
 
 export interface ILeaseInfo {
