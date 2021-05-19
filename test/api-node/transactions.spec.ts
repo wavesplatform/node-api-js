@@ -1,10 +1,11 @@
-import { CHAIN_ID, MASTER_ACCOUNT, NODE_URL, STATE } from '../_state';
-import { libs, transfer } from '@waves/waves-transactions';
+import {CHAIN_ID, MASTER_ACCOUNT, NETWORK_BYTE, NODE_URL, STATE} from '../_state';
+import {libs, transfer} from '@waves/waves-transactions';
 import create from '../../src';
-import { ITransferTransactionWithProofs, IWithId } from '@waves/ts-types';
+import {TransferTransaction, SignedTransaction} from '@waves/ts-types';
 import { TLong } from '../../src/interface';
 import { TRANSACTION_STATUSES } from '../../src/constants';
 import { fetchCalculateFee } from '../../src/api-node/transactions';
+import {ITransferTransaction} from "@waves/waves-transactions/src/transactions";
 
 
 const API = create(NODE_URL);
@@ -13,8 +14,9 @@ it('Broadcast and unconfirmed', async () => {
     const tx = await API.transactions.broadcast(
         transfer({
             recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
-            amount: 1
-        }, MASTER_ACCOUNT.SEED) as ITransferTransactionWithProofs<TLong>
+            amount: 1,
+            chainId: NETWORK_BYTE
+        }, MASTER_ACCOUNT.SEED) as  SignedTransaction<TransferTransaction<TLong>>
     );
 
     const unconfirmed = await API.transactions.fetchUnconfirmedInfo(tx.id);
@@ -56,7 +58,7 @@ describe('Status', () => {
         const tx = transfer({
             recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
             amount: 1
-        }, MASTER_ACCOUNT.SEED) as ITransferTransactionWithProofs<TLong> & IWithId;
+        }, MASTER_ACCOUNT.SEED) as ITransferTransactionWithProofs<TLong> & WithId;
 
         const status = await API.transactions.fetchStatus([tx.id]);
 
