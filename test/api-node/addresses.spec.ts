@@ -33,11 +33,11 @@ it('Script info simple', async () => {
     checkNotSmart(info, STATE.ACCOUNTS.SIMPLE.address);
 });
 
-it('dataKey', async () => {
-    const key = await api.addresses.fetchDataKey(STATE.ACCOUNTS.SIMPLE.address, 'key');
-    expect(key.type).toBe(STATE.ACCOUNTS.SIMPLE.data.key.type);
-    expect(key.value).toBe(STATE.ACCOUNTS.SIMPLE.data.key.value);
-});
+// it('dataKey', async () => {
+//     const key = await api.addresses.fetchDataKey(STATE.ACCOUNTS.SIMPLE.address, 'key');
+//     expect(key.type).toBe(STATE.ACCOUNTS.SIMPLE.data.key.type);
+//     expect(key.value).toBe(STATE.ACCOUNTS.SIMPLE.data.key.value);
+// });
 
 it('Script info meta', async () => {
     const info = await api.addresses.fetchScriptInfoMeta(STATE.ACCOUNTS.SIMPLE.address);

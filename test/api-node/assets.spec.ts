@@ -1,9 +1,10 @@
 import { NODE_URL, STATE } from '../_state';
 import { create } from '../../src';
-import { TAssetBalance, IAssetsAddressLimit, TAssetDetails } from '../../src/api-node/assets';
+import {TAssetBalance, IAssetsAddressLimit, TAssetDetails, TErrorResponse} from '../../src/api-node/assets';
 import { TLong } from '../../src/interface';
 
 const api: ReturnType<typeof create> = create(NODE_URL);
+
 
 const checkAsset = (object: TAssetDetails) => {
     expect(object).toMatchObject({
@@ -26,10 +27,9 @@ const checkAsset = (object: TAssetDetails) => {
 it('details array', async () => {
     const info = await api.assets.fetchAssetsDetails([STATE.ASSETS.BTC.id, STATE.ASSETS.ETH.id]);
     expect(info).toBeInstanceOf(Array);
-    
     info
-        .filter((asset: TAssetDetails) => !!asset.assetId)
-        .forEach(checkAsset);
+        .filter((asset: TAssetDetails | TErrorResponse) => asset.hasOwnProperty('error'))
+        .forEach((x) => checkAsset(x as TAssetDetails));
 });
 
 it('details string', async () => {
@@ -48,13 +48,13 @@ it('details string', async () => {
     expect(typeof info.reissuable).toBe('boolean');
     expect(typeof info.quantity).toBe('string');
     expect(typeof info.scripted).toBe('boolean');
-    expect(info.minSponsoredAssetFee).toBe(null); 
-    expect(typeof info.originTransactionId).toBe('string'); 
+    expect(info.minSponsoredAssetFee).toBe(null);
+    expect(typeof info.originTransactionId).toBe('string');
 });
 
 // TODO: запрос возвращает ошибку
 it('Asset distribution', async () => {
-    const { height } = await api.blocks.fetchHeight(); 
+    const { height } = await api.blocks.fetchHeight();
     const info = await api.assets.fetchAssetDistribution(STATE.ASSETS.BTC.id, 2, 500);
     expect(typeof info.hasNext).toBe('boolean');
     expect(typeof info.lastItem).toBe('string');
