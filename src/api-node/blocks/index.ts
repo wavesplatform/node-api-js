@@ -25,7 +25,7 @@ export function fetchHeadersSeq(base: string, from: number, to: number, options:
 export function fetchHeadersLast(base: string, options: RequestInit = Object.create(null)): Promise<IBlockHeader> {
     return request({
         base,
-        url: '/blocks/headers/last',
+        url: `/blocks/headers/last`,
         options
     });
 }

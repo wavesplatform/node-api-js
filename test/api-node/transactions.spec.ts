@@ -14,8 +14,7 @@ it('Broadcast and unconfirmed', async () => {
     const tx = await API.transactions.broadcast(
         transfer({
             recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
-            amount: 1,
-            chainId: NETWORK_BYTE
+            amount: 1
         }, MASTER_ACCOUNT.SEED) as SignedTransaction<TransferTransaction<TLong>>
     );
 

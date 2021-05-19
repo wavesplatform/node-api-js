@@ -55,7 +55,8 @@ it('details string', async () => {
 // TODO: запрос возвращает ошибку
 it('Asset distribution', async () => {
     const { height } = await api.blocks.fetchHeight();
-    const info = await api.assets.fetchAssetDistribution(STATE.ASSETS.BTC.id, 2, 500);
+    const info = await api.assets.fetchAssetDistribution(STATE.ASSETS.BTC.id, height-1, 500);
+    console.log(info)
     expect(typeof info.hasNext).toBe('boolean');
     expect(typeof info.lastItem).toBe('string');
     expect(info.items).toBeInstanceOf(Object);
