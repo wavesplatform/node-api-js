@@ -32,6 +32,7 @@ it('Basetarget BlockId', async () => {
     const info = await api.consensus.fetchBasetarget();
     expect(typeof info.baseTarget).toBe('number');
     const { signature } = await api.blocks.fetchHeadersLast();
+    console.log(signature)
     const { baseTarget } = await api.consensus.fetchBasetargetBlockId(signature);
     expect(typeof baseTarget).toBe('number');
 });
