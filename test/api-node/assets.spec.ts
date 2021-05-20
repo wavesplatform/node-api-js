@@ -2,12 +2,18 @@ import { NODE_URL, STATE } from '../_state';
 import { create } from '../../src';
 import {TAssetBalance, IAssetsAddressLimit, TAssetDetails, TErrorResponse} from '../../src/api-node/assets';
 import { TLong } from '../../src/interface';
+import { isStringOrNumber } from  '../extendedMatcher'
 
 const api: ReturnType<typeof create> = create(NODE_URL);
 
+expect.extend({
+    isStringOrNumber
+  });
 
 const checkAsset = (object: TAssetDetails) => {
+    
     expect(object).toMatchObject({
+        
         assetId: expect.any(String),
         issueHeight: expect.any(Number),
         issueTimestamp: expect.any(Number),
@@ -17,7 +23,7 @@ const checkAsset = (object: TAssetDetails) => {
         description: expect.any(String),
         decimals: expect.any(Number),
         reissuable: expect.any(Boolean),
-        quantity: expect.any(String),
+        quantity: expect.isStringOrNumber(),
         scripted: expect.any(Boolean),
         minSponsoredAssetFee: expect.any(Object),
         originTransactionId: expect.any(String)
@@ -56,7 +62,6 @@ it('details string', async () => {
 it('Asset distribution', async () => {
     const { height } = await api.blocks.fetchHeight();
     const info = await api.assets.fetchAssetDistribution(STATE.ASSETS.BTC.id, height-1, 500);
-    console.log(info)
     expect(typeof info.hasNext).toBe('boolean');
     expect(typeof info.lastItem).toBe('string');
     expect(info.items).toBeInstanceOf(Object);
@@ -89,9 +94,9 @@ it('Assets address limit', async () => {
 const checkBalances = (object: TAssetBalance) => {
     expect(object).toMatchObject({
         assetId: expect.any(String),
-        balance: expect.any(Number),
+        balance: expect.any(String),
         reissuable: expect.any(Boolean),
-        quantity: expect.any(String)
+        quantity: expect.isStringOrNumber(),
     })
 }
 

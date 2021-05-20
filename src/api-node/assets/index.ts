@@ -127,7 +127,7 @@ export interface IBalanceAddressAssetId {
     balance: number;
 }
 
-export interface IAssetsAddressLimit {
+export interface IAssetsAddressLimit<LONG = TLong> {
     assetId: string;
     issueHeight: number;
     issueTimestamp: number;
@@ -137,9 +137,9 @@ export interface IAssetsAddressLimit {
     description: string;
     decimals: number;
     reissuable: boolean;
-    quantity: number;
+    quantity: LONG;
     scripted: boolean;
-    minSponsoredAssetFee: number | null;
+    minSponsoredAssetFee: LONG | null;
     originTransactionId: string
 }
 
@@ -150,10 +150,10 @@ export type TAssetsBalance = {
 
 export type TAssetBalance<LONG = TLong> = {
     'assetId': string;
-    'balance': number;
+    'balance': LONG;
     'reissuable': true;
     'minSponsoredAssetFee': LONG | null;
-    'sponsorBalance': number | null;
+    'sponsorBalance': LONG | null;
     'quantity': LONG;
     'issueTransaction': SignedTransaction<IssueTransaction & WithApiMixin>;
 }
