@@ -21,7 +21,6 @@ it('Consensus algo', async () => {
 
 it('Generation signature blockId', async () => {
     const info = await api.consensus.fetchBasetarget();
-    console.log(info)
     expect(typeof info.baseTarget).toBe('number');
     const { signature } = await api.blocks.fetchHeadersLast();
     const { generationSignature } = await api.consensus.fetchGenerationSignatureBlockId(signature);

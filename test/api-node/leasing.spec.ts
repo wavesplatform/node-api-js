@@ -37,3 +37,22 @@ it('Leasing info', async () => {
     console.log(info)
     expect(info).toBeInstanceOf(Array);
 })
+
+it('test', async () => {
+
+    function oneOf(received: any, ...oneOfExpectedTypes: any[]) {
+
+        for(var i = 0; i < oneOfExpectedTypes.length; i++) {
+            if (received === null) {
+                if (oneOfExpectedTypes[i] === null) {
+                    return true;
+                }
+            } else if (received.constructor === oneOfExpectedTypes[i]) {
+                return true
+            }
+        }
+        return false
+    }
+
+    console.log(oneOf(null, String, Boolean, Number, null))
+});

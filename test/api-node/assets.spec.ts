@@ -2,13 +2,11 @@ import { NODE_URL, STATE } from '../_state';
 import { create } from '../../src';
 import {TAssetBalance, IAssetsAddressLimit, TAssetDetails, TErrorResponse} from '../../src/api-node/assets';
 import { TLong } from '../../src/interface';
-import { isStringOrNumber } from  '../extendedMatcher'
+import { anyOf } from  '../extendedMatcher'
 
 const api: ReturnType<typeof create> = create(NODE_URL);
 
-expect.extend({
-    isStringOrNumber
-  });
+
 
 const checkAsset = (object: TAssetDetails) => {
     
@@ -23,9 +21,9 @@ const checkAsset = (object: TAssetDetails) => {
         description: expect.any(String),
         decimals: expect.any(Number),
         reissuable: expect.any(Boolean),
-        quantity: expect.isStringOrNumber(),
+        quantity: expect.anyOf(String,Number),
         scripted: expect.any(Boolean),
-        minSponsoredAssetFee: expect.any(Object),
+        minSponsoredAssetFee: expect.anyOf(String, Number, null),
         originTransactionId: expect.any(String)
     })
 }
@@ -94,14 +92,15 @@ it('Assets address limit', async () => {
 const checkBalances = (object: TAssetBalance) => {
     expect(object).toMatchObject({
         assetId: expect.any(String),
-        balance: expect.any(String),
+        balance: expect.anyOf(String, Number),
         reissuable: expect.any(Boolean),
-        quantity: expect.isStringOrNumber(),
+        quantity: expect.anyOf(String, Number),
     })
 }
 
 it('Asset balance', async () => {
     const info = await api.assets.fetchAssetsBalance(STATE.ACCOUNTS.SIMPLE.address);
+    console.log(info)
     expect(info.address).toBe(STATE.ACCOUNTS.SIMPLE.address);
     expect(info.balances).toBeInstanceOf(Array);
     info.balances.forEach(checkBalances);
