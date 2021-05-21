@@ -38,6 +38,11 @@ it('Leasing info', async () => {
     expect(info).toBeInstanceOf(Array);
 })
 
+it('assets balance', async () => {
+    const info = await api.assets.fetchBalanceAddressAssetId("3MdewG3vLydzGjEbydFtKLVFPLstk4HMnhT", "DUEpojBxirHFbhFhchZPmT5PQ1ZGwMNZLhnyawX3XoHG");
+    console.log(info)
+})
+
 it('test', async () => {
 
     function oneOf(received: any, ...oneOfExpectedTypes: any[]) {
