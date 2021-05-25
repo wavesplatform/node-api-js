@@ -24,7 +24,7 @@ const checkObj = (object: LeaseTransaction<TLong> & WithApiMixin & IActive) => {
         timestamp: expect.any(Number),
         height: expect.any(Number)
     })
-}
+};
 // it('Active', async () => {
 //     const info = await api.leasing.fetchActive(STATE.ACCOUNTS.SIMPLE.address);
 //     expect(info).toBeInstanceOf(Array);
@@ -36,28 +36,5 @@ it('Leasing info', async () => {
     const info = await api.leasing.fetchLeasingInfo(ids)
     console.log(info)
     expect(info).toBeInstanceOf(Array);
-})
-
-it('assets balance', async () => {
-    const info = await api.assets.fetchBalanceAddressAssetId("3MdewG3vLydzGjEbydFtKLVFPLstk4HMnhT", "DUEpojBxirHFbhFhchZPmT5PQ1ZGwMNZLhnyawX3XoHG");
-    console.log(info)
-})
-
-it('test', async () => {
-
-    function oneOf(received: any, ...oneOfExpectedTypes: any[]) {
-
-        for(var i = 0; i < oneOfExpectedTypes.length; i++) {
-            if (received === null) {
-                if (oneOfExpectedTypes[i] === null) {
-                    return true;
-                }
-            } else if (received.constructor === oneOfExpectedTypes[i]) {
-                return true
-            }
-        }
-        return false
-    }
-
-    console.log(oneOf(null, String, Boolean, Number, null))
 });
+

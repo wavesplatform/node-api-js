@@ -172,9 +172,11 @@ export function fetchHeight(base: string, options: RequestInit = Object.create(n
 
 
 export interface IBlockHeader {
+    id: string;
     blocksize: number;
     reward: TLong;
     signature: string;
+    VRF: string;
     generator: string;
     version: number;
     reference: string;

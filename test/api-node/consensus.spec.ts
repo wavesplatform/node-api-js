@@ -18,20 +18,3 @@ it('Consensus algo', async () => {
     const { consensusAlgo } = await api.consensus.fetchConsensusAlgo();
     expect(typeof consensusAlgo).toBe('string');
 });
-
-it('Generation signature blockId', async () => {
-    const info = await api.consensus.fetchBasetarget();
-    expect(typeof info.baseTarget).toBe('number');
-    const { signature } = await api.blocks.fetchHeadersLast();
-    const { generationSignature } = await api.consensus.fetchGenerationSignatureBlockId(signature);
-    expect(typeof generationSignature).toBe('string');
-});
-
-it('Basetarget BlockId', async () => {
-    const info = await api.consensus.fetchBasetarget();
-    expect(typeof info.baseTarget).toBe('number');
-    const { signature } = await api.blocks.fetchHeadersLast();
-    console.log(signature)
-    const { baseTarget } = await api.consensus.fetchBasetargetBlockId(signature);
-    expect(typeof baseTarget).toBe('number');
-});

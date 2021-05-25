@@ -2,7 +2,7 @@ import { NODE_URL, STATE } from '../_state';
 import { create } from '../../src';
 import {TAssetBalance, IAssetsAddressLimit, TAssetDetails, TErrorResponse} from '../../src/api-node/assets';
 import { TLong } from '../../src/interface';
-import { anyOf } from  '../extendedMatcher'
+import { isNullableStringOrNumber, isStringOrNumber } from  '../extendedMatcher'
 
 const api: ReturnType<typeof create> = create(NODE_URL);
 
@@ -21,9 +21,9 @@ const checkAsset = (object: TAssetDetails) => {
         description: expect.any(String),
         decimals: expect.any(Number),
         reissuable: expect.any(Boolean),
-        quantity: expect.anyOf(String,Number),
+        quantity: expect.isStringOrNumber(),
         scripted: expect.any(Boolean),
-        minSponsoredAssetFee: expect.anyOf(String, Number, null),
+        minSponsoredAssetFee: expect.isNullableStringOrNumber(),
         originTransactionId: expect.any(String)
     })
 }
@@ -56,7 +56,6 @@ it('details string', async () => {
     expect(typeof info.originTransactionId).toBe('string');
 });
 
-// TODO: запрос возвращает ошибку
 it('Asset distribution', async () => {
     const { height } = await api.blocks.fetchHeight();
     const info = await api.assets.fetchAssetDistribution(STATE.ASSETS.BTC.id, height-1, 500);
@@ -76,9 +75,9 @@ const checkAssets = (object: IAssetsAddressLimit) => {
         description: expect.any(String),
         decimals: expect.any(Number),
         reissuable: expect.any(Boolean),
-        quantity: expect.any(Number),
+        quantity: expect.isStringOrNumber(),
         scripted: expect.any(Boolean),
-        minSponsoredAssetFee: expect.any(Number),
+        minSponsoredAssetFee: expect.isStringOrNumber(),
         originTransactionId: expect.any(String)
     })
 }
@@ -92,15 +91,14 @@ it('Assets address limit', async () => {
 const checkBalances = (object: TAssetBalance) => {
     expect(object).toMatchObject({
         assetId: expect.any(String),
-        balance: expect.anyOf(String, Number),
+        balance: expect.isStringOrNumber(),
         reissuable: expect.any(Boolean),
-        quantity: expect.anyOf(String, Number),
+        quantity: expect.isStringOrNumber(),
     })
 }
 
 it('Asset balance', async () => {
     const info = await api.assets.fetchAssetsBalance(STATE.ACCOUNTS.SIMPLE.address);
-    console.log(info)
     expect(info.address).toBe(STATE.ACCOUNTS.SIMPLE.address);
     expect(info.balances).toBeInstanceOf(Array);
     info.balances.forEach(checkBalances);
@@ -110,5 +108,5 @@ it('Balance address assetId', async () => {
     const info = await api.assets.fetchBalanceAddressAssetId(STATE.ACCOUNTS.SIMPLE.address, STATE.ASSETS.BTC.id);
     expect(info.address).toBe(STATE.ACCOUNTS.SIMPLE.address);
     expect(info.assetId).toBe(STATE.ASSETS.BTC.id);
-    expect(typeof info.balance).toBe('number')
+    expect(typeof info.balance).isStringOrNumber();
 });

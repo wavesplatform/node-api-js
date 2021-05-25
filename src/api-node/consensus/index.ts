@@ -30,16 +30,6 @@ export function fetchConsensusAlgo(base: string): Promise<IConsensusAlgo> {
 }
 
 /**
- * GET /consensus/generationsignature/{blockId}
- * Generation signature
- * @param base
- * @param blockId
- */
-export function fetchGenerationSignatureBlockId(base: string, blockId: string, options: RequestInit = Object.create(null)): Promise<IGeneraationSignatureBlockId> {
-    return request({base, url: `/consensus/generationsignature/${blockId}`, options});
-}
-
-/**
  * GET /consensus/basetarget/{blockId}
  * Base target
  * @param base

@@ -137,7 +137,7 @@ export interface IAssetsAddressLimit<LONG = TLong> {
     description: string;
     decimals: number;
     reissuable: boolean;
-    quantity: LONG;
+    quantity: TLong;
     scripted: boolean;
     minSponsoredAssetFee: LONG | null;
     originTransactionId: string
