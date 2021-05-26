@@ -204,7 +204,7 @@ export interface ICompileCode {
     complexity: number;
     callableComplexities: Record<string, number>;
     verifierComplexity: number;
-    extraFee: number;
+    extraFee: TLong;
 }
 
 export interface IEstimate extends ICompileCode {

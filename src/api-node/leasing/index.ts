@@ -20,7 +20,8 @@ export interface IActive {
  * Get lease transactions info.
  */
 export function fetchLeasingInfo(base: string, ids: string[], options: RequestInit = Object.create(null)): Promise<Array<ILeaseInfo>> {
-    const searchParams = `{\"ids\":[${ids.map(id => `\"${id}\"`).join(',')}]}`
+    const searchParams = `{\"ids\":[${ids.map(id => `\"${id}\"`).join(',')}]}`;
+
     return request({
         base, url: `/leasing/info/`, options: {
             ...options,
@@ -38,7 +39,7 @@ export interface ILeaseInfo {
     originTransactionId: string,
     sender: string,
     recipient: string,
-    amount: string | number,
+    amount: TLong,
     height: number,
     status: string,
     cancelHeight: number,

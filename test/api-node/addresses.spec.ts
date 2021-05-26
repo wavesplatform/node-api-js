@@ -1,7 +1,7 @@
 import { NODE_URL, STATE } from '../_state';
 import { create } from '../../src';
 import { IScriptInfo, fetchScriptInfo } from '../../src/api-node/addresses';
-
+import { isNullableStringOrNumber, isStringOrNumber } from  '../extendedMatcher'
 
 const api: ReturnType<typeof create> = create(NODE_URL);
 
@@ -49,8 +49,8 @@ it('balance details', async () => {
     const balanceDetails = await api.addresses.fetchBalanceDetails(address);
 
     expect(balanceDetails.address).toBe(address);
-    expect(typeof balanceDetails.regular).toBe('number');
-    expect(typeof balanceDetails.generating).toBe('number');
-    expect(typeof balanceDetails.available).toBe('number');
-    expect(typeof balanceDetails.effective).toBe('number');
+    expect(typeof balanceDetails.regular).isStringOrNumber();
+    expect(typeof balanceDetails.generating).isStringOrNumber();
+    expect(typeof balanceDetails.available).isStringOrNumber();
+    expect(typeof balanceDetails.effective).isStringOrNumber();
 });

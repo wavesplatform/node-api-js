@@ -16,7 +16,7 @@ export function fetchActivationStatus(base: string, options: RequestInit = Objec
 }
 
 export interface IActivationStatus<LONG> {
-    height: LONG;
+    height: number;
     votingInterval: number;
     votingThreshold: number;
     nextCheck: LONG;
@@ -28,5 +28,5 @@ export interface IFeatures<LONG> {
     description: string;
     blockchainStatus: string;
     nodeStatus: string;
-    activationHeight: LONG;
+    activationHeight: number;
 }

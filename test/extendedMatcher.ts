@@ -2,7 +2,7 @@ import { printReceived } from 'jest-matcher-utils';
 
 declare global {
     namespace jest {
-        interface Matchers<R, T = void> {
+        interface Matchers<R> {
             isStringOrNumber(): R;
             isNullableStringOrNumber(): R;
         }

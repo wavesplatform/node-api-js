@@ -29,16 +29,6 @@ export function fetchConsensusAlgo(base: string): Promise<IConsensusAlgo> {
     return request({base, url: '/consensus/algo'});
 }
 
-/**
- * GET /consensus/basetarget/{blockId}
- * Base target
- * @param base
- * @param blockId
- */
-export function fetchBasetargetBlockId(base: string, blockId: string, options: RequestInit = Object.create(null)): Promise<IBaseTargetBlockId> {
-    return request({base, url: `/consensus/basetarget/${blockId}`, options});
-}
-
 export interface IGeneratingBalance<LONG> {
     address: string;
     balance: LONG;

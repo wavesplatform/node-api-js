@@ -1,6 +1,6 @@
-import { NODE_URL } from '../_state';
-import { create } from '../../src';
-import { fetchHeadersAt, fetchHeadersLast, IBlockHeader } from '../../src/api-node/blocks';
+import {NODE_URL} from '../_state';
+import {create} from '../../src';
+import {fetchHeadersAt, fetchHeadersLast, IBlockHeader} from '../../src/api-node/blocks';
 
 
 const api = create(NODE_URL);
@@ -29,4 +29,18 @@ it('fetchHeadersLast', async () => {
 it('fetchHeadersAt', async () => {
     checkBlock(await api.blocks.fetchHeadersAt(2));
     checkBlock(await fetchHeadersAt(NODE_URL, 2));
+});
+
+it('fetchHeightById', async () => {
+    const { id, height } = await api.blocks.fetchHeadersLast();
+    const info = await api.blocks.fetchHeightById(id);
+    expect(info.height).toBe(height)
+});
+
+it('fetchHeadersSeq', async () => {
+    const { height } = await api.blocks.fetchHeadersLast();
+    const minHeight = height-100 > 1 ?  height - 100 : 2;
+    const info = await api.blocks.fetchHeadersSeq(minHeight, height - 1);
+    expect(info).toBeInstanceOf(Array);
+    info.forEach(checkBlock);
 });
