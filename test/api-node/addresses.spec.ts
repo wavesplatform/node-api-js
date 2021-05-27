@@ -33,11 +33,24 @@ it('Script info simple', async () => {
     checkNotSmart(info, STATE.ACCOUNTS.SIMPLE.address);
 });
 
-// it('dataKey', async () => {
-//     const key = await api.addresses.fetchDataKey(STATE.ACCOUNTS.SIMPLE.address, 'key');
-//     expect(key.type).toBe(STATE.ACCOUNTS.SIMPLE.data.key.type);
-//     expect(key.value).toBe(STATE.ACCOUNTS.SIMPLE.data.key.value);
-// });
+it('data by key', async () => {
+    const data = await api.addresses.fetchDataKey(STATE.ACCOUNTS.SIMPLE.address, 'key');
+    // @ts-ignore
+    expect(data.type).toBe(STATE.ACCOUNTS.SIMPLE.data.key.type);
+    // @ts-ignore
+    expect(data.value).toBe(STATE.ACCOUNTS.SIMPLE.data.key.value);
+});
+
+it('data by address', async () => {
+    const addressData = await api.addresses.data(STATE.ACCOUNTS.SIMPLE.address);
+
+    expect(addressData).toBeInstanceOf(Array)
+    //TODO contain data from json
+    // // @ts-ignore
+    // expect(data.type).toBe(STATE.ACCOUNTS.SIMPLE.data.key.type);
+    // // @ts-ignore
+    // expect(data.value).toBe(STATE.ACCOUNTS.SIMPLE.data.key.value);
+});
 
 it('Script info meta', async () => {
     const info = await api.addresses.fetchScriptInfoMeta(STATE.ACCOUNTS.SIMPLE.address);
@@ -71,7 +84,7 @@ it('address by public key', async () => {
     const {address, publicKey} = STATE.ACCOUNTS.SIMPLE;
     const addressByPublicKey = await api.addresses.fetchPublicKey(publicKey);
 
-    expect(addressByPublicKey).toBe(address)
+    expect(addressByPublicKey.address).toBe(address)
 });
 
 it('address balance', async () => {

@@ -59,12 +59,26 @@ export function fetchHeadersAt(base: string, height: number, options: RequestIni
 }
 
 /**
+ * GET /blocks/headers/{id}
+ * Get block at specified height
+ * @param base
+ * @param height
+ */
+export function fetchHeadersById(base: string, id: string, options: RequestInit = Object.create(null)): Promise<IBlock> {
+    return request({
+        base,
+        url: `/blocks/headers/${id}`,
+        options
+    });
+}
+
+/**
  * GET /blocks/at/{height}
  * Get block at specified height
  * @param base
  * @param height
  */
-export function BlockAt(base: string, height: number, options: RequestInit = Object.create(null)): Promise<IBlock> {
+export function fetchBlockAt(base: string, height: number, options: RequestInit = Object.create(null)): Promise<IBlock> {
     return request({
         base,
         url: `/blocks/at/${height}`,
@@ -88,15 +102,15 @@ export function fetchSeq(base: string, from: number, to: number, options: Reques
 }
 
 /**
- * GET /blocks/signature/{signature}
+ * GET /blocks/{id}
  * Get block by its signature
  * @param base
  * @param signature
  */
-export function fetchBlockBySignature(base: string, signature: string, options: RequestInit = Object.create(null)): Promise<IBlock> {
+export function fetchBlockById(base: string, id: string, options: RequestInit = Object.create(null)): Promise<IBlock> {
     return request({
         base,
-        url: `/blocks/signature/${signature}`,
+        url: `/blocks/${id}`,
         options
     })
 }
@@ -150,7 +164,7 @@ export function fetchLast(base: string, options: RequestInit = Object.create(nul
  * @param id
  * @param blockNum
  */
-export function fetchDelay(base: string, id: string, blockNum: string, options: RequestInit = Object.create(null)): Promise<{ delay: number}> {
+export function fetchDelay(base: string, id: string, blockNum: number, options: RequestInit = Object.create(null)): Promise<{ delay: number}> {
     return request({
         base,
         url: `/blocks/delay/${id}/${blockNum}`,
@@ -178,6 +192,7 @@ export interface IBlockHeader {
     signature: string;
     VRF: string;
     generator: string;
+    generatorPublicKey: string;
     version: number;
     reference: string;
     features: Array<string>;
