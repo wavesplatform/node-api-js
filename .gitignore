@@ -6,4 +6,4 @@ es
 coverage
 .idea
 test/_state.ts
-
+.DS_Store
