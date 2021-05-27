@@ -86,6 +86,8 @@ export function fetchTransactionSerialize(base: string, body: Transaction<TLong>
     })
 }
 
+
+
 /**
  * POST /utils/hash/secure
  * Return SecureCryptographicHash of specified message
