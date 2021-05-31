@@ -94,8 +94,8 @@ it('tx serialize', async () => {
         quantity: 10000000,
         decimals: 5
     }, MASTER_ACCOUNT.SEED);
+
     // @ts-ignore
     const serialized = await api.utils.fetchTransactionSerialize(tx);
-    console.log(serialized)
     expect(serialized.bytes).toBeInstanceOf(Array);
 });

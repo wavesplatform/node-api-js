@@ -2,8 +2,12 @@ import {MASTER_ACCOUNT, NODE_URL, STATE} from '../_state';
 import {create} from '../../src';
 import {IScriptInfo, fetchScriptInfo} from '../../src/api-node/addresses';
 import {isNullableStringOrNumber, isStringOrNumber} from '../extendedMatcher'
+import {HeadersInit} from "node-fetch";
+import {RequestInit} from "../../src/tools/request";
+
 
 const api: ReturnType<typeof create> = create(NODE_URL);
+const largeNumbeConvertHeader = { headers: {'Accept': 'application/json;large-significand-format=string' }};
 
 const checkSmartAccount = (info: IScriptInfo, address: string) => {
     expect(info.address).toBe(address);
@@ -41,16 +45,15 @@ it('data by key', async () => {
     expect(data.value).toBe(STATE.ACCOUNTS.SIMPLE.data.key.value);
 });
 
-it('data by address', async () => {
-    const addressData = await api.addresses.data(STATE.ACCOUNTS.SIMPLE.address);
-
-    expect(addressData).toBeInstanceOf(Array)
-    //TODO contain data from json
-    // // @ts-ignore
-    // expect(data.type).toBe(STATE.ACCOUNTS.SIMPLE.data.key.type);
-    // // @ts-ignore
-    // expect(data.value).toBe(STATE.ACCOUNTS.SIMPLE.data.key.value);
-});
+// it('data by address', async () => {
+//     const addressData = await api.addresses.data(STATE.ACCOUNTS.SIMPLE.address);
+//
+//     expect(addressData).toBeInstanceOf(Array)
+//     // @ts-ignore
+//     expect(data.type).toBe(STATE.ACCOUNTS.SIMPLE.data.key.type);
+//     // @ts-ignore
+//     expect(data.value).toBe(STATE.ACCOUNTS.SIMPLE.data.key.value);
+// });
 
 it('Script info meta', async () => {
     const info = await api.addresses.fetchScriptInfoMeta(STATE.ACCOUNTS.SIMPLE.address);
@@ -59,7 +62,7 @@ it('Script info meta', async () => {
 
 it('balance details', async () => {
     const {address} = STATE.ACCOUNTS.SIMPLE;
-    const balanceDetails = await api.addresses.fetchBalanceDetails(address);
+    const balanceDetails = await api.addresses.fetchBalanceDetails(address, );
 
     expect(balanceDetails.address).toBe(address);
     expect(typeof balanceDetails.regular).isStringOrNumber();
@@ -68,12 +71,36 @@ it('balance details', async () => {
     expect(typeof balanceDetails.effective).isStringOrNumber();
 });
 
+it('balance details, long as string', async () => {
+    const {address} = STATE.ACCOUNTS.SIMPLE;
+
+    const balanceDetails = await api.addresses.fetchBalanceDetails(address, largeNumbeConvertHeader);
+
+    expect(balanceDetails.address).toBe(address);
+    expect(typeof balanceDetails.regular).toBe('string');
+    expect(typeof balanceDetails.generating).toBe('string');
+    expect(typeof balanceDetails.available).toBe('string');
+    expect(typeof balanceDetails.effective).toBe('string');
+});
+
 it('balance confirmations', async () => {
     const {address} = STATE.ACCOUNTS.SIMPLE;
     const confirmations = 3;
     const balanceConfirmations = await api.addresses.fetchBalanceConfirmations(address, confirmations);
 
     expect(typeof balanceConfirmations.balance).isStringOrNumber();
+    expect(typeof balanceConfirmations.address).toBe('string');
+    expect(typeof balanceConfirmations.confirmations).toBe('number');
+    expect(balanceConfirmations.address).toBe(address);
+    expect(balanceConfirmations.confirmations).toBe(confirmations);
+});
+
+it('balance confirmations, long as string', async () => {
+    const {address} = STATE.ACCOUNTS.SIMPLE;
+    const confirmations = 3;
+    const balanceConfirmations = await api.addresses.fetchBalanceConfirmations(address, confirmations, largeNumbeConvertHeader);
+
+    expect(typeof balanceConfirmations.balance).toBe('string');
     expect(typeof balanceConfirmations.address).toBe('string');
     expect(typeof balanceConfirmations.confirmations).toBe('number');
     expect(balanceConfirmations.address).toBe(address);
@@ -97,11 +124,31 @@ it('address balance', async () => {
     expect(balance.address).toBe(address);
 });
 
+it('address balance, long as string', async () => {
+    const {address} = STATE.ACCOUNTS.SIMPLE;
+    const balance = await  api.addresses.fetchBalance(address, largeNumbeConvertHeader);
+
+    expect(typeof balance.balance).toBe('string');
+    expect(typeof balance.address).toBe('string');
+    expect(typeof balance.confirmations).toBe('number');
+    expect(balance.address).toBe(address);
+});
+
 it('address effective balance', async () => {
     const {address} = STATE.ACCOUNTS.SIMPLE;
     const balance = await  api.addresses.fetchEffectiveBalance(address);
 
     expect(typeof balance.balance).isStringOrNumber();
+    expect(typeof balance.address).toBe('string');
+    expect(typeof balance.confirmations).toBe('number');
+    expect(balance.address).toBe(address);
+});
+
+it('address effective balance, long as string', async () => {
+    const {address} = STATE.ACCOUNTS.SIMPLE;
+    const balance = await  api.addresses.fetchEffectiveBalance(address, largeNumbeConvertHeader);
+
+    expect(typeof balance.balance).toBe('string');
     expect(typeof balance.address).toBe('string');
     expect(typeof balance.confirmations).toBe('number');
     expect(balance.address).toBe(address);
@@ -113,6 +160,18 @@ it('effective balance confirmations', async () => {
     const balanceConfirmations = await api.addresses.fetchEffectiveBalanceConfirmations(address, confirmations);
 
     expect(typeof balanceConfirmations.balance).isStringOrNumber();
+    expect(typeof balanceConfirmations.address).toBe('string');
+    expect(typeof balanceConfirmations.confirmations).toBe('number');
+    expect(balanceConfirmations.address).toBe(address);
+    expect(balanceConfirmations.confirmations).toBe(confirmations);
+});
+
+it('effective balance confirmations, long as string', async () => {
+    const {address} = STATE.ACCOUNTS.SIMPLE;
+    const confirmations = 3;
+    const balanceConfirmations = await api.addresses.fetchEffectiveBalanceConfirmations(address, confirmations, largeNumbeConvertHeader);
+
+    expect(typeof balanceConfirmations.balance).toBe('string');
     expect(typeof balanceConfirmations.address).toBe('string');
     expect(typeof balanceConfirmations.confirmations).toBe('number');
     expect(balanceConfirmations.address).toBe(address);

@@ -36,11 +36,10 @@ export function fetchHeadersLast(base: string, options: RequestInit = Object.cre
  * @param base
  * @param id
  */
-export function fetchHeightById(base: string, id: string, options: RequestInit = Object.create(null)): Promise<{ height: number }> {
+export function fetchHeightById(base: string, id: string): Promise<{ height: number }> {
     return request({
         base,
-        url: `/blocks/height/${id}`,
-        options
+        url: `/blocks/height/${id}`
     })
 }
 
@@ -103,9 +102,9 @@ export function fetchSeq(base: string, from: number, to: number, options: Reques
 
 /**
  * GET /blocks/{id}
- * Get block by its signature
+ * Get block by its id
  * @param base
- * @param signature
+ * @param id
  */
 export function fetchBlockById(base: string, id: string, options: RequestInit = Object.create(null)): Promise<IBlock> {
     return request({
@@ -164,11 +163,10 @@ export function fetchLast(base: string, options: RequestInit = Object.create(nul
  * @param id
  * @param blockNum
  */
-export function fetchDelay(base: string, id: string, blockNum: number, options: RequestInit = Object.create(null)): Promise<{ delay: number}> {
+export function fetchDelay(base: string, id: string, blockNum: number): Promise<{ delay: number}> {
     return request({
         base,
-        url: `/blocks/delay/${id}/${blockNum}`,
-        options
+        url: `/blocks/delay/${id}/${blockNum}`
     })
 }
 
@@ -176,11 +174,10 @@ export function fetchDelay(base: string, id: string, blockNum: number, options: 
  * GET /blocks/height
  * @param base
  */
-export function fetchHeight(base: string, options: RequestInit = Object.create(null)): Promise<{ height: number }> {
+export function fetchHeight(base: string): Promise<{ height: number }> {
     return request({
         base,
-        url: '/blocks/height',
-        options
+        url: '/blocks/height'
     });
 }
 

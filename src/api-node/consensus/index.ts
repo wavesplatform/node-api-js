@@ -7,7 +7,7 @@ import request from '../../tools/request';
  * @param base
  * @param address
  */
-export function fetchGeneratingBalance(base: string, address: string): Promise<IGeneratingBalance<TLong>> {
+export function fetchGeneratingBalance(base: string, address: string, options: RequestInit = Object.create(null)): Promise<IGeneratingBalance<TLong>> {
     return request({base, url: `/consensus/generatingbalance/${address}`});
 }
 
