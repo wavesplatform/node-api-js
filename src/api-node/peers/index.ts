@@ -1,4 +1,5 @@
 import request from '../../tools/request';
+import {TLong} from "../../interface";
 
 /**
  * GET /peers/all
@@ -17,7 +18,7 @@ export function fetchAll(base: string, options: RequestInit = Object.create(null
  * GET /peers/connected
  * Connected peers list
  */
-export function fetchConnected(base: string, options: RequestInit = Object.create(null)): Promise<IAllResponse> {
+export function fetchConnected(base: string, options: RequestInit = Object.create(null)): Promise<IAllConnectedResponse> {
     return request({
         base,
         url: '/peers/connected',
@@ -55,19 +56,23 @@ export function fetchSuspended(base: string, options: RequestInit = Object.creat
 
 
 export interface IAllResponse {
-    peers: Array<IPeerAllResponse | IPeerConnectedResponse>
+    peers: Array<IPeerAllResponse>
+}
+
+export interface IAllConnectedResponse {
+    peers: Array<IPeerConnectedResponse>
 }
 
 export interface IPeerAllResponse {
     address: string;
-    lastSeen: number;
+    lastSeen: TLong;
 }
 
 export interface IPeerConnectedResponse {
     address: string;
     declaredAddress: string;
     peerName: string;
-    peerNonce: number;
+    peerNonce: TLong;
     applicationName: string;
     applicationVersion: string;
 }

@@ -1,10 +1,9 @@
-import { TLong } from '../../interface';
 import request from '../../tools/request';
 
 // @TODO: When correct API key
 // POST /node/stop
 
-export function fetchNodeStatus(base: string, options: RequestInit = Object.create(null)): Promise<INodeStatus<TLong>> {
+export function fetchNodeStatus(base: string, options: RequestInit = Object.create(null)): Promise<INodeStatus> {
     return request({ base, url: '/node/status', options });
 }
 
@@ -12,10 +11,10 @@ export function fetchNodeVersion(base: string, options: RequestInit = Object.cre
     return request({ base, url: '/node/version', options });
 }
 
-export interface INodeStatus<LONG> {
-    blockchainHeight: LONG;
-    stateHeight: LONG;
-    updatedTimestamp: LONG;
+export interface INodeStatus {
+    blockchainHeight: number;
+    stateHeight: number;
+    updatedTimestamp: number;
     updatedDate: string;
 }
 

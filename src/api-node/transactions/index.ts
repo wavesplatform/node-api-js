@@ -31,11 +31,10 @@ import {addStateUpdateField, TTransaction} from "../../tools/transactions/transa
  * GET /transactions/unconfirmed/size
  * Number of unconfirmed transactions
  */
-export function fetchUnconfirmedSize(base: string, options: RequestInit = Object.create(null)): Promise<IUnconfirmedSize> {
+export function fetchUnconfirmedSize(base: string): Promise<IUnconfirmedSize> {
     return request({
         base,
-        url: '/transactions/unconfirmed/size',
-        options
+        url: '/transactions/unconfirmed/size'
     })
 }
 
