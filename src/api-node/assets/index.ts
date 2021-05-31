@@ -1,14 +1,7 @@
-import { TLong, TRANSACTION_NAME_MAP } from '../../interface';
-import {
-    AssetDecimals,
-    IssueTransaction,
-    SignedTransaction,
-    TRANSACTION_TYPE,
-    TransactionMap,
-    WithApiMixin
-} from '@waves/ts-types';
+import {TLong} from '../../interface';
+import {AssetDecimals, IssueTransaction, SignedTransaction, TRANSACTION_TYPE, WithApiMixin} from '@waves/ts-types';
 import request from '../../tools/request';
-import { toArray } from '../../tools/utils';
+import {toArray} from '../../tools/utils';
 
 /**
  * GET /assets/details/{assetId}
@@ -37,7 +30,7 @@ export function fetchAssetsDetails(base: string, assetIds: Array<string>, option
 
     const query = assetIds.length ? `?${params}` : '';
 
-    return request<Array<TAssetDetails | TErrorResponse>>({ base, url: `/assets/details${query}`, options });
+    return request<Array<TAssetDetails | TErrorResponse>>({base, url: `/assets/details${query}`, options});
 }
 
 export function fetchAssetDistribution(
@@ -47,7 +40,7 @@ export function fetchAssetDistribution(
     limit: number,
     options: RequestInit = Object.create(null)
 ): Promise<IAssetDistribution> {
-    return request({ base, url: `/assets/${assetId}/distribution/${height}/limit/${limit}`, options });
+    return request({base, url: `/assets/${assetId}/distribution/${height}/limit/${limit}`, options});
 }
 
 /**
@@ -56,12 +49,12 @@ export function fetchAssetDistribution(
  * Asset balance distribution
  */
 
-export function fetchAssetsAddressLimit(base: string, address: string, limit: number, options: RequestInit = Object.create(null)): Promise<Array<IAssetsAddressLimit>> {
-    return request({ base, url: `assets/nft/${address}/limit/${limit}`, options });
+export function fetchAssetsAddressLimit(base: string, address: string, limit: number, options: RequestInit = Object.create(null)): Promise<Array<TAssetDetails>> {
+    return request({base, url: `assets/nft/${address}/limit/${limit}`, options});
 }
 
 export async function fetchAssetsBalance(base: string, address: string, options: RequestInit = Object.create(null)): Promise<TAssetsBalance> {
-    const balancesResponse = await request<TAssetsBalance>({ base, url: `/assets/balance/${address}`, options });
+    const balancesResponse = await request<TAssetsBalance>({base, url: `/assets/balance/${address}`, options});
 
     const assetsWithoutIssueTransaction = balancesResponse.balances.reduce<Record<string, number>>(
         (acc, balance, index) => {
@@ -112,7 +105,7 @@ export async function fetchAssetsBalance(base: string, address: string, options:
 }
 
 export function fetchBalanceAddressAssetId(base: string, address: string, assetId: string, options: RequestInit = Object.create(null)): Promise<IBalanceAddressAssetId> {
-    return request({ base, url: `/assets/balance/${address}/${assetId}`, options });
+    return request({base, url: `/assets/balance/${address}/${assetId}`, options});
 }
 
 export interface IAssetDistribution {
@@ -121,26 +114,10 @@ export interface IAssetDistribution {
     items: Record<string, number>;
 }
 
-export interface IBalanceAddressAssetId {
+export interface IBalanceAddressAssetId<LONG = TLong> {
     address: string;
     assetId: string;
-    balance: number;
-}
-
-export interface IAssetsAddressLimit {
-    assetId: string;
-    issueHeight: number;
-    issueTimestamp: number;
-    issuer: string;
-    issuerPublicKey: string;
-    name: string;
-    description: string;
-    decimals: number;
-    reissuable: boolean;
-    quantity: number;
-    scripted: boolean;
-    minSponsoredAssetFee: number | null;
-    originTransactionId: string
+    balance: LONG;
 }
 
 export type TAssetsBalance = {
@@ -150,10 +127,10 @@ export type TAssetsBalance = {
 
 export type TAssetBalance<LONG = TLong> = {
     'assetId': string;
-    'balance': number;
+    'balance': LONG;
     'reissuable': true;
     'minSponsoredAssetFee': LONG | null;
-    'sponsorBalance': number | null;
+    'sponsorBalance': LONG | null;
     'quantity': LONG;
     'issueTransaction': SignedTransaction<IssueTransaction & WithApiMixin>;
 }

@@ -7,16 +7,15 @@ import request from '../../tools/request';
  * @param base 
  */
 
-export function fetchActivationStatus(base: string, options: RequestInit = Object.create(null)): Promise<IActivationStatus<TLong>> {
+export function fetchActivationStatus(base: string): Promise<IActivationStatus<TLong>> {
     return request({ 
         base,
-        url: 'activation/status',
-        options
+        url: 'activation/status'
     });
 }
 
 export interface IActivationStatus<LONG> {
-    height: LONG;
+    height: number;
     votingInterval: number;
     votingThreshold: number;
     nextCheck: LONG;
@@ -28,5 +27,5 @@ export interface IFeatures<LONG> {
     description: string;
     blockchainStatus: string;
     nodeStatus: string;
-    activationHeight: LONG;
+    activationHeight: number;
 }
