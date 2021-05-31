@@ -1,7 +1,7 @@
 import request from '../../tools/request';
 import {TLong} from '../../interface';
 import query from '../../tools/query';
-import {DataTransactionEntry, Transaction, WithId} from '@waves/ts-types';
+import {AssetDecimals, DataTransactionEntry, Transaction, WithId} from '@waves/ts-types';
 
 /**
  * Waves balance history
@@ -23,14 +23,14 @@ interface IBalanceHistory {
 
 export type TPayment = {
     asset: string | null,
-    amount: number
+    amount: TLong
 }
 
 export type TStateChanges = {
     data: DataTransactionEntry[],
     transfers: {
         address: string,
-        amount: number,
+        amount: TLong,
         asset: string | null
     }[],
     issues: {
@@ -38,7 +38,7 @@ export type TStateChanges = {
         name: string,
         description: string,
         quantity: number,
-        decimals: number,
+        decimals: AssetDecimals,
         isReissuable: boolean,
         compiledScript: null | string,
         nonce: number
@@ -59,7 +59,7 @@ export type TStateChanges = {
     leases: {
         leaseId: string,
         recipient: string,
-        amount: number
+        amount: TLong
     }[],
     leaseCancels: { leaseId: string }[],
     invokes: ({

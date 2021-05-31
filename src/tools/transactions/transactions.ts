@@ -1,6 +1,6 @@
 import {IWithStateChanges, TPayment, TStateChanges} from "../../api-node/debug";
 import {BigNumber} from "@waves/bignumber";
-import {DataTransactionEntry, TRANSACTION_TYPE, WithApiMixin} from "@waves/ts-types";
+import {AssetDecimals, DataTransactionEntry, TRANSACTION_TYPE, WithApiMixin} from "@waves/ts-types";
 import {Long} from "@waves/ts-types/src/index";
 import {
     AliasTransaction,
@@ -10,14 +10,14 @@ import {
     PaymentTransaction, ReissueTransaction, SetAssetScriptTransaction, SetScriptTransaction, SponsorshipTransaction,
     TransferTransaction, UpdateAssetInfoTransaction
 } from "@waves/ts-types/transactions/index";
-import {IWithApplicationStatus} from "../../interface";
+import {IWithApplicationStatus, TLong} from "../../interface";
 
 export type TStateUpdate = {
     data: (DataTransactionEntry & { address: string })[],
     transfers: {
         address: string,
         sender: string,
-        amount: number,
+        amount: TLong,
         asset: string | null
     }[],
     issues: {
@@ -26,7 +26,7 @@ export type TStateUpdate = {
         name: string,
         description: string,
         quantity: number,
-        decimals: number,
+        decimals: AssetDecimals,
         isReissuable: boolean,
         compiledScript: null | string,
         nonce: number
@@ -51,7 +51,7 @@ export type TStateUpdate = {
         sender: string,
         leaseId: string,
         recipient: string,
-        amount: number
+        amount: TLong
     }[],
     leaseCancels: { leaseId: string, address: string }[],
 }
