@@ -33,7 +33,7 @@ interface IWithStateChanges {
             assetId: string,
             name: string,
             description: string,
-            quantity: number,
+            quantity: TLong,
             decimals: number,
             isReissuable: boolean,
             compiledScript: null | string,
@@ -42,15 +42,15 @@ interface IWithStateChanges {
         reissues: {
             assetId: string,
             isReissuable: boolean,
-            quantity: number
+            quantity: TLong
         }[],
         burns: {
             assetId: string,
-            quantity: number
+            quantity: TLong
         }[],
         sponsorFees: {
             assetId: string,
-            minSponsoredAssetFee: number
+            minSponsoredAssetFee: TLong
         }[],
         error?: {
             code: number,

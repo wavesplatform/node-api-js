@@ -24,7 +24,7 @@ const checkObj = (object: LeaseTransaction<TLong> & WithApiMixin & IActive) => {
         timestamp: expect.any(Number),
         height: expect.any(Number)
     })
-}
+};
 // it('Active', async () => {
 //     const info = await api.leasing.fetchActive(STATE.ACCOUNTS.SIMPLE.address);
 //     expect(info).toBeInstanceOf(Array);
@@ -36,4 +36,5 @@ it('Leasing info', async () => {
     const info = await api.leasing.fetchLeasingInfo(ids)
     console.log(info)
     expect(info).toBeInstanceOf(Array);
-})
+});
+

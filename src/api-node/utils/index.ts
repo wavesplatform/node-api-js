@@ -86,6 +86,8 @@ export function fetchTransactionSerialize(base: string, body: Transaction<TLong>
     })
 }
 
+
+
 /**
  * POST /utils/hash/secure
  * Return SecureCryptographicHash of specified message
@@ -204,7 +206,7 @@ export interface ICompileCode {
     complexity: number;
     callableComplexities: Record<string, number>;
     verifierComplexity: number;
-    extraFee: number;
+    extraFee: TLong;
 }
 
 export interface IEstimate extends ICompileCode {
