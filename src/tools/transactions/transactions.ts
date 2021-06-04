@@ -56,8 +56,8 @@ export type TStateUpdate = {
     leaseCancels: { leaseId: string, address: string }[],
 }
 
-type TWithStateUpdate = { stateUpdate: TStateUpdate }
-type TWithState = IWithStateChanges & TWithStateUpdate
+export type TWithStateUpdate = { stateUpdate: TStateUpdate }
+export type TWithState = IWithStateChanges & TWithStateUpdate
 
 
 export type TTransaction<LONG = Long> =
