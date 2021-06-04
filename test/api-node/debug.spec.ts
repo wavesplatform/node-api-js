@@ -1,6 +1,9 @@
 import {NODE_URL, STATE, CHAIN_ID} from '../_state';
 import {create} from '../../src';
 import {invokeScript, waitForTx, broadcast, transfer, libs} from '@waves/waves-transactions';
+import {InvokeScriptTransaction} from "@waves/ts-types";
+import {TLong} from "../../src/interface";
+import {TWithState} from "../../src/tools/transactions/transactions";
 
 
 const api = create(NODE_URL);
@@ -40,4 +43,15 @@ describe('State changes by transaction Id', () => {
         const f = api.debug.fetchStateChangesByTxId(ttx.id);
         expect(f).rejects.toMatchObject({error: 312})
     });
-});
+
+    it('state schanges in stage', async () =>{
+        const api2: ReturnType<typeof create> = create('https://nodes-stagenet.wavesnodes.com/');
+        //3MaPRBKB36GMoH59ShRKAzbHretBzqDYKxs
+        const tx = await api2.transactions.fetchInfo("3rho1m5FfLmVi6iVfkVuvdEFVcv2JMEVxh9wzj7kFrCK")
+        const txState = (tx as InvokeScriptTransaction<TLong> & TWithState).stateChanges
+
+        console.log(txState.invokes)
+
+
+    })
+})

@@ -18,7 +18,6 @@ export function fetchActive(base: string, address: string, options: RequestInit 
 export function fetchLeasingInfo(base: string, ids: string[], options: RequestInit = Object.create(null)): Promise<Array<ILeaseInfo>> {
     const searchParams = `{\"ids\":[${ids.map(id => `\"${id}\"`).join(',')}]}`;
 
-    console.log(searchParams);
     return request({
         base, url: `/leasing/info/`, options: {
             ...options,
