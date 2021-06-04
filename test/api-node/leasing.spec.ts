@@ -1,40 +1,57 @@
 // import {NODE_URL, STATE} from '../_state';
 import {create} from '../../src';
-import {LeaseTransaction, WithApiMixin} from '@waves/ts-types';
-import {TLong} from '../../src/interface';
-import {IActive} from '../../src/api-node/leasing';
+import {ILeaseInfo} from '../../src/api-node/leasing';
+import { isNullableNumber, isNullableString, isStringOrNumber } from  '../extendedMatcher'
+import {MASTER_ACCOUNT, NODE_URL} from "../_state";
 
-const api: ReturnType<typeof create> = create('https://nodes-stagenet.wavesnodes.com/');
+const api: ReturnType<typeof create> = create(NODE_URL);
+const largeNumbeConvertHeader = { headers: {'Accept': 'application/json;large-significand-format=string' }};
 
-const checkObj = (object: LeaseTransaction<TLong> & WithApiMixin & IActive) => {
+const checkLeasing = (object: ILeaseInfo) => {
     expect(object).toMatchObject({
-        senderPublicKey: expect.any(String),
-        amount: expect.any(Number),
+        amount: expect.isStringOrNumber(),
         sender: expect.any(String),
-        /**
-         * @TODO: Подумать над реализацией, может либо string либо null
-         * feeAssetId: expect.anything(),
-         */
-        proofs: expect.any(Array),
-        fee: expect.any(Number),
         recipient: expect.any(String),
         id: expect.any(String),
-        type: expect.any(Number),
-        version: expect.any(Number),
-        timestamp: expect.any(Number),
-        height: expect.any(Number)
+        originTransactionId: expect.any(String),
+        height: expect.any(Number),
+        status: expect.any(String),
+        cancelHeight: expect.isNullableNumber(),
+        cancelTransactionId: expect.isNullableString(),
     })
 };
-// it('Active', async () => {
-//     const info = await api.leasing.fetchActive(STATE.ACCOUNTS.SIMPLE.address);
-//     expect(info).toBeInstanceOf(Array);
-//     info.forEach(checkObj);
-// });
 
 it('Leasing info', async () => {
-    const ids = ['AbkVZ6EzuUESkQZUHSFtUHdoRQh4khTD66eGc73CmTeg', 'GGSK8RGLRM2j1Hx9FhQjBaFptmbZgGzX93NKToGE1Bjn']
-    const info = await api.leasing.fetchLeasingInfo(ids)
-    console.log(info)
+    const activeLeasing = await api.leasing.fetchActive(MASTER_ACCOUNT.ADDRESS);
+    if (activeLeasing.length > 0){
+        const id = activeLeasing[0].id;
+        const leaseInfo = await api.leasing.fetchLeasingInfo([id]);
+        expect(leaseInfo).toBeInstanceOf(Array);
+        leaseInfo.forEach(checkLeasing);
+    }
+
+});
+
+it('Leasing info, long as string', async () => {
+    const activeLeasing = await api.leasing.fetchActive(MASTER_ACCOUNT.ADDRESS);
+    if (activeLeasing.length > 0){
+        const id = activeLeasing[0].id;
+        const leaseInfo = await api.leasing.fetchLeasingInfo([id], largeNumbeConvertHeader);
+        expect(leaseInfo).toBeInstanceOf(Array);
+        leaseInfo.forEach(checkLeasing);
+    }
+
+});
+
+it('Leasing active', async () => {
+    const info = await api.leasing.fetchActive(MASTER_ACCOUNT.ADDRESS);
     expect(info).toBeInstanceOf(Array);
+    info.forEach(checkLeasing);
+});
+
+it('Leasing active, long as string', async () => {
+    const info = await api.leasing.fetchActive(MASTER_ACCOUNT.ADDRESS, largeNumbeConvertHeader);
+    expect(info).toBeInstanceOf(Array);
+    info.forEach(checkLeasing);
 });
 

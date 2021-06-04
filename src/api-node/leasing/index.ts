@@ -1,4 +1,3 @@
-import {LeaseTransaction, WithApiMixin} from '@waves/ts-types';
 import {TLong} from '../../interface';
 import request from '../../tools/request';
 
@@ -7,17 +6,10 @@ import request from '../../tools/request';
  * GET /leasing/active/{address}
  * Get all active leases for an address
  */
-export function fetchActive(base: string, address: string, options: RequestInit = Object.create(null)): Promise<Array<LeasingObjectResponse<TLong> & WithApiMixin>> {
+export function fetchActive(base: string, address: string, options: RequestInit = Object.create(null)): Promise<Array<ILeaseInfo>> {
     return request({base, url: `/leasing/active/${address}`, options});
 }
 
-export type LeasingObjectResponse<Long> = {
-    id: string,
-    originTransactionId: string,
-    recipient: string,
-    amount: Long,
-    status: string
-}
 
 /**
  * GET /leasing/info/
@@ -26,6 +18,7 @@ export type LeasingObjectResponse<Long> = {
 export function fetchLeasingInfo(base: string, ids: string[], options: RequestInit = Object.create(null)): Promise<Array<ILeaseInfo>> {
     const searchParams = `{\"ids\":[${ids.map(id => `\"${id}\"`).join(',')}]}`;
 
+    console.log(searchParams);
     return request({
         base, url: `/leasing/info/`, options: {
             ...options,
@@ -46,6 +39,6 @@ export interface ILeaseInfo {
     amount: TLong,
     height: number,
     status: string,
-    cancelHeight: number,
-    cancelTransactionId: string
+    cancelHeight: number | null,
+    cancelTransactionId: string | null
 }
