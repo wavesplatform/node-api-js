@@ -37,24 +37,24 @@ export type TStateChanges = {
         assetId: string,
         name: string,
         description: string,
-        quantity: number,
+        quantity: TLong,
         decimals: AssetDecimals,
         isReissuable: boolean,
         compiledScript: null | string,
-        nonce: number
+        nonce: TLong
     }[],
     reissues: {
         assetId: string,
         isReissuable: boolean,
-        quantity: number
+        quantity: TLong
     }[],
     burns: {
         assetId: string,
-        quantity: number
+        quantity: TLong
     }[],
     sponsorFees: {
         assetId: string,
-        minSponsoredAssetFee: number
+        minSponsoredAssetFee: TLong
     }[],
     leases: {
         leaseId: string,

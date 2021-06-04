@@ -15,7 +15,7 @@ describe('State changes by transaction Id', () => {
         const itx = invokeScript({
             dApp: STATE.ACCOUNTS.FOR_SCRIPT.address,
             call: {
-                function: 'foo'
+                function: 'call'
             },
             chainId: CHAIN_ID
         }, STATE.ACCOUNTS.SIMPLE.seed);
@@ -49,7 +49,10 @@ describe('State changes by transaction Id', () => {
         const api2: ReturnType<typeof create> = create('https://nodes-stagenet.wavesnodes.com/');
         //3MaPRBKB36GMoH59ShRKAzbHretBzqDYKxs
         const tx = await api2.transactions.fetchInfo("3rho1m5FfLmVi6iVfkVuvdEFVcv2JMEVxh9wzj7kFrCK")
-        console.log(tx as InvokeScriptTransaction<TLong> & TWithState))
+        const txState = (tx as InvokeScriptTransaction<TLong> & TWithState).stateChanges
+
+        console.log(txState.invokes)
+
 
     })
 })
