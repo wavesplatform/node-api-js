@@ -7,3 +7,4 @@ coverage
 .idea
 test/_state.ts
 .DS_Store
+package-lock.json
