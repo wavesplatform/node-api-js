@@ -84,7 +84,7 @@ export function addStateUpdateField(transaction: TTransaction & WithApiMixin & I
     if (transaction.type === TRANSACTION_TYPE.INVOKE_SCRIPT && transaction.stateChanges.invokes && transaction.stateChanges.invokes.length) {
         const payments = transaction.payment ? transaction.payment.map(p => ({
             asset: p.assetId,
-            amount: Number(p.amount)
+            amount: p.amount
         })) : []
         return Object.defineProperty(transaction, 'stateUpdate', {get: () => makeStateUpdate(transaction.stateChanges, payments, transaction.dApp, transaction.sender)})
     } else return transaction
