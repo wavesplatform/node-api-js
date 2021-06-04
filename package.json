@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
-    "@waves/node-state": "0.0.9",
+    "@waves/node-state": "0.1.0",
     "@waves/waves-transactions": "^4.1.8",
     "jest": "^26.6.3",
     "ts-jest": "^26.5.6",
