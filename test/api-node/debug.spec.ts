@@ -28,7 +28,7 @@ describe('State changes by transaction Id', () => {
     });
 
     it('throws on not found tx', async () => {
-        const f = api.debug.fetchStateChangesByTxId('DvLdoLzts782sRia4BX1TH8HBmoP33b8Tp6ATTeNhrMk')
+        const f = api.debug.fetchStateChangesByTxId('DvLdoLzts782sRia4BX1TH8HBmoP33b8Tp6ATTeNhrMk');
         expect(f).rejects.toMatchObject({error: 311})
     });
 
@@ -43,7 +43,6 @@ describe('State changes by transaction Id', () => {
         const f = api.debug.fetchStateChangesByTxId(ttx.id);
         expect(f).rejects.toMatchObject({error: 312})
     });
-
 
     it('state schanges in stage', async () =>{
         const api2: ReturnType<typeof create> = create('https://nodes-stagenet.wavesnodes.com/');

@@ -181,6 +181,17 @@ export function fetchHeight(base: string): Promise<{ height: number }> {
     });
 }
 
+/**
+ * GET /blocks/heightByTimestamp
+ * @param base
+ */
+export function fetchHeightByTimestamp(base: string, timestamp: number, options: RequestInit = Object.create(null)): Promise<{ height: number }> {
+    return request({
+        base,
+        url: `/blocks/heightByTimestamp/${timestamp}`,
+        options
+    });
+}
 
 export interface IBlockHeader {
     id: string;
