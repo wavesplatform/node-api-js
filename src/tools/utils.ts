@@ -81,9 +81,9 @@ export function indexBy<T extends Record<string, any>, P extends (data: T) => st
     }, {} as any);
 }
 
-export const uniq = (list: Array<string>): Array<string> => {
+export const uniq = (list: Array<string | null>): Array<string | null> => {
     return keys(list.reduce<Record<string, string>>((acc, item) => {
-        acc[item] = item;
+        if (item != null) acc[item] = item;
         return acc;
     }, Object.create(null)));
 };
@@ -114,4 +114,3 @@ export type TUnionToIntersection<U> =
     (U extends any ? (k: U) => void : never) extends (k: infer I) => void
         ? I
         : never;
-        
