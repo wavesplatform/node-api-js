@@ -83,7 +83,7 @@ export type TTransaction<LONG = Long> =
 export function addStateUpdateField(transaction: TTransaction & WithApiMixin & IWithApplicationStatus): TTransaction & WithApiMixin & IWithApplicationStatus{
     if (transaction.type === TRANSACTION_TYPE.INVOKE_SCRIPT && transaction.stateChanges.invokes && transaction.stateChanges.invokes.length) {
         const payments = transaction.payment ? transaction.payment.map(p => ({
-            asset: p.assetId,
+            assetId: p.assetId,
             amount: p.amount
         })) : []
         return Object.defineProperty(transaction, 'stateUpdate', {get: () => makeStateUpdate(transaction.stateChanges, payments, transaction.dApp, transaction.sender)})
@@ -118,8 +118,8 @@ export function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[]
         if (stateChanges.invokes.length) {
             stateChanges.invokes.forEach((x) => {
                     //payments
-                    x.payments.forEach(y => {
-                        const index = payments.findIndex(z => (z.payment.asset === y.asset) && (z.dApp === x.dApp) && (sender === x.dApp))
+                    if(x.payment) x.payment.forEach(y => {
+                        const index = payments.findIndex(z => (z.payment.assetId === y.assetId) && (z.dApp === x.dApp) && (sender === x.dApp))
                         index !== -1
                             ? payments[index].payment.amount = (new BigNumber(payments[index].payment.amount)).add(y.amount).toNumber()
                             : payments.push({
