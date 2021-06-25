@@ -22,7 +22,7 @@ interface IBalanceHistory {
 }
 
 export type TPayment = {
-    asset: string | null,
+    assetId: string | null,
     amount: TLong
 }
 
@@ -68,7 +68,7 @@ export type TStateChanges = {
             function: string,
             args: { type: string, value: string }[],
         },
-        payments: TPayment[],
+        payment: TPayment[],
         stateChanges: TStateChanges
     })[]
     error?: {
