@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@types/node-fetch": "^2.5.4",
-    "@waves/bignumber": "0.0.1",
-    "@waves/ts-types": "^1.0.4",
+    "@waves/bignumber": "^1.1.1",
+    "@waves/ts-types": "^1.0.5",
     "node-fetch": "^2.6.1",
     "typed-ts-events": "^1.1.1"
   },

@@ -81,7 +81,7 @@ export type TTransaction<LONG = Long> =
 
 
 export function addStateUpdateField(transaction: TTransaction & WithApiMixin & IWithApplicationStatus): TTransaction & WithApiMixin & IWithApplicationStatus{
-    if (transaction.type === TRANSACTION_TYPE.INVOKE_SCRIPT) {
+    if (transaction.type === TRANSACTION_TYPE.INVOKE_SCRIPT && transaction.stateChanges.invokes && transaction.stateChanges.invokes.length) {
         const payments = transaction.payment ? transaction.payment.map(p => ({
             assetId: p.assetId,
             amount: p.amount
