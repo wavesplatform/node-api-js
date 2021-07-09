@@ -1,7 +1,7 @@
 import { DataTransactionEntry, ExchangeTransactionOrder, TransactionMap } from '@waves/ts-types';
 
 type TGetLongKeys<T> = {
-    [Key in keyof T]: T[Key] extends 'LONG' | ('LONG' | null) ? Key : T[Key] extends Record<'string', any> ? TGetLongKeys<T[Key]> : never;
+    [Key in keyof T]: T[Key] extends 'LONG' ? Key : T[Key] extends Record<'string', any> ? TGetLongKeys<T[Key]> : never;
 }[keyof T];
 
 type TFieldsToReplace = TGetLongKeys<DataTransactionEntry<'LONG'>> | TGetLongKeys<ExchangeTransactionOrder<'LONG'>> | {
