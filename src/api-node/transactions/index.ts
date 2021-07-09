@@ -180,10 +180,11 @@ export interface ITransactionStatus {
     height: number;
 }
 
-export function broadcast<T extends SignedTransaction<Transaction<TLong>>>(base: string, tx: T): Promise<T & WithApiMixin> {
+export function broadcast<T extends SignedTransaction<Transaction<TLong>>>(base: string, tx: T, options: RequestInit = Object.create(null)): Promise<T & WithApiMixin> {
     return request<T & WithApiMixin>({
         base, url: '/transactions/broadcast',
         options: deepAssign(
+            {...options},
             {
                 method: 'POST',
                 body: stringify(tx),
