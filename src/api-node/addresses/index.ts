@@ -1,5 +1,5 @@
 import { TLong } from '../../interface';
-import request from '../../tools/request';
+import request, {parseResponse} from '../../tools/request';
 import query from '../../tools/query';
 import { DataTransactionEntry } from '@waves/ts-types';
 
@@ -58,11 +58,30 @@ export function fetchValidate(base: string, address: string): Promise<IValidateR
     });
 }
 
-export function fetchBalance(base: string, address: string, options: RequestInit = Object.create(null)): Promise<IBalanceConfirmations<TLong>> {
+export function fetchBalance(base: string, address: string | string[], options: RequestInit = Object.create(null)): Promise<IBalanceConfirmations<TLong> | IBalanceConfirmations<TLong>[]> {
+    const params = Array.isArray(address) ? '?' + address.reduce((acc, x) => [...acc, `address=${x}`], [] as string[]).join('&') : `/${address}`
     return request({
         base,
-        url: `/addresses/balance/${address}`,
+        url: `/addresses/balance${params}`,
         options
+    });
+}
+
+export function fetchMultipleBalance(base: string, addresses: string[], options: RequestInit = Object.create(null)): Promise<IBalanceConfirmations<TLong>[]> {
+    return fetch(`${base}/addresses/balance`, {
+        method: "POST",
+        body: JSON.stringify({addresses}),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }).then(parseResponse) as Promise<IBalanceConfirmations<TLong>[]>
+}
+
+export function deleteAddressFromWallet(base: string, address: string, options: RequestInit = Object.create(null)): Promise<IBalanceConfirmations<TLong> | IBalanceConfirmations<TLong>[]> {
+    return request({
+        base,
+        url: `/addresses/${address}`,
+        options: {...options, method: 'DELETE'}
     });
 }
 
