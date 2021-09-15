@@ -130,7 +130,7 @@ export function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[]
                     })
                     //data
                     x.stateChanges.data.forEach(y => {
-                        const index = stateUpdate.data.findIndex(z => z.key === y.key)
+                        const index = stateUpdate.data.findIndex(z => z.key === y.key && z.address === x.dApp)
                         index !== -1 ? stateUpdate.data[index] = {...y, address: x.dApp} : stateUpdate.data.push({
                             ...y,
                             address: x.dApp
