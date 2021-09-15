@@ -10,6 +10,7 @@
     "moduleResolution": "node",
     "skipDefaultLibCheck": true,
     "esModuleInterop": true,
+    "downlevelIteration": true,
     "lib": [
       "es5",
       "dom",
