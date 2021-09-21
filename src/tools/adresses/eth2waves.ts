@@ -1,6 +1,17 @@
 import { keccak, blake2b, base58Encode, base16Decode } from '@waves/ts-lib-crypto'
 
+const validateEthAddress = (addr: string): boolean => {
+    return addr != null && addr.length == 42;
+}
+
 export default function eth2waves(ethAddress: string, chainId: number): string {
+
+    if(validateEthAddress(ethAddress)) {
+        ethAddress = ethAddress.substr(2);
+    } else {
+        throw `Invalid ethereum address: ${ethAddress} `;
+    }
+
     const prefixBytes = new Uint8Array([0x01, chainId]);
 
     // Раскодировать HEX строку в байты (PK_HASH)
