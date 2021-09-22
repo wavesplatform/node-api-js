@@ -1,6 +1,6 @@
 {
   "name": "@waves/node-api-js",
-  "version": "1.2.4",
+  "version": "1.2.5-beta.1",
   "main": "cjs/index.js",
   "types": "cjs/index.d.ts",
   "scripts": {

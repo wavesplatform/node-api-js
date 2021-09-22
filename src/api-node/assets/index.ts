@@ -108,6 +108,10 @@ export function fetchBalanceAddressAssetId(base: string, address: string, assetI
     return request({base, url: `/assets/balance/${address}/${assetId}`, options});
 }
 
+export function convertEthToWaves(base: string, ethAsset: string): Promise<string> {
+    return request({base, url: `/assets/${ethAsset}`})
+}
+
 export interface IAssetDistribution {
     hasNext: boolean;
     lastItem: string | null;

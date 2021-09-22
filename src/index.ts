@@ -14,7 +14,7 @@ import * as assetsModule from './api-node/assets';
 import query from './tools/query';
 import resolve from './tools/resolve';
 import request from './tools/request';
-import broadcast, { IOptions, TMap, TMapTuple } from './tools/transactions/broadcast';
+import broadcast, {IOptions, TMap, TMapTuple} from './tools/transactions/broadcast';
 import getAssetsByTransaction from './tools/adresses/getAssetsByTransaction';
 import getAssetIdListByTx from './tools/adresses/getAssetIdListByTx';
 import getTransactionsWithAssets from './tools/adresses/getTransactionsWithAssets';
@@ -25,9 +25,13 @@ import getNetworkByte from './tools/blocks/getNetworkByte';
 import getNetworkCode from './tools/blocks/getNetworkCode';
 import createWatch from './tools/adresses/watch';
 import * as toolsUtilsModule from './tools/utils';
-import { Transaction, TransactionMap, WithApiMixin } from '@waves/ts-types';
-import { TLong } from './interface';
+import {Transaction, TransactionMap, WithApiMixin} from '@waves/ts-types';
+import {TLong} from './interface';
+import wavesAddress2eth from "./tools/adresses/wavesAddress2eth";
+import ethAddress2waves from "./tools/adresses/ethAddress2waves";
+import wavesAsset2Eth from "./tools/assets/wavesAsset2eth";
 
+export {wavesAddress2eth, ethAddress2waves, wavesAsset2Eth}
 
 declare function broadcastWrapped<T extends Array<Transaction<TLong>>>(list: T, options?: Partial<IOptions>): Promise<TMapTuple<T, TransactionMap<TLong>, 'type'> & WithApiMixin>;
 declare function broadcastWrapped<T extends Transaction<TLong>>(tx: T, options?: Partial<IOptions>): Promise<TMap<TransactionMap<TLong>, T['type'] & WithApiMixin>>
