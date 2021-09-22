@@ -4,7 +4,8 @@ const validateEthAddress = (addr: string): boolean => {
     return addr != null && addr.length == 42;
 }
 
-export default function eth2waves(ethAddress: string, chainId: number): string {
+export default function ethAddress2waves(ethAddress: string, chainId: number): string {
+    if(ethAddress.startsWith('0x')) ethAddress = ethAddress.slice(2)
 
     if(validateEthAddress(ethAddress)) {
         ethAddress = ethAddress.substr(2);
