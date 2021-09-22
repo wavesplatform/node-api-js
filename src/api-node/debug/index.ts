@@ -1,7 +1,7 @@
 import request from '../../tools/request';
-import { TLong } from '../../interface';
+import {TLong} from '../../interface';
 import query from '../../tools/query';
-import { DataTransactionEntry, Transaction, WithId } from '@waves/ts-types';
+import {AssetDecimals, DataTransactionEntry, Transaction, WithId} from '@waves/ts-types';
 
 /**
  * Waves balance history
@@ -21,42 +21,64 @@ interface IBalanceHistory {
     balance: TLong;
 }
 
-interface IWithStateChanges {
-    stateChanges: {
-        data: DataTransactionEntry[],
-        transfers: {
-            address: string,
-            amount: number,
-            asset: string | null
-        }[],
-        issues: {
-            assetId: string,
-            name: string,
-            description: string,
-            quantity: number,
-            decimals: number,
-            isReissuable: boolean,
-            compiledScript: null | string,
-            nonce: number
-        }[],
-        reissues: {
-            assetId: string,
-            isReissuable: boolean,
-            quantity: number
-        }[],
-        burns: {
-            assetId: string,
-            quantity: number
-        }[],
-        sponsorFees: {
-            assetId: string,
-            minSponsoredAssetFee: number
-        }[],
-        error?: {
-            code: number,
-            text: string
-        }
+export type TPayment = {
+    assetId: string | null,
+    amount: TLong
+}
+
+export type TStateChanges = {
+    data: DataTransactionEntry[],
+    transfers: {
+        address: string,
+        amount: TLong,
+        asset: string | null
+    }[],
+    issues: {
+        assetId: string,
+        name: string,
+        description: string,
+        quantity: TLong,
+        decimals: AssetDecimals,
+        isReissuable: boolean,
+        compiledScript: null | string,
+        nonce: TLong
+    }[],
+    reissues: {
+        assetId: string,
+        isReissuable: boolean,
+        quantity: TLong
+    }[],
+    burns: {
+        assetId: string,
+        quantity: TLong
+    }[],
+    sponsorFees: {
+        assetId: string,
+        minSponsoredAssetFee: TLong
+    }[],
+    leases: {
+        leaseId: string,
+        recipient: string,
+        amount: TLong
+    }[],
+    leaseCancels: { leaseId: string }[],
+    invokes: ({
+        dApp: string,
+        call: {
+            function: string,
+            args: { type: string, value: string }[],
+        },
+        payment: TPayment[],
+        stateChanges: TStateChanges
+    })[]
+    error?: {
+        code: number,
+        text: string
     }
+}
+
+export interface IWithStateChanges {
+    stateChanges: TStateChanges
 }
 
 /**
@@ -75,7 +97,7 @@ export function fetchStateChangesByAddress(
 ): Promise<Array<Transaction<TLong> & WithId & IWithStateChanges>> {
     return request({
         base,
-        url: `/debug/stateChanges/address/${address}/limit/${limit}${query({ after })}`,
+        url: `/debug/stateChanges/address/${address}/limit/${limit}${query({after})}`,
         options
     });
 }

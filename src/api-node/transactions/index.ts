@@ -1,22 +1,22 @@
-import { TRANSACTION_STATUSES, TTransactionStatuses } from '../../constants';
-import { IWithApplicationStatus, TLong } from '../../interface';
-import { fetchHeight } from '../blocks';
-import request, { RequestInit } from '../../tools/request';
+import {TRANSACTION_STATUSES, TTransactionStatuses} from '../../constants';
+import {IWithApplicationStatus, TLong} from '../../interface';
+import {fetchHeight} from '../blocks';
+import request, {RequestInit} from '../../tools/request';
 import query from '../../tools/query';
-import { deepAssign } from '../../tools/utils';
+import {deepAssign} from '../../tools/utils';
 import stringify from '../../tools/stringify';
-import { SignedTransaction, Transaction, TransactionMap, WithApiMixin } from '@waves/ts-types';
+import {SignedTransaction, Transaction, TransactionMap, WithApiMixin} from '@waves/ts-types';
+import {addStateUpdateField, TTransaction} from "../../tools/transactions/transactions";
 
 
 /**
  * GET /transactions/unconfirmed/size
  * Number of unconfirmed transactions
  */
-export function fetchUnconfirmedSize(base: string, options: RequestInit = Object.create(null)): Promise<IUnconfirmedSize> {
+export function fetchUnconfirmedSize(base: string): Promise<IUnconfirmedSize> {
     return request({
         base,
-        url: '/transactions/unconfirmed/size',
-        options
+        url: '/transactions/unconfirmed/size'
     })
 }
 
@@ -31,7 +31,7 @@ interface IUnconfirmedSize {
  * Sign a transaction with a non-default private key
  */
 
- /**
+/**
  * POST /transactions/calculateFee
  * Calculate transaction fee
  */
@@ -88,11 +88,14 @@ export function fetchTransactions(
     retry?: number,
     options: RequestInit = Object.create(null)
 ): Promise<Array<Transaction<TLong> & WithApiMixin>> {
-    return request<Array<Array<Transaction<TLong> & WithApiMixin>>>({
+    return request<Array<Array<TTransaction<TLong> & WithApiMixin>>>({
         base,
-        url: `/transactions/address/${address}/limit/${limit}${query({ after })}`,
+        url: `/transactions/address/${address}/limit/${limit}${query({after})}`,
         options
-    }).then(([list]) => list);
+    }).then(([list]) => {
+        list.forEach(transaction => addStateUpdateField(transaction))
+        return list
+    });
 }
 
 /**
@@ -118,9 +121,16 @@ export function fetchUnconfirmedInfo(base: string, id: string, options: RequestI
  * GET /transactions/info/{id}
  * Transaction info
  */
-export function fetchInfo(base: string, id: string, options: RequestInit = Object.create(null)): Promise<Transaction<TLong> & WithApiMixin & IWithApplicationStatus> {
-    return request({ base, url: `/transactions/info/${id}`, options });
+
+
+export function fetchInfo(base: string, id: string, options: RequestInit = Object.create(null)): Promise<TTransaction<TLong> & WithApiMixin & IWithApplicationStatus> {
+    return request<TTransaction<TLong> & WithApiMixin & IWithApplicationStatus>({
+        base,
+        url: `/transactions/info/${id}`,
+        options
+    }).then(transaction => addStateUpdateField(transaction))
 }
+
 
 export function fetchStatus(base: string, list: Array<string>): Promise<ITransactionsStatus> {
     const DEFAULT_STATUS: ITransactionStatus = {
@@ -133,7 +143,7 @@ export function fetchStatus(base: string, list: Array<string>): Promise<ITransac
 
     const loadAllTxInfo: Array<Promise<ITransactionStatus>> = list.map(id =>
         fetchUnconfirmedInfo(base, id)
-            .then(() => ({ ...DEFAULT_STATUS, id, status: TRANSACTION_STATUSES.UNCONFIRMED, inUTX: true }))
+            .then(() => ({...DEFAULT_STATUS, id, status: TRANSACTION_STATUSES.UNCONFIRMED, inUTX: true}))
             .catch(() => fetchInfo(base, id)
                 .then(tx => ({
                     ...DEFAULT_STATUS,
@@ -142,13 +152,13 @@ export function fetchStatus(base: string, list: Array<string>): Promise<ITransac
                     height: tx.height as number,
                     applicationStatus: tx.applicationStatus
                 })))
-            .catch(() => ({ ...DEFAULT_STATUS, id }))
+            .catch(() => ({...DEFAULT_STATUS, id}))
     );
 
     return Promise.all([
         fetchHeight(base),
         Promise.all(loadAllTxInfo)
-    ]).then(([{ height }, statuses]) => ({
+    ]).then(([{height}, statuses]) => ({
         height,
         statuses: statuses.map(item => ({
             ...item,
@@ -170,10 +180,11 @@ export interface ITransactionStatus {
     height: number;
 }
 
-export function broadcast<T extends SignedTransaction<Transaction<TLong>>>(base: string, tx: T): Promise<T & WithApiMixin> {
+export function broadcast<T extends SignedTransaction<Transaction<TLong>>>(base: string, tx: T, options: RequestInit = Object.create(null)): Promise<T & WithApiMixin> {
     return request<T & WithApiMixin>({
         base, url: '/transactions/broadcast',
         options: deepAssign(
+            {...options},
             {
                 method: 'POST',
                 body: stringify(tx),

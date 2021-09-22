@@ -12,11 +12,10 @@ export function fetchDataKey(base: string, address: string, key: string, options
     });
 }
 
-export function fetchScriptInfoMeta(base: string, address: string, options: RequestInit = Object.create(null)): Promise<IScriptInfoMetaResponse> {
+export function fetchScriptInfoMeta(base: string, address: string): Promise<IScriptInfoMetaResponse> {
     return request({
         base,
-        url: `/addresses/scriptInfo/${address}/meta`,
-        options
+        url: `/addresses/scriptInfo/${address}/meta`
     });
 }
 
@@ -52,11 +51,10 @@ export function data(base: string, address: string, params: IDataQueryParams = O
     });
 }
 
-export function fetchValidate(base: string, address: string, options: RequestInit = Object.create(null)): Promise<IValidateResponse> {
+export function fetchValidate(base: string, address: string): Promise<IValidateResponse> {
     return request({
         base,
-        url: `/addresses/validate/${address}`,
-        options
+        url: `/addresses/validate/${address}`
     });
 }
 
@@ -84,35 +82,31 @@ export function fetchEffectiveBalance(base: string, address: string, options: Re
     });
 }
 
-export function fetchSeq(base: string, from: number, to: number, options: RequestInit = Object.create(null)): Promise<Array<string>> {
+export function fetchSeq(base: string, from: number, to: number): Promise<Array<string>> {
     return request({
         base,
-        url: `/addresses/seq/${from}/${to}`,
-        options
+        url: `/addresses/seq/${from}/${to}`
     })
 }
 
-export function fetchSeed(base: string, address: string, options: RequestInit = Object.create(null)): Promise<string> {
+export function fetchSeed(base: string, address: string): Promise<string> {
     return request({
         base,
-        url: `/addresses/seed/${address}`,
-        options
+        url: `/addresses/seed/${address}`
     })
 }
 
-export function fetchPublicKey(base: string, publicKey: string, options: RequestInit = Object.create(null)): Promise<IPublicKeyResponse> {
+export function fetchPublicKey(base: string, publicKey: string): Promise<IPublicKeyResponse> {
     return request({
         base,
-        url: `/addresses/publicKey/${publicKey}`,
-        options
+        url: `/addresses/publicKey/${publicKey}`
     })
 }
 
-export function fetchAddresses(base: string, options: RequestInit = Object.create(null)): Promise<Array<string>> {
+export function fetchAddresses(base: string): Promise<Array<string>> {
     return request({
         base,
-        url: '/addresses',
-        options
+        url: '/addresses'
     });
 }
 

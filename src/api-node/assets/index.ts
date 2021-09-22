@@ -49,7 +49,7 @@ export function fetchAssetDistribution(
  * Asset balance distribution
  */
 
-export function fetchAssetsAddressLimit(base: string, address: string, limit: number, options: RequestInit = Object.create(null)): Promise<Array<IAssetsAddressLimit>> {
+export function fetchAssetsAddressLimit(base: string, address: string, limit: number, options: RequestInit = Object.create(null)): Promise<Array<TAssetDetails>> {
     return request({base, url: `assets/nft/${address}/limit/${limit}`, options});
 }
 
@@ -118,26 +118,10 @@ export interface IAssetDistribution {
     items: Record<string, number>;
 }
 
-export interface IBalanceAddressAssetId {
+export interface IBalanceAddressAssetId<LONG = TLong> {
     address: string;
     assetId: string;
-    balance: number;
-}
-
-export interface IAssetsAddressLimit {
-    assetId: string;
-    issueHeight: number;
-    issueTimestamp: number;
-    issuer: string;
-    issuerPublicKey: string;
-    name: string;
-    description: string;
-    decimals: number;
-    reissuable: boolean;
-    quantity: number;
-    scripted: boolean;
-    minSponsoredAssetFee: number | null;
-    originTransactionId: string
+    balance: LONG;
 }
 
 export type TAssetsBalance = {
@@ -147,10 +131,10 @@ export type TAssetsBalance = {
 
 export type TAssetBalance<LONG = TLong> = {
     'assetId': string;
-    'balance': number;
+    'balance': LONG;
     'reissuable': true;
     'minSponsoredAssetFee': LONG | null;
-    'sponsorBalance': number | null;
+    'sponsorBalance': LONG | null;
     'quantity': LONG;
     'issueTransaction': SignedTransaction<IssueTransaction & WithApiMixin>;
 }
