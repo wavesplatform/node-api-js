@@ -11,6 +11,7 @@ import * as consensusModule from './api-node/consensus';
 import * as activationModule from './api-node/activation';
 import * as nodeModule from './api-node/node';
 import * as assetsModule from './api-node/assets';
+import * as ethModule from './api-node/eth';
 import query from './tools/query';
 import resolve from './tools/resolve';
 import request from './tools/request';
@@ -55,6 +56,7 @@ export function create(base: string) {
     const activation: TWrapRecord<typeof activationModule> = wrapRecord(base, activationModule);
     const node: TWrapRecord<typeof nodeModule> = wrapRecord(base, nodeModule);
     const assets: TWrapRecord<typeof assetsModule> = wrapRecord(base, assetsModule);
+    const eth: TWrapRecord<typeof ethModule> = wrapRecord(base, ethModule);
 
     const tools = {
         transactions: {
@@ -93,7 +95,8 @@ export function create(base: string) {
         consensus,
         activation,
         node,
-        assets
+        assets,
+        eth
     };
 }
 
