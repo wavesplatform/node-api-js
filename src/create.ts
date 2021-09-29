@@ -28,11 +28,6 @@ import createWatch from './tools/adresses/watch';
 import * as toolsUtilsModule from './tools/utils';
 import {Transaction, TransactionMap, WithApiMixin} from '@waves/ts-types';
 import {TLong} from './interface';
-import wavesAddress2eth from "./tools/adresses/wavesAddress2eth";
-import ethAddress2waves from "./tools/adresses/ethAddress2waves";
-import wavesAsset2Eth from "./tools/assets/wavesAsset2eth";
-
-export {wavesAddress2eth, ethAddress2waves, wavesAsset2Eth}
 
 declare function broadcastWrapped<T extends Array<Transaction<TLong>>>(list: T, options?: Partial<IOptions>): Promise<TMapTuple<T, TransactionMap<TLong>, 'type'> & WithApiMixin>;
 declare function broadcastWrapped<T extends Transaction<TLong>>(tx: T, options?: Partial<IOptions>): Promise<TMap<TransactionMap<TLong>, T['type'] & WithApiMixin>>
