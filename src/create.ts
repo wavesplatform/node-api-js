@@ -95,8 +95,6 @@ export function create(base: string) {
     };
 }
 
-export default create;
-
 function wrapRecord<T extends Record<string, (base: string, ...args: Array<any>) => any>>(base: string, hash: T): TWrapRecord<T> {
     return Object.keys(hash).reduce<TWrapRecord<T>>((acc, methodName: keyof T) => {
         acc[methodName] = wrapRequest(base, hash[methodName]);
