@@ -6,5 +6,5 @@ export default function wavesAsset2Eth(wavesAsset: string): string {
 
     const bytes = rawBytes.slice(0, 20)
 
-    return base16Encode(bytes);
+    return `0x${base16Encode(bytes)}`;
 }
