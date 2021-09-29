@@ -3,6 +3,8 @@ import {TAssetDetails} from "../assets";
 import {toArray} from "../../tools/utils";
 import query from "../../tools/query";
 
+export function fetchEthAssetDetails(base: string, ethAssetId: string, options?: RequestInit): Promise<TAssetDetails>;
+export function fetchEthAssetDetails(base: string, ethAssetId: Array<string>, options?: RequestInit): Promise<Array<TAssetDetails>>;
 export function fetchEthAssetDetails(base: string, ethAssetId: string | string[]): Promise<Array<TAssetDetails> | TAssetDetails>  {
     const id = toArray(ethAssetId)
 
