@@ -6,5 +6,5 @@ import query from "../../tools/query";
 export function fetchEthAssetDetails(base: string, ethAssetId: string | string[]): Promise<Array<TAssetDetails> | TAssetDetails>  {
     const id = toArray(ethAssetId)
 
-    return request<Array<TAssetDetails>>({base, url: `/eth/assets?${query({id})}`}).then(list => Array.isArray(ethAssetId) ? list[0] : list);
+    return request<Array<TAssetDetails>>({base, url: `/eth/assets?${query({id})}`}).then(list => Array.isArray(ethAssetId) ? list : list[0]);
 }
