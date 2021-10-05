@@ -1,6 +1,12 @@
 import {IWithStateChanges, TPayment, TStateChanges} from "../../api-node/debug";
 import {BigNumber} from "@waves/bignumber";
-import {AssetDecimals, DataTransactionEntry, TRANSACTION_TYPE, WithApiMixin} from "@waves/ts-types";
+import {
+    AssetDecimals,
+    DataTransactionEntry,
+    EthereumTransaction,
+    TRANSACTION_TYPE,
+    WithApiMixin
+} from "@waves/ts-types";
 import {Long} from "@waves/ts-types/src/index";
 import {
     AliasTransaction,
@@ -77,7 +83,8 @@ export type TTransaction<LONG = Long> =
     | ExchangeTransaction<LONG>
     | SetAssetScriptTransaction<LONG>
     | (InvokeScriptTransaction<LONG> & TWithState)
-    | UpdateAssetInfoTransaction<LONG>;
+    | UpdateAssetInfoTransaction<LONG>
+    | (EthereumTransaction<LONG> & TWithState);
 
 
 export function addStateUpdateField(transaction: TTransaction & WithApiMixin & IWithApplicationStatus): TTransaction & WithApiMixin & IWithApplicationStatus{
@@ -87,6 +94,13 @@ export function addStateUpdateField(transaction: TTransaction & WithApiMixin & I
             amount: p.amount
         })) : []
         return Object.defineProperty(transaction, 'stateUpdate', {get: () => makeStateUpdate(transaction.stateChanges, payments, transaction.dApp, transaction.sender)})
+    } if (transaction.type === TRANSACTION_TYPE.ETHEREUM && transaction.payload.type === 'invocation' && transaction.stateChanges.invokes && transaction.stateChanges.invokes.length) {
+        const payments = transaction.payload.payment ? transaction.payload.payment.map(p => ({
+            assetId: p.assetId,
+            amount: p.amount
+        })) : []
+        const dApp = transaction.payload.dApp || ''
+        return Object.defineProperty(transaction, 'stateUpdate', {get: () => makeStateUpdate(transaction.stateChanges, payments, dApp, transaction.sender)})
     } else return transaction
 }
 
