@@ -84,7 +84,7 @@ export type TTransaction<LONG = Long> =
     | SetAssetScriptTransaction<LONG>
     | (InvokeScriptTransaction<LONG> & TWithState)
     | UpdateAssetInfoTransaction<LONG>
-    | (EthereumTransaction<LONG> & TWithState);
+    | EthereumTransaction<LONG>;
 
 
 export function addStateUpdateField(transaction: TTransaction & WithApiMixin & IWithApplicationStatus): TTransaction & WithApiMixin & IWithApplicationStatus{
@@ -94,13 +94,14 @@ export function addStateUpdateField(transaction: TTransaction & WithApiMixin & I
             amount: p.amount
         })) : []
         return Object.defineProperty(transaction, 'stateUpdate', {get: () => makeStateUpdate(transaction.stateChanges, payments, transaction.dApp, transaction.sender)})
-    } if (transaction.type === TRANSACTION_TYPE.ETHEREUM && transaction.payload.type === 'invocation' && transaction.stateChanges.invokes && transaction.stateChanges.invokes.length) {
+    } if (transaction.type === TRANSACTION_TYPE.ETHEREUM && transaction.payload.type === 'invocation' && transaction.payload.stateChanges.invokes && transaction.payload.stateChanges.invokes.length) {
         const payments = transaction.payload.payment ? transaction.payload.payment.map(p => ({
             assetId: p.assetId,
             amount: p.amount
         })) : []
         const dApp = transaction.payload.dApp || ''
-        return Object.defineProperty(transaction, 'stateUpdate', {get: () => makeStateUpdate(transaction.stateChanges, payments, dApp, transaction.sender)})
+        // @ts-ignore
+        return Object.defineProperty(transaction, 'stateUpdate', {get: () => makeStateUpdate(transaction.payload.stateChanges, payments, dApp, transaction.sender)})
     } else return transaction
 }
 
