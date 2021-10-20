@@ -4,10 +4,11 @@ import {
     AssetDecimals,
     DataTransactionEntry,
     InvokeExpressionTransaction,
+    EthereumTransaction,
     TRANSACTION_TYPE,
     WithApiMixin
-} from "@waves/ts-types";
-import {Long} from "@waves/ts-types/src/index";
+} from "@waves/ts-types/";
+import {Long} from "@waves/ts-types/";
 import {
     AliasTransaction,
     BurnTransaction, CancelLeaseTransaction, DataTransaction, ExchangeTransaction,
@@ -15,7 +16,7 @@ import {
     IssueTransaction, LeaseTransaction, MassTransferTransaction,
     PaymentTransaction, ReissueTransaction, SetAssetScriptTransaction, SetScriptTransaction, SponsorshipTransaction,
     TransferTransaction, UpdateAssetInfoTransaction
-} from "@waves/ts-types/transactions/index";
+} from "@waves/ts-types/";
 import {IWithApplicationStatus, TLong} from "../../interface";
 import any = jasmine.any;
 
@@ -86,6 +87,7 @@ export type TTransaction<LONG = Long> =
     | (InvokeScriptTransaction<LONG> & TWithState)
     | UpdateAssetInfoTransaction<LONG>
     | (InvokeExpressionTransaction<LONG> & TWithState)
+    | EthereumTransaction<LONG>;
 
 
 export function addStateUpdateField(transaction: TTransaction & WithApiMixin & IWithApplicationStatus): TTransaction & WithApiMixin & IWithApplicationStatus {
@@ -95,7 +97,14 @@ export function addStateUpdateField(transaction: TTransaction & WithApiMixin & I
             amount: p.amount
         })) : []
 
-        return Object.defineProperty(transaction, 'stateUpdate', {get: () => makeStateUpdate(transaction.stateChanges, payments, (transaction as any).dApp, transaction.sender)})
+     } if (transaction.type === TRANSACTION_TYPE.ETHEREUM && transaction.payload.type === 'invocation' && transaction.payload.stateChanges.invokes && transaction.payload.stateChanges.invokes.length) {
+        const payments = transaction.payload.payment ? transaction.payload.payment.map((p: TPayment) => ({
+            assetId: p.assetId,
+            amount: p.amount
+        })) : []
+        const dApp = transaction.payload.dApp || ''
+        // @ts-ignore
+        return Object.defineProperty(transaction, 'stateUpdate', {get: () => makeStateUpdate(transaction.payload.stateChanges, payments, dApp, transaction.sender)})
     } else return transaction
 }
 
@@ -139,7 +148,7 @@ export function makeStateUpdate(stateChanges: TStateChanges, payment: TPayment[]
                     })
                     //data
                     x.stateChanges.data.forEach(y => {
-                        const index = stateUpdate.data.findIndex(z => z.key === y.key)
+                        const index = stateUpdate.data.findIndex(z => z.key === y.key && z.address === x.dApp)
                         index !== -1 ? stateUpdate.data[index] = {...y, address: x.dApp} : stateUpdate.data.push({
                             ...y,
                             address: x.dApp
