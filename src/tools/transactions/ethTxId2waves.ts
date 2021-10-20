@@ -1,5 +1,7 @@
-import { base58Encode, base16Decode } from '@waves/ts-lib-crypto';
+import {base16Decode, base58Encode} from '@waves/ts-lib-crypto';
 
 export default function ethTxId2waves(ethTxId: string): string {
-    return base58Encode(base16Decode(ethTxId));
+    let id = ethTxId
+    if (ethTxId.startsWith('0x')) id = ethTxId.slice(2)
+    return base58Encode(base16Decode(id));
 }
