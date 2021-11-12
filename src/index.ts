@@ -5,7 +5,6 @@ import ethTxId2waves from "./tools/transactions/ethTxId2waves";
 
 import { create as createFn } from './create';
 
-
 export {
     wavesAddress2eth,
     ethAddress2waves,
@@ -16,3 +15,10 @@ export {
 export const create = createFn;
 
 export default createFn;
+
+export {
+    ICallableFuncArgumentType,
+    TCallableFuncArgumentsArray,
+    TCallableFuncArgumentsRecord,
+    TCallableFuncArguments,
+} from './api-node/addresses';
