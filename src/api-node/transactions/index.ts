@@ -121,8 +121,6 @@ export function fetchUnconfirmedInfo(base: string, id: string, options: RequestI
  * GET /transactions/info/{id}
  * Transaction info
  */
-
-
 export function fetchInfo(base: string, id: string, options: RequestInit = Object.create(null)): Promise<TTransaction<TLong> & WithApiMixin & IWithApplicationStatus> {
     return request<TTransaction<TLong> & WithApiMixin & IWithApplicationStatus>({
         base,
@@ -131,6 +129,26 @@ export function fetchInfo(base: string, id: string, options: RequestInit = Objec
     }).then(transaction => addStateUpdateField(transaction))
 }
 
+/**
+ * GET /transactions/info/
+ * Get transactions by IDs
+ */
+export function fetchMultipleInfo(base: string, ids: string[], options: RequestInit = Object.create(null)): Promise<Array<TTransaction<TLong> & WithApiMixin & IWithApplicationStatus>> {
+    const params = ids
+        .map(assetId => `id=${assetId}`)
+        .join('&');
+
+    const query = ids.length ? `?${params}` : '';
+
+    return request<Array<TTransaction<TLong> & WithApiMixin & IWithApplicationStatus>>({
+        base,
+        url: `/transactions/info${query}`,
+        options
+    }).then((transactions) => {
+        transactions.forEach(tx => addStateUpdateField(tx))
+        return transactions
+    })
+}
 
 export function fetchStatus(base: string, list: Array<string>): Promise<ITransactionsStatus> {
     const DEFAULT_STATUS: ITransactionStatus = {
