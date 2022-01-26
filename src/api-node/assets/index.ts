@@ -2,6 +2,7 @@ import {TLong} from '../../interface';
 import {AssetDecimals, IssueTransaction, SignedTransaction, TRANSACTION_TYPE, WithApiMixin} from '@waves/ts-types';
 import request from '../../tools/request';
 import {toArray} from '../../tools/utils';
+import query from "../../tools/query";
 
 /**
  * GET /assets/details/{assetId}
@@ -24,13 +25,7 @@ export function fetchDetails<T extends string | Array<string>>(base: string, ass
  * Provides detailed information about the given assets
  */
 export function fetchAssetsDetails(base: string, assetIds: Array<string>, options: RequestInit = Object.create(null)): Promise<Array<TAssetDetails | TErrorResponse>> {
-    const params = assetIds
-        .map(assetId => `id=${assetId}`)
-        .join('&');
-
-    const query = assetIds.length ? `?${params}` : '';
-
-    return request<Array<TAssetDetails | TErrorResponse>>({base, url: `/assets/details${query}`, options});
+    return request<Array<TAssetDetails | TErrorResponse>>({base, url: `/assets/details${query({id: assetIds})}`, options});
 }
 
 export function fetchAssetDistribution(

@@ -134,15 +134,9 @@ export function fetchInfo(base: string, id: string, options: RequestInit = Objec
  * Get transactions by IDs
  */
 export function fetchMultipleInfo(base: string, ids: string[], options: RequestInit = Object.create(null)): Promise<Array<TTransaction<TLong> & WithApiMixin & IWithApplicationStatus>> {
-    const params = ids
-        .map(assetId => `id=${assetId}`)
-        .join('&');
-
-    const query = ids.length ? `?${params}` : '';
-
     return request<Array<TTransaction<TLong> & WithApiMixin & IWithApplicationStatus>>({
         base,
-        url: `/transactions/info${query}`,
+        url: `/transactions/info${query({id: ids})}`,
         options
     }).then((transactions) => {
         transactions.forEach(tx => addStateUpdateField(tx))
