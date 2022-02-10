@@ -58,11 +58,10 @@ export function fetchValidate(base: string, address: string): Promise<IValidateR
     });
 }
 
-export function fetchBalance(base: string, address: string | string[], options: RequestInit = Object.create(null)): Promise<IBalanceConfirmations<TLong> | IBalanceConfirmations<TLong>[]> {
-    const params = Array.isArray(address) ? '?' + address.reduce((acc, x) => [...acc, `address=${x}`], [] as string[]).join('&') : `/${address}`
+export function fetchBalance(base: string, address: string, options: RequestInit = Object.create(null)): Promise<IBalanceConfirmations<TLong>> {
     return request({
         base,
-        url: `/addresses/balance${params}`,
+        url: `/addresses/balance/${address}`,
         options
     });
 }
