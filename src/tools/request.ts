@@ -1,8 +1,7 @@
 import resolve from './resolve';
 import parse from './parse';
 
-
-const request = typeof fetch === 'function' ? fetch : require('node-fetch');
+import request from 'cross-fetch';
 
 export default function <T>(params: IRequestParams<T>): Promise<T> {
     return request(resolve(params.url, params.base), updateHeaders(params.options))
@@ -23,7 +22,7 @@ function tryParse(message: string) {
 
 function updateHeaders(options: RequestInit = Object.create(null)) {
     return {
-        credentials: 'include',
+        credentials: ('include' as any),
         ...options
     };
 }
@@ -31,7 +30,7 @@ function updateHeaders(options: RequestInit = Object.create(null)) {
 export interface IRequestParams<T> {
     url: string;
     base: string;
-    options?: RequestInit | undefined;
+    options?: any; // TODO RequestInit;
 }
 
 // RequestInit is a DOM interface. It needs to be explicitly defined here for usage in nodejs environment
