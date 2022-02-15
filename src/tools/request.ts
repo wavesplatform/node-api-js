@@ -1,8 +1,12 @@
 import resolve from './resolve';
 import parse from './parse';
 
+// import fetch, { RequestInit } from 'node-fetch';
+import fetch from 'cross-fetch';
+const request = fetch;
 
-const request = typeof fetch === 'function' ? fetch : require('node-fetch');
+// const request = typeof globalThis.fetch === 'function' ? fetch : require('node-fetch');
+// const request = require('node-fetch');
 
 export default function <T>(params: IRequestParams<T>): Promise<T> {
     return request(resolve(params.url, params.base), updateHeaders(params.options))
@@ -23,7 +27,7 @@ function tryParse(message: string) {
 
 function updateHeaders(options: RequestInit = Object.create(null)) {
     return {
-        credentials: 'include',
+        credentials: ('include' as any),
         ...options
     };
 }
@@ -31,15 +35,15 @@ function updateHeaders(options: RequestInit = Object.create(null)) {
 export interface IRequestParams<T> {
     url: string;
     base: string;
-    options?: RequestInit | undefined;
+    options?: any; // TODO RequestInit;
 }
 
-// RequestInit is a DOM interface. It needs to be explicitly defined here for usage in nodejs environment
+// // RequestInit is a DOM interface. It needs to be explicitly defined here for usage in nodejs environment
 export interface RequestInit {
     /**
      * A BodyInit object or null to set request's body.
      */
-    body?: BodyInit | null;
+    body?: BodyInit;
     /**
      * A string indicating how the request will interact with the browser's cache to set request's cache.
      * Not supported in nodejs environment

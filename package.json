@@ -6,14 +6,14 @@
   "scripts": {
     "testCommand": "jest",
     "prepare": "npm run build",
-    "build": "tsc -p ./tsconfig-es.json && tsc -p ./tsconfig-cjs.json && webpack",
+    "build": "rm -rf ./es && tsc -p ./tsconfig-es.json && rm -rf ./cjs  && tsc -p ./tsconfig-cjs.json && webpack",
     "test": "node-state -e -n -m typescript -o ./test/_state.ts -r"
   },
   "dependencies": {
     "@types/node-fetch": "^2.5.4",
     "@waves/bignumber": "^1.1.1",
     "@waves/ts-types": "^1.0.6-beta.7",
-    "node-fetch": "^3.1.1",
+    "cross-fetch": "^3.1.5",
     "typed-ts-events": "^1.1.1"
   },
   "files": [
