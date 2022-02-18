@@ -144,8 +144,11 @@ it('address balance, long as string', async () => {
     expect(typeof balance.confirmations).toBe('number');
     expect(balance.address).toBe(address);
 });
+
 /*
 it('multiple account balance', async () => { //AB
+    const txIds = [] as string[];
+
     const {address} = STATE.ACCOUNTS.SIMPLE;
     const balance = await  api.addresses.fetchMultipleBalance(addresses);
 
@@ -157,6 +160,8 @@ it('multiple account balance', async () => { //AB
 
 
  */
+
+
 
 it('address effective balance', async () => {
     const {address} = STATE.ACCOUNTS.SIMPLE;
@@ -243,15 +248,12 @@ it('Fetch seed', async () => {   //AB
  */
 
 it('Fetch seq', async () => {   //AB
-    //const {addresses} = STATE.ACCOUNTS.SIMPLE;
-    const seq = await api.addresses.fetchSeq(1,20);
-    console.log(seq)
+    
+    const seq = await api.addresses.fetchSeq(0,20);
+    console.log(seq);
+    let l = seq.length;
+    for (let i=0;i<l;i++) {
+        expect(typeof seq[i]).toBe('string');
+    }
 
-    /*
-    expect(typeof fetchSeed.length).toBe('number');
-    expect(fetchSeed.length).toEqual(address.)
-    toBe('number');
-    expect(balance.address).toBe(address);
-
-     */
 });
