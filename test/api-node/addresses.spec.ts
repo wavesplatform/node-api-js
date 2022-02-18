@@ -45,15 +45,26 @@ it('data by key', async () => {
     expect(data.value).toBe(STATE.ACCOUNTS.SIMPLE.data.key.value);
 });
 
-// it('data by address', async () => {
-//     const addressData = await api.addresses.data(STATE.ACCOUNTS.SIMPLE.address);
-//
-//     expect(addressData).toBeInstanceOf(Array)
-//     // @ts-ignore
-//     expect(data.type).toBe(STATE.ACCOUNTS.SIMPLE.data.key.type);
-//     // @ts-ignore
-//     expect(data.value).toBe(STATE.ACCOUNTS.SIMPLE.data.key.value);
-// });
+it('data by address', async () => { //AB
+     const addressData = await api.addresses.data(STATE.ACCOUNTS.SIMPLE.address);
+     console.log(addressData)
+
+     expect(addressData).toBeInstanceOf(Array)
+
+     // @ts-ignore
+    let l = addressData.length;
+     for(let i=0;i<l;i++) {
+         expect(typeof addressData[i].type).toBe('string');
+         expect(typeof addressData[i].key).toBe('string');
+         expect(typeof addressData[i].value).isStringOrNumber();
+     }
+     //expect(addressData.).toBe(STATE.ACCOUNTS.SIMPLE.data.key.type);
+     /*
+     // @ts-ignore
+     expect(data.value).toBe(STATE.ACCOUNTS.SIMPLE.data.key.value);
+
+ */
+});
 
 it('Script info meta', async () => {
     const info = await api.addresses.fetchScriptInfoMeta(STATE.ACCOUNTS.SIMPLE.address);
@@ -133,6 +144,19 @@ it('address balance, long as string', async () => {
     expect(typeof balance.confirmations).toBe('number');
     expect(balance.address).toBe(address);
 });
+/*
+it('multiple account balance', async () => { //AB
+    const {address} = STATE.ACCOUNTS.SIMPLE;
+    const balance = await  api.addresses.fetchMultipleBalance(addresses);
+
+    expect(typeof balance.balance).isStringOrNumber();
+    expect(typeof balance.address).toBe('string');
+    expect(typeof balance.confirmations).toBe('number');
+    expect(balance.address).toBe(address);
+});
+
+
+ */
 
 it('address effective balance', async () => {
     const {address} = STATE.ACCOUNTS.SIMPLE;
@@ -204,4 +228,30 @@ it('validate address, invalid address', async () => {
     expect(validateAddress.valid).toBe(false);
 });
 
+/*
+it('Fetch seed', async () => {   //AB
+    const {address} = STATE.ACCOUNTS.SIMPLE;
+    const fetchSeed = await api.addresses.fetchSeed(address);
 
+    expect(typeof fetchSeed.length).toBe('number');
+    expect(fetchSeed.length).toEqual(address.)
+    toBe('number');
+    expect(balance.address).toBe(address);
+});
+
+
+ */
+
+it('Fetch seq', async () => {   //AB
+    //const {addresses} = STATE.ACCOUNTS.SIMPLE;
+    const seq = await api.addresses.fetchSeq(1,20);
+    console.log(seq)
+
+    /*
+    expect(typeof fetchSeed.length).toBe('number');
+    expect(fetchSeed.length).toEqual(address.)
+    toBe('number');
+    expect(balance.address).toBe(address);
+
+     */
+});

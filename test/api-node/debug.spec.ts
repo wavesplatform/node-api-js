@@ -4,6 +4,8 @@ import {invokeScript, waitForTx, broadcast, transfer, libs} from '@waves/waves-t
 import {InvokeScriptTransaction} from "@waves/ts-types";
 import {TLong} from "../../src/interface";
 import {TWithState} from "../../src/tools/transactions/transactions";
+import {isNullableStringOrNumber, isStringOrNumber} from '../extendedMatcher'
+import {fetchBalanceHistory} from "../../src/api-node/debug";
 
 
 const api = create(NODE_URL);
@@ -53,5 +55,17 @@ describe('State changes by transaction Id', () => {
         console.log(txState.invokes)
 
 
-    })
+    });
+
+    it('Fetch Balance History', async () =>{   //AB
+        const {address} = STATE.ACCOUNTS.SIMPLE;
+        const tx = await api.debug.fetchBalanceHistory(address);
+        let l = tx.length;
+
+        for(let i=0;i<l;i++) {
+            expect(typeof tx[i].height).toBe('number');
+            expect(typeof tx[i].balance).isStringOrNumber();
+        }
+    });
+
 })
