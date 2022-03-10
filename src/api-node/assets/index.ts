@@ -53,6 +53,31 @@ export function fetchAssetsAddressLimit(base: string, address: string, limit: nu
     return request({base, url: `assets/nft/${address}/limit/${limit}`, options});
 }
 
+/**
+ * TODO
+ * GET assets/nft/${address}/limit/${limit}
+ * Asset balance distribution
+ */
+ interface IFetchAssetsNftParams {
+    address: string;
+    limit: number;
+    after?: string;
+}
+
+export function fetchAssetsNft(
+    base: string,
+    { address, limit, after }: IFetchAssetsNftParams,
+    options: RequestInit = Object.create(null)
+): Promise<Array<TAssetDetails>> {
+    const url = new URL(`assets/nft/${address}/limit/${limit}`, base);
+
+    if(after) {
+        url.searchParams.append('after', after);
+    }
+
+    return request({base, url: `${url.pathname}${url.search}`, options});
+}
+
 export async function fetchAssetsBalance(base: string, address: string, options: RequestInit = Object.create(null)): Promise<TAssetsBalance> {
     const balancesResponse = await request<TAssetsBalance>({base, url: `/assets/balance/${address}`, options});
 
