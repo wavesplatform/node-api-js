@@ -1,7 +1,7 @@
-import { TLong } from '../../interface';
+import {TLong} from '../../interface';
 import request, {parseResponse} from '../../tools/request';
 import query from '../../tools/query';
-import { DataTransactionEntry } from '@waves/ts-types';
+import {DataTransactionEntry} from '@waves/ts-types';
 
 
 export function fetchDataKey(base: string, address: string, key: string, options: RequestInit = Object.create(null)): Promise<DataTransactionEntry<TLong>> {
@@ -183,7 +183,7 @@ export interface IBalanceDetails<LONG> {
 export type ICallableFuncArgumentType = 'Int' | 'String' | 'ByteVector' | 'Boolean'
 export type TCallableFuncArgumentsArray = { name: string, type: ICallableFuncArgumentType }[]
 export type TCallableFuncArgumentsRecord = Record<string, ICallableFuncArgumentType>
-export type TCallableFuncArguments = TCallableFuncArgumentsArray | TCallableFuncArgumentsRecord 
+export type TCallableFuncArguments = TCallableFuncArgumentsArray | TCallableFuncArgumentsRecord
 
 export interface IScriptInfoMeta<TArguments extends TCallableFuncArguments> {
     version: string
