@@ -3,7 +3,6 @@ import {BigNumber} from "@waves/bignumber";
 import {
     AssetDecimals,
     DataTransactionEntry,
-    InvokeExpressionTransaction,
     EthereumTransaction,
     TRANSACTION_TYPE,
     WithApiMixin
@@ -86,12 +85,11 @@ export type TTransaction<LONG = Long> =
     | SetAssetScriptTransaction<LONG>
     | (InvokeScriptTransaction<LONG> & TWithState)
     | UpdateAssetInfoTransaction<LONG>
-    | (InvokeExpressionTransaction<LONG> & TWithState)
     | EthereumTransaction<LONG>;
 
 
 export function addStateUpdateField(transaction: TTransaction & WithApiMixin & IWithApplicationStatus): TTransaction & WithApiMixin & IWithApplicationStatus {
-    if (transaction.type === TRANSACTION_TYPE.INVOKE_SCRIPT || transaction.type === TRANSACTION_TYPE.INVOKE_EXPRESSION && transaction.stateChanges.invokes && transaction.stateChanges.invokes.length) {
+    if (transaction.type === TRANSACTION_TYPE.INVOKE_SCRIPT && transaction.stateChanges.invokes && transaction.stateChanges.invokes.length) {
         const payments = (transaction as any).payment ? (transaction as any).payment.map((p: TPayment) => ({
             assetId: p.assetId,
             amount: p.amount
