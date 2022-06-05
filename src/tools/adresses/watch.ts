@@ -48,14 +48,13 @@ export class Watch {
         const onError = () => this._addTimeout();
 
         fetchTransactions(this._base, this.address, 1)
-            .then(([tx]) => {
-
+            .then(([tx ]) => {
                 if (!tx) {
                     this._addTimeout();
                     return null;
                 }
 
-                this.getTransactionsInHeight(tx, 310)
+                this.getTransactionsInHeight(tx as Transaction<TLong> & WithApiMixin, 310)
                     .then(list => {
 
                         const hash = Watch._groupByHeight(list);
@@ -109,16 +108,16 @@ export class Watch {
                 if (downloaded.length === list.length) {
                     return downloaded;
                 }
-                const hash = Watch._groupByHeight(list);
+                const hash = Watch._groupByHeight(list as Array<Transaction<TLong> & WithApiMixin>);
                 const heightList = keys(hash)
                     .map(Number)
                     .sort((a, b) => b - a);
                 const [last, prev] = heightList;
 
                 if (last === height) {
-                    return prev ? [...hash[last], hash[prev][0]] : loop(list);
+                    return prev ? [...hash[last], hash[prev][0]] : loop(list as Array<Transaction<TLong> & WithApiMixin>);
                 } else {
-                    return loop(list);
+                    return loop(list as Array<Transaction<TLong> & WithApiMixin>);
                 }
             });
         };
@@ -171,6 +170,6 @@ export interface IEvents {
 
 export default function (base: string, address: string, interval?: number) {
     return fetchTransactions(base, address, 1)
-        .then(([tx]) => new Watch(base, address, tx, interval));
+        .then(([tx]) => new Watch(base, address, tx as Transaction<TLong> & WithApiMixin, interval));
 }
 

@@ -58,7 +58,7 @@ export function fetchAssetsAddressLimit(base: string, address: string, limit: nu
  * GET assets/nft/${address}/limit/${limit}
  * Asset balance distribution
  */
- interface IFetchAssetsNftParams {
+interface IFetchAssetsNftParams {
     address: string;
     limit: number;
     after?: string;
@@ -66,12 +66,12 @@ export function fetchAssetsAddressLimit(base: string, address: string, limit: nu
 
 export function fetchAssetsNft(
     base: string,
-    { address, limit, after }: IFetchAssetsNftParams,
+    {address, limit, after}: IFetchAssetsNftParams,
     options: RequestInit = Object.create(null)
 ): Promise<Array<TAssetDetails>> {
     const url = new URL(`assets/nft/${address}/limit/${limit}`, base);
 
-    if(after) {
+    if (after) {
         url.searchParams.append('after', after);
     }
 
@@ -157,7 +157,7 @@ export type TAssetBalance<LONG = TLong> = {
     'minSponsoredAssetFee': LONG | null;
     'sponsorBalance': LONG | null;
     'quantity': LONG;
-    'issueTransaction': SignedTransaction<IssueTransaction & WithApiMixin>;
+    'issueTransaction': SignedTransaction<IssueTransaction & WithApiMixin> & { feeAssetId: null };
 }
 
 export type TAssetDetails<LONG = TLong> = {
