@@ -2,7 +2,6 @@ import {TLong} from '../../interface';
 import {AssetDecimals, IssueTransaction, SignedTransaction, TRANSACTION_TYPE, WithApiMixin} from '@waves/ts-types';
 import request from '../../tools/request';
 import {toArray} from '../../tools/utils';
-import stringify from 'src/tools/stringify';
 
 /**
  * GET /assets/details/{assetId}
@@ -25,7 +24,7 @@ export function fetchDetails<T extends string | Array<string>>(base: string, ass
  * Provides detailed information about the given assets
  */
 export function fetchAssetsDetails(base: string, assetIds: Array<string>, options: RequestInit = Object.create(null)): Promise<Array<TAssetDetails | TErrorResponse>> {
-    const body = stringify({ ids: assetIds });
+    const body = JSON.stringify({ ids: assetIds });
     const _options: RequestInit = {
         ...options,
         body,
