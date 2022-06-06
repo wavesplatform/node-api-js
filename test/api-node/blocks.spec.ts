@@ -40,6 +40,12 @@ it('fetchHeightById', async () => {
     expect(info.height).toBe(height)
 });
 
+it('fetchHeightByTimestamp', async () => {   //AB
+    const {timestamp, height} = await api.blocks.fetchHeadersLast();
+    const info = await api.blocks.fetchHeightByTimestamp(timestamp);
+    expect(info.height).toBe(height)
+});
+
 it('fetchHeadersSeq', async () => {
     const {height} = await api.blocks.fetchHeadersLast();
     const minHeight = height - 100 > 1 ? height - 100 : 2;
