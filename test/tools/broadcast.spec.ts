@@ -30,26 +30,33 @@ it('Broadcast 2 transactions', async () => {
 });
 
 test('Chain broadcast 2 transactions', async () => {
-    const tx1 = transfer({
-        recipient: `alias:${CHAIN_ID}:${STATE.ACCOUNTS.SMART.alias}`,
-        amount: 1
-    }, MASTER_ACCOUNT.SEED) as SignedTransaction<TransferTransaction<TLong>> & WithId
+    try {
+        const tx1 = transfer({
+            recipient: `alias:${CHAIN_ID}:${STATE.ACCOUNTS.SMART.alias}`,
+            amount: 1
+        }, MASTER_ACCOUNT.SEED) as SignedTransaction<TransferTransaction<TLong>> & WithId
 
-    const tx2 = transfer({
-        recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
-        amount: 2
-    }, MASTER_ACCOUNT.SEED) as SignedTransaction<TransferTransaction<TLong>> & WithId
+        const tx2 = transfer({
+            recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
+            amount: 2
+        }, MASTER_ACCOUNT.SEED) as SignedTransaction<TransferTransaction<TLong>> & WithId
 
-    const promise = api.tools.transactions.broadcast([tx1, tx2], { chain: true, confirmations: 1 }).catch(() => null);
+        const promise = api.tools.transactions.broadcast([tx1, tx2], { chain: true, confirmations: 1 }).catch(() => null);
 
-    await wait(10);
-    const status = await api.transactions.fetchStatus([tx1.id, tx2.id]);
-    expect(status.statuses[0].status).toBe(TRANSACTION_STATUSES.UNCONFIRMED);
-    expect(status.statuses[1].status).toBe(TRANSACTION_STATUSES.NOT_FOUND);
-
-    return promise.then(async () => {
+        await wait(10);
         const status = await api.transactions.fetchStatus([tx1.id, tx2.id]);
-        expect(status.statuses[0].confirmations >= 1).toBe(true);
-        expect(status.statuses[1].confirmations >= 1).toBe(true);
-    });
+        expect(status.statuses[0].status).toBe(TRANSACTION_STATUSES.UNCONFIRMED);
+        expect(status.statuses[1].status).toBe(TRANSACTION_STATUSES.NOT_FOUND);
+
+        return promise.then(async () => {
+            const status = await api.transactions.fetchStatus([tx1.id, tx2.id]);
+            expect(status.statuses[0].confirmations >= 1).toBe(true);
+            expect(status.statuses[1].confirmations >= 1).toBe(true);
+        });
+    } catch (e) {
+        throw new Error(e)
+    }
+
+
+
 }, 60000);

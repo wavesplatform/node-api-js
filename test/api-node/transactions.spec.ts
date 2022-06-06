@@ -22,6 +22,41 @@ it('Broadcast and unconfirmed', async () => {
     expect(tx.id).toBe(unconfirmed.id);
 });
 
+it('Unconfirmed transaction', async () => {  //AB
+    const txIds = [] as string[]
+    for (let i = 0; i < 4; i++) {
+        const tx = await API.transactions.broadcast(
+            transfer({
+                recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
+                amount: 1
+            }, MASTER_ACCOUNT.SEED) as SignedTransaction<TransferTransaction<TLong>>
+        );
+        txIds.push(tx.id)
+    }
+
+    const unconfirmed = await API.transactions.fetchUnconfirmed();
+    const unconfirmedIds = unconfirmed.map(tx => tx.id)
+    const truthy = !(txIds.map(txId => unconfirmed.some(tx => tx.id === txId)).some(x => x === false))
+    expect(truthy).toBeTruthy()
+});
+
+it('Unconfirmed size', async () => {   //AB
+    const tx = [];
+        setTimeout(async () => {
+            for (let i = 0; i < 4; i++) {
+                tx[i] = await API.transactions.broadcast(
+                    transfer({
+                        recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
+                        amount: 1
+                    }, MASTER_ACCOUNT.SEED) as SignedTransaction<TransferTransaction<TLong>>
+                );
+            }
+        }, 65000)
+    const unconfirmed = await API.transactions.fetchUnconfirmedSize();
+    expect(unconfirmed.size >= 4).toBe(true);
+});
+
+
 test('Broadcast, wait and info', async () => {
     const tx = await API.transactions.broadcast(
         transfer({

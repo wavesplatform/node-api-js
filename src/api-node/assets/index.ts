@@ -20,17 +20,21 @@ export function fetchDetails<T extends string | Array<string>>(base: string, ass
 }
 
 /**
- * GET /assets/details
+ * POST /assets/details
  * Provides detailed information about the given assets
  */
 export function fetchAssetsDetails(base: string, assetIds: Array<string>, options: RequestInit = Object.create(null)): Promise<Array<TAssetDetails | TErrorResponse>> {
-    const params = assetIds
-        .map(assetId => `id=${assetId}`)
-        .join('&');
+    const body = JSON.stringify({ ids: assetIds });
+    const _options: RequestInit = {
+        ...options,
+        body,
+        headers: {
+            'content-type': 'application/json'
+        },
+        method: 'POST'
+    };
 
-    const query = assetIds.length ? `?${params}` : '';
-
-    return request<Array<TAssetDetails | TErrorResponse>>({base, url: `/assets/details${query}`, options});
+    return request<Array<TAssetDetails | TErrorResponse>>({base, url: `/assets/details`, options: _options});
 }
 
 export function fetchAssetDistribution(

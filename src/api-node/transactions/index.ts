@@ -126,8 +126,6 @@ export function fetchUnconfirmedInfo(base: string, id: string, options: RequestI
  * GET /transactions/info/{id}
  * Transaction info
  */
-
-
 export function fetchInfo(base: string, id: string, options: RequestInit = Object.create(null)): Promise<TransactionFromNode> {
     return request<TransactionFromNode>({
         base,
@@ -136,6 +134,17 @@ export function fetchInfo(base: string, id: string, options: RequestInit = Objec
     })
 }
 
+/**
+ * GET /transactions/info/
+ * Get transactions by IDs
+ */
+export function fetchMultipleInfo(base: string, ids: string[], options: RequestInit = Object.create(null)): Promise<Array<TransactionFromNode>> {
+    return request<Array<TransactionFromNode>>({
+        base,
+        url: `/transactions/info${query({id: ids})}`,
+        options
+    })
+}
 
 export function fetchStatus(base: string, list: Array<string>): Promise<ITransactionsStatus> {
     const DEFAULT_STATUS: ITransactionStatus = {

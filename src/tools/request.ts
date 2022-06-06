@@ -9,7 +9,7 @@ export default function <T>(params: IRequestParams<T>): Promise<T> {
         .then(parseResponse) as Promise<T>;
 }
 
-function parseResponse<T>(r: Response): Promise<T> {
+export function parseResponse<T>(r: Response): Promise<T> {
     return r.text().then(message => r.ok ? parse(message) : Promise.reject(tryParse(message)));
 }
 
