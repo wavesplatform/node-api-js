@@ -51,7 +51,6 @@ it('data by key', async () => {
 
 it('data by address', async () => { //AB
      const addressData = await api.addresses.data(STATE.ACCOUNTS.SIMPLE.address);
-     console.log(addressData)
 
      expect(addressData).toBeInstanceOf(Array)
 
