@@ -95,40 +95,44 @@ export async function fetchAssetsBalance(base: string, address: string, options:
         }, {}
     );
 
-    const assetsDetailsResponse = await fetchAssetsDetails(base, Object.keys(assetsWithoutIssueTransaction), options);
+    const detailsIds = Object.keys(assetsWithoutIssueTransaction);
 
-    assetsDetailsResponse.forEach((assetDetails) => {
-        if ('error' in assetDetails) {
-            return;
-        }
+    if (detailsIds.length) {
+        const assetsDetailsResponse = await fetchAssetsDetails(base, detailsIds, options);
 
-        const assetIndex = assetsWithoutIssueTransaction[assetDetails.assetId];
-        const assetBalance = balancesResponse.balances[assetIndex];
+        assetsDetailsResponse.forEach((assetDetails) => {
+            if ('error' in assetDetails) {
+                return;
+            }
 
-        if (!assetBalance) {
-            return;
-        }
+            const assetIndex = assetsWithoutIssueTransaction[assetDetails.assetId];
+            const assetBalance = balancesResponse.balances[assetIndex];
 
-        assetBalance.issueTransaction = {
-            id: assetDetails.originTransactionId,
-            name: assetDetails.name,
-            decimals: assetDetails.decimals,
-            description: assetDetails.description,
-            quantity: assetDetails.quantity,
-            reissuable: assetDetails.reissuable,
-            sender: assetDetails.issuer,
-            senderPublicKey: assetDetails.issuerPublicKey,
-            timestamp: assetDetails.issueTimestamp,
-            height: assetDetails.issueHeight,
-            script: assetDetails.scripted ? '-' : null,
-            proofs: [],
-            fee: 10 ** 8,
-            feeAssetId: null,
-            version: 3,
-            type: TRANSACTION_TYPE.ISSUE,
-            chainId: 0
-        };
-    });
+            if (!assetBalance) {
+                return;
+            }
+
+            assetBalance.issueTransaction = {
+                id: assetDetails.originTransactionId,
+                name: assetDetails.name,
+                decimals: assetDetails.decimals,
+                description: assetDetails.description,
+                quantity: assetDetails.quantity,
+                reissuable: assetDetails.reissuable,
+                sender: assetDetails.issuer,
+                senderPublicKey: assetDetails.issuerPublicKey,
+                timestamp: assetDetails.issueTimestamp,
+                height: assetDetails.issueHeight,
+                script: assetDetails.scripted ? '-' : null,
+                proofs: [],
+                fee: 10 ** 8,
+                feeAssetId: null,
+                version: 3,
+                type: TRANSACTION_TYPE.ISSUE,
+                chainId: 0
+            };
+        });
+    }
 
     return balancesResponse;
 }
