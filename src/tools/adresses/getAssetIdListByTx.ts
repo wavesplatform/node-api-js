@@ -1,4 +1,4 @@
-import { Transaction } from '@waves/ts-types';
+import {Transaction, TransactionFromNode} from '@waves/ts-types';
 import { TLong } from '../../interface';
 import { prop, switchTransactionByType, toArray } from '../utils';
 import { NAME_MAP } from '../../constants';
@@ -21,7 +21,8 @@ const getAssetIdList = switchTransactionByType({
     [NAME_MAP.updateAsset]: tx => [tx.assetId]
 });
 
-export default function (tx: Transaction<TLong> | Array<Transaction<TLong>>): Array<string> {
+export default function (tx: Array<Transaction> | Transaction | TransactionFromNode | TransactionFromNode[]): Array<string> {
+    // @ts-ignore
     const idList = toArray(tx).reduce((acc, tx) => acc.concat(getAssetIdList(tx) || []), []).filter(x => x != null);
     return idList;
 }
