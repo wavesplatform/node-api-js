@@ -2,6 +2,7 @@ import {TLong} from '../../interface';
 import {AssetDecimals, IssueTransaction, SignedTransaction, TRANSACTION_TYPE, WithApiMixin} from '@waves/ts-types';
 import request from '../../tools/request';
 import {toArray} from '../../tools/utils';
+import query from "../../tools/query";
 
 /**
  * GET /assets/details/{assetId}
@@ -24,7 +25,7 @@ export function fetchDetails<T extends string | Array<string>>(base: string, ass
  * Provides detailed information about the given assets
  */
 export function fetchAssetsDetails(base: string, assetIds: Array<string>, options: RequestInit = Object.create(null)): Promise<Array<TAssetDetails | TErrorResponse>> {
-    const body = JSON.stringify({ ids: assetIds });
+    const body = JSON.stringify({ids: assetIds});
     const _options: RequestInit = {
         ...options,
         body,
@@ -139,6 +140,10 @@ export async function fetchAssetsBalance(base: string, address: string, options:
 
 export function fetchBalanceAddressAssetId(base: string, address: string, assetId: string, options: RequestInit = Object.create(null)): Promise<IBalanceAddressAssetId> {
     return request({base, url: `/assets/balance/${address}/${assetId}`, options});
+}
+
+export function convertEthAssetId(base: string, assetId: string): Promise<string> {
+    return request<TAssetDetails[]>({base, url: `/eth/assets${query({id: assetId})}`}).then(assets => assets[0].assetId);
 }
 
 export interface IAssetDistribution {
