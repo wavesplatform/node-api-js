@@ -111,7 +111,7 @@ export function fetchStateChangesByAddress(
 export function fetchStateChangesByTxId(base: string, txId: string, options: RequestInit = Object.create(null)): Promise<Transaction<TLong> & WithId & IWithStateChanges> {
     return request({
         base,
-        url: `/debug/stateChanges/info/${txId}`,
+        url: `/transactions/info/${txId}`,
         options
     });
 }
