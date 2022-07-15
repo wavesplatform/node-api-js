@@ -29,6 +29,16 @@ it('decompile code', async () => {
     expect(typeof decompiled.script).toBe('string');
 });
 
+it('evaluate', async () => {
+    const targetAddress = STATE.ACCOUNTS.FOR_SCRIPT.address;
+    const expr = 'call()';
+    const response = await api.utils.fetchEvaluate(targetAddress, expr);
+    expect(response.address).toEqual(targetAddress);
+    expect(response.complexity).toEqual(1);
+    expect(response.expr).toEqual(expr);
+    expect(response.result).toEqual({ type: 'Array', value: [] });
+});
+
 it('time', async () => {
     const nodeTime = await api.utils.fetchNodeTime();
     expect(typeof nodeTime.NTP).toBe('number');
