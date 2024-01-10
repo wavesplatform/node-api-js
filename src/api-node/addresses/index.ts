@@ -12,6 +12,14 @@ export function fetchDataKey(base: string, address: string, key: string, options
     });
 }
 
+export function fetchScriptInfo(base: string, address: string, options: RequestInit = Object.create(null)): Promise<IScriptInfo<TLong>> {
+    return request({
+        base,
+        url: `/addresses/scriptInfo/${address}`,
+        options
+    });
+}
+
 export function fetchScriptInfoMeta(base: string, address: string): Promise<IScriptInfoMetaResponse> {
     return request({
         base,
@@ -31,14 +39,6 @@ export function fetchBalanceConfirmations(base: string, address: string, confirm
     return request({
         base,
         url: `/addresses/balance/${address}/${confirmations}`,
-        options
-    });
-}
-
-export function fetchScriptInfo(base: string, address: string, options: RequestInit = Object.create(null)): Promise<IScriptInfo<TLong>> {
-    return request({
-        base,
-        url: `/addresses/scriptInfo/${address}`,
         options
     });
 }

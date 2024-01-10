@@ -1,8 +1,8 @@
-import {NODE_URL} from '../_state';
+//import {NODE_URL} from '../_state';
 import {create} from '../../src';
 import {fetchHeadersAt, fetchHeadersLast, IBlockHeader} from '../../src/api-node/blocks';
 
-
+const NODE_URL = "https://nodes-testnet.wavesnodes.com"
 const api = create(NODE_URL);
 
 const checkBlockHeader = (block: IBlockHeader) => {
@@ -23,6 +23,35 @@ const checkBlockHeader = (block: IBlockHeader) => {
     expect(typeof block["nxt-consensus"]["base-target"]).toBe('number')
     expect(typeof block["nxt-consensus"]["generation-signature"]).toBe('string')
 };
+
+const checkChallengedBlockHeader = (block: IBlockHeader) => {
+    expect(typeof block.blocksize).toBe('number');
+    expect(typeof block.reward).toBe('number');
+    expect(typeof block.desiredReward).toBe('number');
+    expect(typeof block.signature).toBe('string');
+    expect(typeof block.generator).toBe('string');
+    expect(typeof block.version).toBe('number');
+    expect(typeof block.reference).toBe('string');
+    expect(block.features).toBeInstanceOf(Array)
+    expect(typeof block.totalFee).toBe('number');
+    expect(typeof block.transactionCount).toBe('number');
+    expect(typeof block.timestamp).toBe('number');
+    expect(typeof block.height).toBe('number');
+    expect(typeof block.VRF).toBe('string');
+    expect(typeof block.id).toBe('string');
+    expect(typeof block["nxt-consensus"]["base-target"]).toBe('number')
+    expect(typeof block["nxt-consensus"]["generation-signature"]).toBe('string')
+    expect(typeof block.challengedHeader?.headerSignature).toBe('string')
+    expect(block.challengedHeader?.features).toBeInstanceOf(Array)
+    expect(typeof block.challengedHeader?.generatorPublicKey).toBe('string')
+    expect(typeof block.challengedHeader?.desiredReward).toBe('number')
+    expect(typeof block.challengedHeader?.stateHash).toBe('string')
+    expect(typeof block.stateHash).toBe('string')
+}
+
+it('fetch challenged block', async () => {
+    checkChallengedBlockHeader(await api.blocks.fetchHeadersAt(34))
+})
 
 it('fetchHeadersLast', async () => {
     checkBlockHeader(await api.blocks.fetchHeadersLast());
@@ -76,38 +105,38 @@ it('first block', async () => {
 });
 
 it('fetch block delay', async () => {
-    const { height } = await api.blocks.fetchHeadersLast();
-    const { id } = await api.blocks.fetchHeadersAt(Math.floor(height / 2));
-    const { delay } = await api.blocks.fetchDelay(id, height);
+    const {height} = await api.blocks.fetchHeadersLast();
+    const {id} = await api.blocks.fetchHeadersAt(Math.floor(height / 2));
+    const {delay} = await api.blocks.fetchDelay(id, height);
     expect(typeof delay).toBe('number');
 });
 
 it('block last', async () => {
-    const block  = await api.blocks.fetchLast();
+    const block = await api.blocks.fetchLast();
     checkBlockHeader(block);
     expect(block.transactions).toBeInstanceOf(Array);
     expect(block.transactionCount).toBe(block.transactions.length);
 });
 
 it('block at', async () => {
-    const { height } = await api.blocks.fetchHeadersLast();
-    const block  = await api.blocks.fetchBlockAt(height - 1);
+    const {height} = await api.blocks.fetchHeadersLast();
+    const block = await api.blocks.fetchBlockAt(height - 1);
     checkBlockHeader(block);
     expect(block.transactions).toBeInstanceOf(Array);
     expect(block.transactionCount).toBe(block.transactions.length);
 });
 
 it('blocks by address', async () => {
-    const { generator, height } = await api.blocks.fetchHeadersLast();
+    const {generator, height} = await api.blocks.fetchHeadersLast();
     const minHeight = height - 10 > 1 ? height - 10 : 2;
-    const blocks  = await api.blocks.fetchBlocksByAddress(generator, minHeight, height);
+    const blocks = await api.blocks.fetchBlocksByAddress(generator, minHeight, height);
 
     blocks.forEach(checkBlockHeader);
 });
 
 it('block by id', async () => {
-    const { id } = await api.blocks.fetchHeadersLast();
-    const block  = await api.blocks.fetchBlockById(id);
+    const {id} = await api.blocks.fetchHeadersLast();
+    const block = await api.blocks.fetchBlockById(id);
 
     checkBlockHeader(block);
     expect(block.transactions).toBeInstanceOf(Array);
@@ -115,8 +144,8 @@ it('block by id', async () => {
 });
 
 it('block headers by id', async () => {
-    const { id } = await api.blocks.fetchHeadersLast();
-    const block  = await api.blocks.fetchHeadersById(id);
+    const {id} = await api.blocks.fetchHeadersLast();
+    const block = await api.blocks.fetchHeadersById(id);
 
     checkBlockHeader(block);
 });

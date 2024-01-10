@@ -69,7 +69,7 @@ export type TStateChanges = {
             args: { type: string, value: string }[],
         },
         payment: TPayment[],
-        stateChanges: TStateChanges
+        stateChanges: TStateChanges | null
     })[]
     error?: {
         code: number,
