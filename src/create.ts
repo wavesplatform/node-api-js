@@ -7,7 +7,6 @@ import * as rewardsModule from './api-node/rewards';
 import * as utilsModule from './api-node/utils';
 import * as debugModule from './api-node/debug';
 import * as aliasModule from './api-node/alias';
-import * as consensusModule from './api-node/consensus';
 import * as activationModule from './api-node/activation';
 import * as nodeModule from './api-node/node';
 import * as assetsModule from './api-node/assets';
@@ -47,7 +46,6 @@ export function create(base: string) {
     const utils: TWrapRecord<typeof utilsModule> = wrapRecord(base, utilsModule);
     const debug: TWrapRecord<typeof debugModule> = wrapRecord(base, debugModule);
     const alias: TWrapRecord<typeof aliasModule> = wrapRecord(base, aliasModule);
-    const consensus: TWrapRecord<typeof consensusModule> = wrapRecord(base, consensusModule);
     const activation: TWrapRecord<typeof activationModule> = wrapRecord(base, activationModule);
     const node: TWrapRecord<typeof nodeModule> = wrapRecord(base, nodeModule);
     const assets: TWrapRecord<typeof assetsModule> = wrapRecord(base, assetsModule);
@@ -87,7 +85,6 @@ export function create(base: string) {
         utils,
         debug,
         alias,
-        consensus,
         activation,
         node,
         assets,

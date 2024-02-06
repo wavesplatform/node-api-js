@@ -69,7 +69,7 @@ export type TStateChanges = {
             args: { type: string, value: string }[],
         },
         payment: TPayment[],
-        stateChanges: TStateChanges
+        stateChanges: TStateChanges,
     })[]
     error?: {
         code: number,
@@ -78,7 +78,7 @@ export type TStateChanges = {
 }
 
 export interface IWithStateChanges {
-    stateChanges: TStateChanges
+    stateChanges: TStateChanges | null
 }
 
 /**

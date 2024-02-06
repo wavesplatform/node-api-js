@@ -203,7 +203,7 @@ export interface IBlockHeader {
     generatorPublicKey: string;
     version: number;
     reference: string;
-    features: Array<string>;
+    features: Array<number>;
     totalFee: TLong;
     desiredReward: number;
     transactionCount: number;
@@ -212,6 +212,18 @@ export interface IBlockHeader {
     'nxt-consensus': {
         'base-target': number;
         'generation-signature': string;
+    }
+    stateHash?: string;
+    rewardShares?: {
+        [key: string]: TLong;
+    }
+    challengedHeader?:{
+        headerSignature: string;
+        features: Array<number>;
+        generator: string;
+        generatorPublicKey: string;
+        desiredReward: TLong;
+        stateHash: string;
     }
 }
 
