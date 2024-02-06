@@ -219,7 +219,7 @@ export interface IBlockHeader {
     }
     challengedHeader?:{
         headerSignature: string;
-        features: Array<string>;
+        features: Array<number>;
         generator: string;
         generatorPublicKey: string;
         desiredReward: TLong;
