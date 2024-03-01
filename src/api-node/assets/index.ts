@@ -86,55 +86,6 @@ export function fetchAssetsNft(
 export async function fetchAssetsBalance(base: string, address: string, options: RequestInit = Object.create(null)): Promise<TAssetsBalance> {
     const balancesResponse = await request<TAssetsBalance>({base, url: `/assets/balance/${address}`, options});
 
-    const assetsWithoutIssueTransaction = balancesResponse.balances.reduce<Record<string, number>>(
-        (acc, balance, index) => {
-            if (!balance.issueTransaction) {
-                acc[balance.assetId] = index;
-            }
-
-            return acc;
-        }, {}
-    );
-
-    const detailsIds = Object.keys(assetsWithoutIssueTransaction);
-
-    if (detailsIds.length) {
-        const assetsDetailsResponse = await fetchAssetsDetails(base, detailsIds, options);
-
-        assetsDetailsResponse.forEach((assetDetails) => {
-            if ('error' in assetDetails) {
-                return;
-            }
-
-            const assetIndex = assetsWithoutIssueTransaction[assetDetails.assetId];
-            const assetBalance = balancesResponse.balances[assetIndex];
-
-            if (!assetBalance) {
-                return;
-            }
-
-            assetBalance.issueTransaction = {
-                id: assetDetails.originTransactionId,
-                name: assetDetails.name,
-                decimals: assetDetails.decimals,
-                description: assetDetails.description,
-                quantity: assetDetails.quantity,
-                reissuable: assetDetails.reissuable,
-                sender: assetDetails.issuer,
-                senderPublicKey: assetDetails.issuerPublicKey,
-                timestamp: assetDetails.issueTimestamp,
-                height: assetDetails.issueHeight,
-                script: assetDetails.scripted ? '-' : null,
-                proofs: [],
-                fee: 10 ** 8,
-                feeAssetId: null,
-                version: 3,
-                type: TRANSACTION_TYPE.ISSUE,
-                chainId: 0
-            };
-        });
-    }
-
     return balancesResponse;
 }
 
