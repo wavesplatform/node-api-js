@@ -1,11 +1,20 @@
-import ethAddress2waves from '../../../src/tools/adresses/ethAddress2waves';
+import ethAsset2Waves from '../../../src/tools/assets/ethAsset2Waves';
+import wavesAsset2Eth from '../../../src/tools/assets/wavesAsset2Eth';
 
-test('eth 2 waves address', async () => {
-    const ethAddress = '0x11242d6ec6B50713026a3757cAeb027294C2242a';
-    const wavesAddress = '3EzjTrzQB57shiN4RwUi9ikC44FBGRzZ81G';
-    const chainId = 67; // C
+describe('Asset-ID conversion between Ethereum (EVM) and Waves', () => {
+  // ► Asset ID EVM (20 bytes, 0x…)
+  const ethAssetId   = '0x31f2bc7a100e9d8c4a200644c8bb7c7c277f56f8';
+  // ► Asset ID Waves (32 bytes -> Base58)
+  const wavesAssetId = '4MyexEQAxYdApQX2fAN2dc3VwPfKopRHs1EGyLHCCSVD';
 
-    const convertedAddress = ethAddress2waves(ethAddress, chainId);
+  test('ethAsset2Waves converte Asset ID EVM para Waves', () => {
+    const converted = ethAsset2Waves(ethAssetId);
+    expect(converted).toBe(wavesAssetId);
+  });
 
-    expect(convertedAddress).toBe(wavesAddress);
+  test('wavesAsset2Eth converte Asset ID Waves de volta para EVM', () => {
+    const converted = wavesAsset2Eth(wavesAssetId);
+    // ignorar diferenças de maiúsculas/minúsculas
+    expect(converted.toLowerCase()).toBe(ethAssetId.toLowerCase());
+  });
 });
