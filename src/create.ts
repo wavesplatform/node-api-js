@@ -8,6 +8,7 @@ import * as utilsModule from './api-node/utils';
 import * as debugModule from './api-node/debug';
 import * as aliasModule from './api-node/alias';
 import * as activationModule from './api-node/activation';
+import * as finalizationModule from './api-node/finalization';
 import * as nodeModule from './api-node/node';
 import * as assetsModule from './api-node/assets';
 import * as ethModule from './api-node/eth';
@@ -47,6 +48,7 @@ export function create(base: string) {
     const debug: TWrapRecord<typeof debugModule> = wrapRecord(base, debugModule);
     const alias: TWrapRecord<typeof aliasModule> = wrapRecord(base, aliasModule);
     const activation: TWrapRecord<typeof activationModule> = wrapRecord(base, activationModule);
+    const finalization: TWrapRecord<typeof finalizationModule> = wrapRecord(base, finalizationModule);
     const node: TWrapRecord<typeof nodeModule> = wrapRecord(base, nodeModule);
     const assets: TWrapRecord<typeof assetsModule> = wrapRecord(base, assetsModule);
     const eth: TWrapRecord<typeof ethModule> = wrapRecord(base, ethModule);
@@ -86,6 +88,7 @@ export function create(base: string) {
         debug,
         alias,
         activation,
+        finalization,
         node,
         assets,
         eth

@@ -1,6 +1,6 @@
-import { TLong } from '../../interface';
+import {TLong} from '../../interface';
 import request from '../../tools/request';
-import {Transaction, TransactionFromNode, WithApiMixin} from '@waves/ts-types';
+import {TransactionFromNode, WithApiMixin} from '@waves/ts-types';
 
 /**
  * GET /blocks/headers/seq/{from}/{to}
@@ -26,6 +26,19 @@ export function fetchHeadersLast(base: string, options: RequestInit = Object.cre
     return request({
         base,
         url: `/blocks/headers/last`,
+        options
+    });
+}
+
+/**
+ * GET /blocks/headers/finalized
+ * Last finalized block header
+ * @param base
+ */
+export function fetchFinalized(base: string, options: RequestInit = Object.create(null)): Promise<IBlockHeader> {
+    return request({
+        base,
+        url: `/blocks/headers/finalized`,
         options
     });
 }
@@ -217,6 +230,7 @@ export interface IBlockHeader {
     rewardShares?: {
         [key: string]: TLong;
     }
+    finalizationVoting?: IFinalizationVoting;
     challengedHeader?:{
         headerSignature: string;
         features: Array<number>;
@@ -230,4 +244,18 @@ export interface IBlockHeader {
 export interface IBlock extends IBlockHeader {
     fee: TLong;
     transactions: Array<TransactionFromNode & WithApiMixin>;
+}
+
+export interface IFinalizationVoting {
+    endorserIndexes: Array<number>;
+    aggregatedEndorsementSignature: string;
+    finalizedHeight: number;
+    conflictEndorsements?: Array<IConflictEndorsement>;
+}
+
+export interface IConflictEndorsement {
+    endorserIndex: number;
+    finalizedBlockId: string;
+    finalizedHeight: number;
+    signature: string;
 }
