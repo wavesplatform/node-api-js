@@ -1,20 +1,8 @@
 import resolve from './resolve';
 import parse from './parse';
 
-let requestPromise: Promise<typeof fetch> | null = null;
-
-function getRequest(): Promise<typeof fetch> {
-    if (typeof fetch === 'function') {
-        return Promise.resolve(fetch.bind(globalThis));
-    }
-
-    if (!requestPromise) {
-        // Keep node-fetch out of browser bundles; resolve it only at runtime in node.
-        requestPromise = Function('return import("node-fetch")')()
-            .then((module: any) => module.default || module);
-    }
-
-    return requestPromise!;
+async function getRequest(): Promise<typeof globalThis.fetch> {
+    return fetch.bind(globalThis);
 }
 
 export default function <T>(params: IRequestParams<T>): Promise<T> {
