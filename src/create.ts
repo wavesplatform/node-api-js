@@ -25,6 +25,7 @@ import parse from './tools/parse';
 import getNetworkByte from './tools/blocks/getNetworkByte';
 import getNetworkCode from './tools/blocks/getNetworkCode';
 import createWatch from './tools/adresses/watch';
+import * as matcherOrderModule from './tools/matcher/order';
 import * as toolsUtilsModule from './tools/utils';
 import {Transaction, TransactionMap, WithApiMixin} from '@waves/ts-types';
 import {TLong} from './interface';
@@ -68,6 +69,9 @@ export function create(base: string) {
             getAssetIdListByTx,
             getTransactionsWithAssets: wrapRequest(base, getTransactionsWithAssets),
             availableSponsoredBalances: wrapRequest(base, availableSponsoredBalances)
+        },
+        matcher: {
+            order: wrapRecord(base, matcherOrderModule)
         },
         utils: toolsUtilsModule,
         query,

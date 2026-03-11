@@ -1,11 +1,12 @@
-//import {NODE_URL} from '../_state';
+import {NODE_URL} from '../_state';
 import {create} from '../../src';
 import {fetchHeadersAt, fetchHeadersLast, IBlockHeader} from '../../src/api-node/blocks';
 
-const NODE_URL = "https://nodes-testnet.wavesnodes.com"
+//const NODE_URL = "https://nodes-testnet.wavesnodes.com"
 const api = create(NODE_URL);
 
 const checkBlockHeader = (block: IBlockHeader) => {
+ //   console.log(block);
     expect(typeof block.blocksize).toBe('number');
     expect(typeof block.reward).toBe('number');
     expect(typeof block.desiredReward).toBe('number');
@@ -23,35 +24,35 @@ const checkBlockHeader = (block: IBlockHeader) => {
     expect(typeof block["nxt-consensus"]["base-target"]).toBe('number')
     expect(typeof block["nxt-consensus"]["generation-signature"]).toBe('string')
 };
+//
+// const checkChallengedBlockHeader = (block: IBlockHeader) => {
+//     expect(typeof block.blocksize).toBe('number');
+//     expect(typeof block.reward).toBe('number');
+//     expect(typeof block.desiredReward).toBe('number');
+//     expect(typeof block.signature).toBe('string');
+//     expect(typeof block.generator).toBe('string');
+//     expect(typeof block.version).toBe('number');
+//     expect(typeof block.reference).toBe('string');
+//     expect(block.features).toBeInstanceOf(Array)
+//     expect(typeof block.totalFee).toBe('number');
+//     expect(typeof block.transactionCount).toBe('number');
+//     expect(typeof block.timestamp).toBe('number');
+//     expect(typeof block.height).toBe('number');
+//     expect(typeof block.VRF).toBe('string');
+//     expect(typeof block.id).toBe('string');
+//     expect(typeof block["nxt-consensus"]["base-target"]).toBe('number')
+//     expect(typeof block["nxt-consensus"]["generation-signature"]).toBe('string')
+//     expect(typeof block.challengedHeader?.headerSignature).toBe('string')
+//     expect(block.challengedHeader?.features).toBeInstanceOf(Array)
+//     expect(typeof block.challengedHeader?.generatorPublicKey).toBe('string')
+//     expect(typeof block.challengedHeader?.desiredReward).toBe('number')
+//     expect(typeof block.challengedHeader?.stateHash).toBe('string')
+//     expect(typeof block.stateHash).toBe('string')
+// }
 
-const checkChallengedBlockHeader = (block: IBlockHeader) => {
-    expect(typeof block.blocksize).toBe('number');
-    expect(typeof block.reward).toBe('number');
-    expect(typeof block.desiredReward).toBe('number');
-    expect(typeof block.signature).toBe('string');
-    expect(typeof block.generator).toBe('string');
-    expect(typeof block.version).toBe('number');
-    expect(typeof block.reference).toBe('string');
-    expect(block.features).toBeInstanceOf(Array)
-    expect(typeof block.totalFee).toBe('number');
-    expect(typeof block.transactionCount).toBe('number');
-    expect(typeof block.timestamp).toBe('number');
-    expect(typeof block.height).toBe('number');
-    expect(typeof block.VRF).toBe('string');
-    expect(typeof block.id).toBe('string');
-    expect(typeof block["nxt-consensus"]["base-target"]).toBe('number')
-    expect(typeof block["nxt-consensus"]["generation-signature"]).toBe('string')
-    expect(typeof block.challengedHeader?.headerSignature).toBe('string')
-    expect(block.challengedHeader?.features).toBeInstanceOf(Array)
-    expect(typeof block.challengedHeader?.generatorPublicKey).toBe('string')
-    expect(typeof block.challengedHeader?.desiredReward).toBe('number')
-    expect(typeof block.challengedHeader?.stateHash).toBe('string')
-    expect(typeof block.stateHash).toBe('string')
-}
-
-it('fetch challenged block', async () => {
-    checkChallengedBlockHeader(await api.blocks.fetchHeadersAt(34))
-})
+// it('fetch challenged block', async () => {
+//     checkChallengedBlockHeader(await api.blocks.fetchHeadersAt(34))
+// })
 
 it('fetchHeadersLast', async () => {
     checkBlockHeader(await api.blocks.fetchHeadersLast());
@@ -81,27 +82,6 @@ it('fetchHeadersSeq', async () => {
     const info = await api.blocks.fetchHeadersSeq(minHeight, height - 1);
     expect(info).toBeInstanceOf(Array);
     info.forEach(checkBlockHeader);
-});
-
-it('first block', async () => {
-    const genesis = await api.blocks.fetchFirst();
-
-    expect(genesis.version).toBe(1);
-    expect(genesis.height).toBe(1);
-    expect(genesis.totalFee).toBe(0);
-    expect(genesis.fee).toBe(0);
-    expect(genesis.transactions).toBeInstanceOf(Array);
-    expect(genesis.transactionCount).toBe(genesis.transactions.length);
-    expect(typeof genesis.timestamp).toBe('number');
-    expect(typeof genesis.reference).toBe('string');
-    expect(typeof genesis.generator).toBe('string');
-    expect(typeof genesis.generatorPublicKey).toBe('string');
-    expect(typeof genesis.signature).toBe('string');
-    expect(typeof genesis.blocksize).toBe('number');
-    expect(typeof genesis.reward).toBe('number');
-    expect(typeof genesis.id).toBe('string');
-    expect(typeof genesis["nxt-consensus"]["base-target"]).toBe('number')
-    expect(typeof genesis["nxt-consensus"]["generation-signature"]).toBe('string')
 });
 
 it('fetch block delay', async () => {

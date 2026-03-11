@@ -1,8 +1,10 @@
 import create from '../../../src/tools/adresses/watch';
 import { CHAIN_ID, NODE_URL, STATE } from '../../_state';
-import { broadcast, libs, transfer, waitForTx } from '@waves/waves-transactions';
+import { libs, transfer } from '@waves/waves-transactions';
 import { Transaction, WithId } from '@waves/ts-types';
 import { TLong } from '../../../src/interface';
+import { broadcast } from '../../../src/api-node/transactions';
+import { waitForTx } from '../../../src/nodeInteraction';
 
 
 let watcher: ReturnType<typeof create> extends Promise<infer T> ? T : never = null as any;
@@ -57,7 +59,7 @@ it('Catch one transaction', async () => {
         recipient: address,
     }, STATE.ACCOUNTS.SIMPLE.seed);
 
-    await broadcast(tx, NODE_URL);
+    await broadcast(NODE_URL, tx);
     await waitForTx(tx.id, { apiBase: NODE_URL });
     await wait(500);
 
@@ -77,7 +79,7 @@ it('Catch once transaction', async () => {
             recipient: address,
         }, STATE.ACCOUNTS.SIMPLE.seed);
 
-        await broadcast(tx, NODE_URL);
+        await broadcast(NODE_URL, tx);
         await waitForTx(tx.id, { apiBase: NODE_URL });
         await wait(100);
     }
@@ -105,7 +107,7 @@ test('Catch 30 transactions', async () => {
         toSend.push(...tmp as any);
         count = count + 5;
 
-        await Promise.all(tmp.map(tx => broadcast(tx, NODE_URL)));
+        await Promise.all(tmp.map(tx => broadcast(NODE_URL, tx)));
         await Promise.all(tmp.map(tx => waitForTx(tx.id, { apiBase: NODE_URL })));
     };
 

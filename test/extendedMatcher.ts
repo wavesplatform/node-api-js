@@ -26,6 +26,10 @@ export function isStringOrNumber(received:any): jest.CustomMatcherResult {
     };
 }
 
+export const matchers = {
+    isStringOrNumber
+};
+
 export function isNullableString(received:any): jest.CustomMatcherResult {
     return {
         pass: received === null || typeof received == 'string' || received instanceof String,

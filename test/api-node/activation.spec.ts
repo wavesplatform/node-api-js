@@ -6,13 +6,23 @@ import { TLong } from '../../src/interface';
 const api: ReturnType<typeof create> = create(NODE_URL);
 
 const CheckFeatures = (object: IFeatures<TLong>) => {
-    expect(object).toMatchObject({
-        id: expect.any(Number),
-        description: expect.any(String),
-        blockchainStatus: expect.any(String),
-        nodeStatus: expect.any(String),
-        activationHeight: expect.any(Number)
-    })
+    if (object.blockchainStatus === 'VOTING') {
+        expect(object).toMatchObject({
+            id: expect.any(Number),
+            description: expect.any(String),
+            blockchainStatus: expect.any(String),
+            nodeStatus: expect.any(String),
+            supportingBlocks: expect.any(Number)  // для VOTING
+        });
+    } else {
+        expect(object).toMatchObject({
+            id: expect.any(Number),
+            description: expect.any(String),
+            blockchainStatus: expect.any(String),
+            nodeStatus: expect.any(String),
+            activationHeight: expect.any(Number)  // для ACTIVATED
+        });
+    }
 }
 
 it('Activation status', async () => {

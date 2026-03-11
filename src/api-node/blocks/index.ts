@@ -31,19 +31,6 @@ export function fetchHeadersLast(base: string, options: RequestInit = Object.cre
 }
 
 /**
- * GET /blocks/headers/finalized
- * Last finalized block header
- * @param base
- */
-export function fetchFinalized(base: string, options: RequestInit = Object.create(null)): Promise<IBlockHeader> {
-    return request({
-        base,
-        url: `/blocks/headers/finalized`,
-        options
-    });
-}
-
-/**
  * GET /blocks/height/{id}
  * Height of a block by its id
  * @param base
@@ -123,19 +110,6 @@ export function fetchBlockById(base: string, id: string, options: RequestInit = 
     return request({
         base,
         url: `/blocks/${id}`,
-        options
-    })
-}
-
-/**
- * GET /blocks/first
- * Get genesis block
- * @param base
- */
-export function fetchFirst(base: string, options: RequestInit = Object.create(null)): Promise<IBlock> {
-    return request({
-        base,
-        url: `/blocks/first`,
         options
     })
 }

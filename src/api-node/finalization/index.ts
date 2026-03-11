@@ -1,7 +1,44 @@
 import request from '../../tools/request';
 import { TLong } from '../../interface';
 import { fetchActivationStatus } from '../activation';
-import { fetchHeight } from '../blocks';
+import {fetchHeight, IBlockHeader} from '../blocks';
+
+
+/**
+ * GET /blocks/headers/finalized
+ * Last finalized block header
+ * @param base
+ */
+export function fetchFinalized(base: string, options: RequestInit = Object.create(null)): Promise<IBlockHeader> {
+    return request({
+        base,
+        url: `/blocks/headers/finalized`,
+        options
+    });
+}
+
+/**
+ * GET last finalized block height
+ * @param base
+ */
+export function fetchFinalizedHeight(base: string): Promise<{ height: number }> {
+    return request({
+        base,
+        url: `/blocks/height/finalized`
+    })
+}
+
+/**
+ * GET finalized block height at
+ * @param base
+ * @param height
+ */
+export function fetchFinalizedHeightAt(base: string, height: number): Promise<{ height: number }> {
+    return request({
+        base,
+        url: `/blocks/finalized/at/${height}`
+    })
+}
 
 /**
  * GET /generators/at/{height}
@@ -32,7 +69,7 @@ export function fetchCommittedGeneratorIndex(base: string, height: number, addre
 }
 
 /**
- * Calculates commitment period boundaries for feature 25 activation.
+ * Calculates commitment period boundaries depends on feature 25 activation.
  * @param base
  * @param periodLength
  */
@@ -41,19 +78,26 @@ export function fetchCommitmentPeriodHeights(base: string, periodLength: number 
         fetchActivationStatus(base),
         fetchHeight(base)
     ]).then(([activationStatus, heightStatus]) => {
-        const feature25 = activationStatus.features.find((feature) => feature.id === 25 && feature.blockchainStatus === 'ACTIVATED');
+        const feature25 = activationStatus.features.find((feature) =>
+            feature.id === 25 &&
+            feature.blockchainStatus === 'ACTIVATED'
+        );
 
         if (!feature25) {
             throw new Error('Finalization voting is not activated');
         }
+        if (typeof feature25.activationHeight !== 'number') {
+            throw new Error('Feature 25 activation height is unavailable');
+        }
 
-        let nextPeriodStart = feature25.activationHeight + periodLength;
+        const featureActivationHeight = feature25.activationHeight === 0 ? 1 : feature25.activationHeight;
+        let nextPeriodStart = featureActivationHeight + periodLength;
         while (heightStatus.height >= nextPeriodStart) {
             nextPeriodStart += periodLength;
         }
 
         return {
-            currentPeriodStart: nextPeriodStart - periodLength,
+            currentPeriodStart: Math.max(nextPeriodStart - periodLength, 1),
             nextPeriodStart
         };
     });
