@@ -54,7 +54,7 @@ test('Chain broadcast 2 transactions', async () => {
             expect(status.statuses[1].confirmations >= 1).toBe(true);
         });
     } catch (e) {
-        throw new Error(e)
+        throw new Error(e instanceof Error ? e.message : String(e));
     }
 
 

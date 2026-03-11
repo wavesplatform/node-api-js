@@ -1,14 +1,7 @@
-import {CHAIN_ID, MASTER_ACCOUNT, NODE_URL, STATE} from '../_state';
+import {MASTER_ACCOUNT, NODE_URL, STATE} from '../_state';
 import {create} from '../../src';
-import {IScriptInfo, fetchScriptInfo} from '../../src/api-node/addresses';
-import {isNullableStringOrNumber, isStringOrNumber} from '../extendedMatcher'
-import {HeadersInit} from "node-fetch";
-import {RequestInit} from "../../src/tools/request";
-import {libs, transfer} from "@waves/waves-transactions";
-import {SignedTransaction, TransferTransaction} from "@waves/ts-types";
-import {TLong} from "../../src/interface";
-import {fetchAddresses} from "../../es/api-node/addresses";
-
+import {fetchScriptInfo, IScriptInfo} from '../../src/api-node/addresses';
+import { matchers } from '../extendedMatcher';
 
 const api: ReturnType<typeof create> = create(NODE_URL);
 const largeNumbeConvertHeader = { headers: {'Accept': 'application/json;large-significand-format=string' }};
@@ -148,39 +141,6 @@ it('address balance, long as string', async () => {
     expect(balance.address).toBe(address);
 });
 
-
-it('multiple account balance', async () => { //AB
-    /*
-    const txAddresses = [] as string[];
-    api.addresses
-    for (let i = 0; i < 4; i++) {
-        const tx = await api.transactions.broadcast(
-            transfer({
-                recipient: libs.crypto.address(libs.crypto.randomSeed(), CHAIN_ID),
-                amount: 1
-            }, MASTER_ACCOUNT.SEED) as SignedTransaction<TransferTransaction<TLong>>
-        );
-        txAddresses.push(tx
-    }
-
-    const {address} = STATE.ACCOUNTS.SIMPLE;
-    const balance = await  api.addresses.fetchMultipleBalance(addresses);
-
-    expect(typeof balance.balance).isStringOrNumber();
-    expect(typeof balance.address).toBe('string');
-    expect(typeof balance.confirmations).toBe('number');
-    expect(balance.address).toBe(address);
-
-     */
-    const tx = api.addresses.fetchAddresses();
-    console.log(tx);
-});
-
-
-
-
-
-
 it('address effective balance', async () => {
     const {address} = STATE.ACCOUNTS.SIMPLE;
     const balance = await  api.addresses.fetchEffectiveBalance(address);
@@ -268,7 +228,6 @@ it('Fetch seed', async () => {   //AB
 it('Fetch seq', async () => {   //AB
 
     const seq = await api.addresses.fetchSeq(0,20);
-    console.log(seq);
     let l = seq.length;
     for (let i=0;i<l;i++) {
         expect(typeof seq[i]).toBe('string');

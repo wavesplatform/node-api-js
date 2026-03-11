@@ -5,14 +5,22 @@ import { indexBy, keys, prop } from '../utils';
 import { EventEmitter } from 'typed-ts-events';
 
 
+class WatchEventEmitter extends EventEmitter<IEvents> {
+    emitChangeState(list: Array<Transaction<TLong> & WithApiMixin>): void {
+        this.trigger('change-state', list);
+    }
+}
+
+
 export class Watch {
 
     public readonly address: string;
     private readonly _base: string;
     private readonly _interval: number;
-    private readonly _emitter: EventEmitter<IEvents> = new EventEmitter();
+    private readonly _emitter: WatchEventEmitter = new WatchEventEmitter();
     private _lastBlock: ILastBlockInfo;
     private _timer: ReturnType<typeof setTimeout> | null = null;
+    private _stopped: boolean = false;
 
 
     constructor(base: string, address: string, tx: Transaction<TLong> & WithApiMixin | null, interval?: number) {
@@ -28,16 +36,24 @@ export class Watch {
         this._addTimeout();
     }
 
-    public on<K extends keyof IEvents>(event: K, handler: EventEmitter.IHandler<IEvents[K], any>): void {
+    public on<K extends keyof IEvents>(event: K, handler: IHandler<IEvents[K]>): void {
         this._emitter.on(event, handler);
     }
 
-    public once<K extends keyof IEvents>(event: K, handler: EventEmitter.IHandler<IEvents[K], any>): void {
+    public once<K extends keyof IEvents>(event: K, handler: IHandler<IEvents[K]>): void {
         this._emitter.once(event, handler);
     }
 
-    public off(event?: keyof IEvents, handler?: EventEmitter.IHandler<IEvents[keyof IEvents], any>): void {
+    public off(event?: keyof IEvents, handler?: IHandler<IEvents[keyof IEvents]>): void {
         this._emitter.off(event, handler);
+    }
+
+    public stop(): void {
+        this._stopped = true;
+        if (this._timer) {
+            clearTimeout(this._timer);
+            this._timer = null;
+        }
     }
 
     private _run() {
@@ -69,7 +85,7 @@ export class Watch {
                                 lastId: hash[prev] && hash[prev].length ? hash[prev][0].id : '',
                                 transactions: hash[last]
                             };
-                            this._emitter.trigger('change-state', list);
+                            this._emitter.emitChangeState(list);
                         } else {
                             const wasDispatchHash = indexBy(prop('id'), this._lastBlock.transactions);
                             const toDispatch = Watch._getTransactionsToDispatch([...hash[last], ...(hash[prev] || [])], wasDispatchHash, this._lastBlock.lastId);
@@ -85,7 +101,7 @@ export class Watch {
                             }
 
                             if (toDispatch.length) {
-                                this._emitter.trigger('change-state', toDispatch);
+                                this._emitter.emitChangeState(toDispatch);
                             }
                         }
                         this._addTimeout();
@@ -126,6 +142,7 @@ export class Watch {
     }
 
     private _addTimeout(): void {
+        if (this._stopped) return;
         this._timer = setTimeout(() => {
             this._run();
         }, this._interval);
@@ -167,6 +184,8 @@ interface ILastBlockInfo {
 export interface IEvents {
     'change-state': Array<Transaction<TLong> & WithApiMixin>;
 }
+
+type IHandler<T> = (data: T) => any;
 
 export default function (base: string, address: string, interval?: number) {
     return fetchTransactions(base, address, 1)
