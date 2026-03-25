@@ -33,7 +33,7 @@ export interface INodeRequestOptions {
 
 const DEFAULT_NODE_REQUEST_OPTIONS: Required<INodeRequestOptions> = {
     timeout: 120000,
-    apiBase: 'https://nodes.wavesplatform.com',
+    apiBase: 'https://nodes.wavesnodes.com',
 };
 
 export const currentHeight = async (apiBase: string): Promise<number> =>

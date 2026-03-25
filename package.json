@@ -4,7 +4,7 @@
   "main": "cjs/index.js",
   "types": "cjs/index.d.ts",
   "scripts": {
-    "testCommand": "jest --detect-open-handles",
+    "testCommand": "jest",
     "prepublishOnly": "npm run build",
     "build": "tsc -p ./tsconfig-cjs.json",
     "test": "node-state -e -n -m typescript -o ./test/_state.ts -r"
@@ -46,7 +46,7 @@
     "@typescript-eslint/eslint-plugin": "^8.56.0",
     "@typescript-eslint/parser": "^8.56.0",
     "@waves/node-state": "^0.2.0-snapshot.1",
-    "@waves/waves-transactions": "4.4.0-snapshot.2",
+    "@waves/waves-transactions": "4.4.0-snapshot.3",
     "eslint": "^9.35.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
@@ -60,6 +60,7 @@
   },
   "overrides": {
     "test-exclude": "^8.0.0",
-    "glob": "^13.0.6"
+    "glob": "^13.0.6",
+    "flatted": "^3.4.2"
   }
 }
