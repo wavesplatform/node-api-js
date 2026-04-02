@@ -45,7 +45,7 @@
     "@types/jest": "^30.0.0",
     "@typescript-eslint/eslint-plugin": "^8.56.0",
     "@typescript-eslint/parser": "^8.56.0",
-    "@waves/node-state": "^0.2.0-snapshot.1",
+    "@waves/node-state": "^0.2.0-snapshot.2",
     "@waves/waves-transactions": "4.4.0-snapshot.3",
     "eslint": "^9.35.0",
     "eslint-config-prettier": "^10.1.8",

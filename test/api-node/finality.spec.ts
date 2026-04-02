@@ -17,8 +17,7 @@ it('Finality info', async () => {
 
     const newFinality = await api.finality.fetchFinalityInfo()
     expect(newFinality.nextGenerators).toContainEqual({
-        commitTxnId: tx.id,
-        balance: 0,
+        transactionId: tx.id,
         address: MASTER_ACCOUNT.ADDRESS
     })
 

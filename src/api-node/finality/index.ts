@@ -94,7 +94,7 @@ export interface IFinalityInfo {
     currentGenerationPeriod?: IGenerationPeriod;
     currentGenerators: ICommittedGenerator[];
     nextGenerationPeriod?: IGenerationPeriod;
-    nextGenerators: ICommittedGenerator[];
+    nextGenerators: INextCommittedGenerator[];
 }
 
 export interface ICommittedGenerator {
@@ -102,4 +102,9 @@ export interface ICommittedGenerator {
     balance: TLong;
     transactionId: string;
     conflictHeight?: number;
+}
+
+export interface INextCommittedGenerator {
+    address: string;
+    transactionId: string;
 }
