@@ -7,7 +7,7 @@
     "testCommand": "jest",
     "prepublishOnly": "npm run build",
     "build": "tsc -p ./tsconfig-cjs.json",
-    "test": "node-state -e -n -m typescript -o ./test/_state.ts -r"
+    "test": "node-state -e -n -m typescript -i ghcr.io/wavesplatform/waves-private-node:finality -o ./test/_state.ts -r"
   },
   "repository": {
     "type": "git",
