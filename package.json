@@ -4,10 +4,9 @@
   "main": "cjs/index.js",
   "types": "cjs/index.d.ts",
   "scripts": {
-    "testCommand": "jest",
     "prepublishOnly": "npm run build",
     "build": "tsc -p ./tsconfig-cjs.json",
-    "test": "node-state -e -n -m typescript -i ghcr.io/wavesplatform/waves-private-node:finality -o ./test/_state.ts -r"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -24,6 +23,8 @@
     "cjs"
   ],
   "jest": {
+    "globalSetup": "<rootDir>/test/globalSetupWrapper.js",
+    "globalTeardown": "<rootDir>/test/globalTeardownWrapper.js",
     "moduleFileExtensions": [
       "ts",
       "tsx",
@@ -42,11 +43,13 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
+    "@types/dockerode": "^3.3.0",
     "@types/jest": "^30.0.0",
     "@typescript-eslint/eslint-plugin": "^8.56.0",
     "@typescript-eslint/parser": "^8.56.0",
-    "@waves/node-state": "^0.2.0-snapshot.2",
     "@waves/waves-transactions": "4.4.0-snapshot.3",
+    "dockerode": "^4.0.0",
+    "ts-node": "^10.9.2",
     "eslint": "^9.35.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",

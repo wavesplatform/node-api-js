@@ -1,0 +1,58 @@
+{
+    "ASSETS": {
+        "BTC": {
+            "name": "WBTC"
+        },
+        "USD": {
+            "name": "WUSD"
+        },
+        "EUR": {
+            "name": "WEUR"
+        },
+        "ETH": {
+            "name": "WETH"
+        },
+        "SMART": {
+            "name": "Smart",
+            "script": true
+        },
+        "DUMB": {
+            "name": "Dumb",
+            "owner": "SIMPLE",
+            "sponsorship": true
+        }
+    },
+    "ACCOUNTS": {
+        "FOR_SCRIPT": {
+            "script": "dApp"
+        },
+        "SIMPLE": {
+            "alias": true,
+            "balance": {
+                "BTC": 10000000000,
+                "SMART": 10000000000
+            },
+            "lease": {
+                "amount": 1000000
+            },
+            "data": {
+                "key": {
+                    "value": "123",
+                    "type": "string"
+                },
+                "count": {
+                    "value": 1,
+                    "type": "integer"
+                }
+            }
+        },
+        "SMART": {
+            "script": true,
+            "alias": true,
+            "balance": {
+                "BTC": 10000000000,
+                "SMART": 10000000000
+            }
+        }
+    }
+}
