@@ -1,0 +1,11 @@
+overrides:
+  test-exclude: ^8.0.0
+  glob: ^13.0.6
+  flatted: ^3.4.2
+allowBuilds:
+  cpu-features: false
+  protobufjs: false
+  ssh2: false
+  unrs-resolver: false
+minimumReleaseAgeExclude:
+  - '@waves/waves-transactions@5.0.0'

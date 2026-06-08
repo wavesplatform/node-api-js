@@ -3,11 +3,11 @@
   "version": "1.4.0",
   "main": "cjs/index.js",
   "types": "cjs/index.d.ts",
+  "packageManager": "pnpm@11.5.2",
   "scripts": {
-    "testCommand": "jest",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "pnpm run build",
     "build": "tsc -p ./tsconfig-cjs.json",
-    "test": "node-state -e -n -m typescript -i ghcr.io/wavesplatform/waves-private-node:finality -o ./test/_state.ts -r"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,8 @@
     "cjs"
   ],
   "jest": {
+    "globalSetup": "<rootDir>/test/globalSetupWrapper.js",
+    "globalTeardown": "<rootDir>/test/globalTeardownWrapper.js",
     "moduleFileExtensions": [
       "ts",
       "tsx",
@@ -42,11 +44,13 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
+    "@types/dockerode": "^3.3.0",
     "@types/jest": "^30.0.0",
     "@typescript-eslint/eslint-plugin": "^8.56.0",
     "@typescript-eslint/parser": "^8.56.0",
-    "@waves/node-state": "^0.2.0-snapshot.2",
-    "@waves/waves-transactions": "4.4.0-snapshot.3",
+    "@waves/waves-transactions": "^5.0.0",
+    "dockerode": "^5.0.0",
+    "ts-node": "^10.9.2",
     "eslint": "^9.35.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
@@ -54,13 +58,9 @@
     "eslint-plugin-prettier": "^5.5.5",
     "globals": "^16.4.0",
     "jest": "^30.3.0",
+    "jest-matcher-utils": "^30.3.0",
     "prettier": "^3.8.1",
     "ts-jest": "^29.4.6",
     "typescript": "^5.9.2"
-  },
-  "overrides": {
-    "test-exclude": "^8.0.0",
-    "glob": "^13.0.6",
-    "flatted": "^3.4.2"
   }
 }
