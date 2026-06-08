@@ -52,18 +52,22 @@ async function startContainer(): Promise<string> {
 }
 
 async function pullImage(docker: Dockerode, image: string): Promise<void> {
-    const images = await docker.listImages({ filters: { reference: [image] } });
-    if (images.length > 0) return;
-
-    return new Promise((resolve, reject) => {
-        docker.pull(image, (err: Error | null, stream: NodeJS.ReadableStream) => {
-            if (err) return reject(err);
-            docker.modem.followProgress(stream, (err: Error | null) => {
-                if (err) reject(err);
-                else resolve();
+    try {
+        await new Promise<void>((resolve, reject) => {
+            docker.pull(image, (err: Error | null, stream: NodeJS.ReadableStream) => {
+                if (err) return reject(err);
+                docker.modem.followProgress(stream, (err: Error | null) => {
+                    if (err) reject(err);
+                    else resolve();
+                });
             });
         });
-    });
+    } catch (err) {
+        // Fall back to a locally cached image if the registry is unreachable.
+        const images = await docker.listImages({ filters: { reference: [image] } });
+        if (images.length === 0) throw err;
+        console.log(`Could not pull ${image}, using locally cached image`);
+    }
 }
 
 async function waitForNode(nodeUrl: string, timeoutMs = 120000): Promise<void> {

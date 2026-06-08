@@ -5,14 +5,40 @@ on:
   release:
     types: [ published ]
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   publish:
-    uses: wavesplatform/publish-to-npm/.github/workflows/publish.yml@7d9462af686d83552d72097bf47a892e43d11f6e
-    with:
-      environment: NPMJS
-      event_name: ${{ github.event_name }}
-      test: true
-      version: ${{ github.event.release.tag_name }}
-    permissions:
-      id-token: write
-      contents: read
+    name: Publish package
+    runs-on: ubuntu-latest
+    environment:
+      name: NPMJS
+      url: ${{ steps.publish.outputs.url }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
+        with:
+          registry-url: 'https://registry.npmjs.org' # Trusted publishing requires npm CLI version 11.5.1 or later.
+          node-version: '>=24.7.0'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - if: ${{ github.event_name == 'push' }}
+        run: |
+          PACKAGE_NAME=$(jq --raw-output .name package.json)
+          PREFIX=$(jq --raw-output .version package.json)-snapshot
+          NEXT=$(pnpm view $PACKAGE_NAME versions --json \
+            | jq --raw-output --arg prefix $PREFIX '[.[] | select(startswith($prefix))|capture("snapshot\\.(?<n>[0-9]+)").n|tonumber]|max + 1 // 0')
+          pnpm version $PREFIX.$NEXT --no-git-tag-version
+          echo "TAG=snapshot" >> $GITHUB_ENV
+      - if: ${{ github.event_name == 'release' }}
+        run: |
+          pnpm version $(echo '${{ github.event.release.tag_name }}' | sed 's/^v//') --no-git-tag-version --allow-same-version
+          echo "TAG=latest" >> $GITHUB_ENV
+      - run: pnpm test
+      - id: publish
+        run: |
+          pnpm publish --provenance --access public --tag $TAG --no-git-checks
+          echo "url=https://www.npmjs.com/package/$(jq --raw-output .name package.json)/v/$(jq --raw-output .version package.json)" >> "$GITHUB_OUTPUT"
